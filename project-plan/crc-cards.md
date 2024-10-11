@@ -1,18 +1,22 @@
 ## CRC Cards
 ----------
 
-| Class                 |                   |
+| User                  |                   | 
+|-----------------------|-------------------|
+| **Responsibilities**  | **Collaborators** |
+| - responsible for...  | - collabs with... | 
+
+| Event                 |                   |
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - responsible for...  | - collabs with... |
 
-| Class                 |                   |
+| Organizer             |                   |
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - responsible for...  | - collabs with... |
 
-| Class                 |                   |
+| Class             |                   |
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - responsible for...  | - collabs with... |
-

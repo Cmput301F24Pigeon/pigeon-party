@@ -10,7 +10,7 @@
 | **Event**             |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Store details about a specific event <br> - Allow entrants to view details and register.  | - Collaborates with User <br> - Collaborates with Facility   |
+| - Store details about a specific event <br> - Allow entrants to view details and register. Gives us a qr code for the event | - Collaborates with User <br> - Collaborates with Facility   |
 
 
 | **Facility**          |                   | 
@@ -34,6 +34,11 @@
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view all the images on our app  |  |
 
+| **HashData ArrayAdapter**|                   | 
+|-----------------------|-------------------|
+| **Responsibilities**  | **Collaborators** |
+| - Allows us to view the lists of our hashdate taken from our qr codes  | - Collaborates with Events <br>  |
+
 | **RemoveEventFragment**|                   | 
 |------------------------|-------------------|
 | **Responsibilities**   | **Collaborators** |
@@ -48,4 +53,9 @@
 |------------------------|-------------------|
 | **Responsibilities**   | **Collaborators** |
 | - Allows us to remove profiles as an admin  | -Collaborates with Events<br>  |
+
+| **RemoveHashDataFragment**|                   | 
+|---------------------------|-------------------|
+| **Responsibilities**      | **Collaborators** |
+| - Allows us to remove hashdata from the qr code as an admin  | -Collaborates with Events<br>  |
 

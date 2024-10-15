@@ -18,23 +18,23 @@
 | **Responsibilities**  | **Collaborators** |
 | - Store the details of a Facility and allow organizers to host events at the facility.  | - Collaborates with User <br> |
 
-| **User ArrayAdapter** |                   | 
+| **UserArrayAdapter** |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view the lists of our users   | - Collaborates with User <br>  |
 
 
-| **Event ArrayAdapter**|                   | 
+| **EventArrayAdapter**|                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view the lists of our events  | - Collaborates with Events <br>  |
 
-| **Images ArrayAdapter**|                   | 
+| **ImagesArrayAdapter**|                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view all the images on our app  |  |
 
-| **HashData ArrayAdapter**|                   | 
+| **HashDataArrayAdapter**|                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view the lists of our hashdate taken from our qr codes  | - Collaborates with Events <br>  |

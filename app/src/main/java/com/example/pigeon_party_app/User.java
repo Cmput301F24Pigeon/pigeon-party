@@ -1,6 +1,7 @@
 package com.example.pigeon_party_app;
 
 public class User {
+    //first testing with just name
     private String name;
     //private String email;
     //private String phoneNumber;             // optional

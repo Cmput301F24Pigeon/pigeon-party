@@ -2,27 +2,27 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBackground"
-    tools:context=".MainActivity">
+    android:background="#FF0000">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_section"
-        android:layout_width="412dp"
-        android:layout_height="111dp"
+        android:layout_width="408dp"
+        android:layout_height="95dp"
         android:background="@color/headingBackground"
-        app:layout_constraintBottom_toTopOf="@+id/event_list"
+        app:layout_constraintBottom_toTopOf="@+id/organizer_event_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/button_notifications"
+            android:id="@+id/button_organizer_notifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Notifications"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +30,6 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
             android:background="@color/headingBackground"
             android:fontFamily="@font/roboto_light"
             android:gravity="center"
@@ -39,62 +38,42 @@
             android:text="Pigeon Party"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_profile"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/button_notifications"
+            app:layout_constraintStart_toEndOf="@+id/button_organizer_notifications"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.551" />
 
-        <Button
-            android:id="@+id/button_profile"
+
+        <ImageView
+            android:id="@+id/button_facility_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintStart_toEndOf="@+id/title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_home_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/button_add_event"
+        android:id="@+id/button_add_organizer_event"
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_list"
+        app:layout_constraintTop_toBottomOf="@id/organizer_event_list"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
-    <ImageView
-        android:id="@+id/button_facility"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="24dp"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_list"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_home_button" />
-
     <ListView
-        android:id="@+id/event_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_constraintBottom_toTopOf="@id/button_add_event"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_section">
-
-    </ListView>
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/organizer_event_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/button_add_organizer_event"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_section" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

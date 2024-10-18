@@ -40,8 +40,10 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_profile"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/button_notifications"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.551" />
 
         <Button
             android:id="@+id/button_profile"
@@ -63,18 +65,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_list"
         app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <ImageView
+        android:id="@+id/button_facility"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="24dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_list"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_home_button" />
+
     <ListView
         android:id="@+id/event_list"
         android:layout_width="434dp"
         android:layout_height="610dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@id/button_add_event"
-        app:layout_constraintTop_toBottomOf="@id/top_section"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_section">
 
     </ListView>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

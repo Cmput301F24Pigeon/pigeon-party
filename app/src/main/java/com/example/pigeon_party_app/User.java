@@ -1,21 +1,25 @@
 package com.example.pigeon_party_app;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     //first testing with just name
     private String name;
-    //private String email;
-    //private String phoneNumber;             // optional
-    //private boolean entrant;
-    //private boolean organizer;
-    //private boolean admin;
+    private String email;
+    private String phoneNumber;             // optional
+    private boolean isEntrant;
+    private boolean isOrganizer;
+    private boolean isAdmin;
+    private String facilityAddress;
+    private String facilityName;
     // need to make an images for our profile
 
 
     public String getName() {
+
         return name;
     }
-
-   /* public String getEmail() {
+    public String getEmail() {
         return email;
     }
 
@@ -24,15 +28,19 @@ public class User {
     }
 
     public boolean isEntrant() {
-        return entrant;
+        return isEntrant;
     }
 
     public boolean isOrganizer() {
-        return organizer;
+        return isOrganizer;
+    }
+
+    public void setOrganizer(boolean organizer) {
+        isOrganizer = organizer;
     }
 
     public boolean isAdmin() {
-        return admin;
+        return isAdmin;
     }
-     */
+
 }

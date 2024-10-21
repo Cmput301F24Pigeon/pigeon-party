@@ -15,6 +15,14 @@ import android.view.ViewGroup;
  */
 public class OrganizerFragment extends Fragment {
 
+    /*if (user.isOrganizer == False){
+        open facility profile page
+        once they enter facility user.isOrganizer = True
+        cannot go to facility events page unless they create a facility profile
+
+     */
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

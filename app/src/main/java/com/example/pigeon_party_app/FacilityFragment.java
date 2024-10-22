@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user; //will need to add like current_user = phone id
+    private User current_user = new User("john doe", "johndoe@gmail.com"); //will need to add like current_user = phone id
 
 
     public FacilityFragment() {
@@ -55,8 +55,8 @@ public class FacilityFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-            current_user.setFacilityAddress(facilityAddress.getText().toString()); //might be incorrecy
-            current_user.setFacilityName(facilityName.getText().toString());
+            Facility facility = new Facility(facilityAddress.getText().toString(),facilityName.getText().toString());
+            current_user.setFacility(facility); //might be incorrecy
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()

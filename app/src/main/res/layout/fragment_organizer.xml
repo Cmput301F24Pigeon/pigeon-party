@@ -41,8 +41,8 @@
             android:text="Pigeon Party"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_facility_profile"
-            app:layout_constraintStart_toEndOf="@+id/button_organizer_notifications"
+            app:layout_constraintEnd_toEndOf="@+id/button_facility_profile"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton

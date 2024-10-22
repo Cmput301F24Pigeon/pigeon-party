@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/organizer_fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_section"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/headingBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/headingBackground"
+            android:fontFamily="@font/roboto_light"
+            android:gravity="center"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:text="Create Event"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/headingBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button_create_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/listBackground"
+        android:text="Create Event"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="6dp"
+        android:text="Event Title:"
+        app:layout_constraintBottom_toTopOf="@+id/text_upload"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_section" />
+
+    <EditText
+        android:id="@+id/edit_event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/text_upload"
+        app:layout_constraintStart_toEndOf="@+id/text_event_title"
+        app:layout_constraintTop_toBottomOf="@+id/top_section" />
+
+    <TextView
+        android:id="@+id/text_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="Upload Event Poster:"
+        app:layout_constraintBottom_toTopOf="@+id/text_date_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_title" />
+
+    <ImageButton
+        android:id="@+id/button_upload_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/appBackground"
+        android:src="@android:drawable/ic_menu_upload"
+        app:layout_constraintBottom_toTopOf="@+id/text_date_time"
+        app:layout_constraintStart_toEndOf="@+id/text_upload"
+        app:layout_constraintTop_toBottomOf="@+id/edit_event_title" />
+
+    <TextView
+        android:id="@+id/text_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date/Time: "
+        android:paddingLeft="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="235dp"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload"
+        app:layout_constraintBottom_toTopOf="@+id/text_event_details"/>
+
+    <TextView
+        android:id="@+id/text_event_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="Event Details: "
+        app:layout_constraintBottom_toTopOf="@+id/edit_event_details"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_date_time" />
+
+    <EditText
+        android:id="@+id/edit_event_details"
+        android:layout_width="255dp"
+        android:layout_height="88dp"
+        android:background="@android:color/white"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/text_waitlist_cap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_details" />
+
+    <TextView
+        android:id="@+id/text_waitlist_cap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="Waitlist Capacity (optional): "
+        app:layout_constraintBottom_toTopOf="@+id/switch_require_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_event_details"/>
+
+    <EditText
+        android:id="@+id/edit_waitlist_cap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/switch_require_location"
+        app:layout_constraintStart_toEndOf="@+id/text_waitlist_cap"
+        app:layout_constraintTop_toBottomOf="@+id/edit_event_details" />
+
+    <Switch
+        android:id="@+id/switch_require_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:text="Require Location Verification"
+        app:layout_constraintBottom_toTopOf="@+id/button_create_event"
+        app:layout_constraintTop_toBottomOf="@+id/text_waitlist_cap"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

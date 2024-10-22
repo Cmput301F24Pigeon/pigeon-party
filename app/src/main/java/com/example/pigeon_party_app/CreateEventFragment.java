@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import static java.lang.Integer.parseInt;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +65,6 @@ public class CreateEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
-
         //add an addimage button later
         Button createEventButton = view.findViewById(R.id.button_create_event);
         Button backButton = view.findViewById(R.id.button_back);
@@ -70,9 +72,10 @@ public class CreateEventFragment extends Fragment {
         //String eventAddress = user.facility.getFacilityAddress(); //need to figure this out still
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
-
+        Switch requiresLocation = view.findViewById(R.id.switch_require_location);
 
         createEventButton.setOnClickListener(v -> {
+            Event event = new Event(eventTitle.getText().toString(), null , parseInt(waitlistCap.getText().toString()), eventDetails.getText().toString(), null, requiresLocation.isChecked());
             //add event to list of events
             //turn event into qr code
         });

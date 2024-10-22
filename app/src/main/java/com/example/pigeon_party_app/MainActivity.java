@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        User currentUser = new User("John Doe", "johndoe@gmail.com");
+        User currentUser = new User("John Doe", "johndoe@gmail.com"); //need to pass user to different fragments
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
             if (currentUser.isOrganizer()){

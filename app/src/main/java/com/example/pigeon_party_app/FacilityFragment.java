@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user; //will need to add like current_user = phone id
+    private User current_user = new User("john doe", "johndoe@gmail.com"); //will need to add like current_user = phone id
 
 
     public FacilityFragment() {

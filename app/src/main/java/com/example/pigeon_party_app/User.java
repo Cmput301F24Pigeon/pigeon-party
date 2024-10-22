@@ -14,6 +14,9 @@ public class User implements Serializable {
     private String facilityAddress;
     private String facilityName;
     // need to make an images for our profile
+
+
+    //default user object doesnt need facility information
     public User(String name, String email) {
         this(name, email, null, false, true, null, null);
     }

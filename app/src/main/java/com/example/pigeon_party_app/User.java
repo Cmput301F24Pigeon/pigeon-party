@@ -9,11 +9,22 @@ public class User implements Serializable {
     private String phoneNumber;             // optional
     private boolean isEntrant;
     private boolean isOrganizer;
-    private boolean isAdmin;
+    //private boolean isAdmin;
     private String facilityAddress;
     private String facilityName;
     // need to make an images for our profile
-
+    public User(String name, String email) {
+        this(name, email, null, false, true, null, null);
+    }
+    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant, String facilityName, String facilityAddress) {
+        this.facilityName = facilityName;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.isOrganizer = isOrganizer;
+        this.isEntrant = isEntrant;
+        this.facilityAddress = facilityAddress;
+    }
 
     public String getName() {
 
@@ -39,8 +50,12 @@ public class User implements Serializable {
         isOrganizer = organizer;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public void setFacilityAddress(String facilityAddress) {
+        this.facilityAddress = facilityAddress;
+    }
+
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
     }
 
 }

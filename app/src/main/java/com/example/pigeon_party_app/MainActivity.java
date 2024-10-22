@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        User currentUser = new User();
+        User currentUser = new User("John Doe", "johndoe@gmail.com");
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
             if (currentUser.isOrganizer()){

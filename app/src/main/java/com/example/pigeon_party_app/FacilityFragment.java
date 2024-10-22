@@ -9,11 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user = new User(); //will need to add like current_user = phone id
+    private User current_user = new User("john doe", "johndoe@gmail.com"); //will need to add like current_user = phone id
 
 
     public FacilityFragment() {
@@ -47,12 +48,15 @@ public class FacilityFragment extends Fragment {
         //add an addimage button later
         Button confirmButton = view.findViewById(R.id.button_confirm);
         Button cancelButton = view.findViewById(R.id.button_cancel);
+        EditText facilityAddress = view.findViewById(R.id.add_facility_address);
+        EditText facilityName = view.findViewById(R.id.add_facility_name);
 
 
         confirmButton.setOnClickListener(v -> {
-
+            //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-
+            current_user.setFacilityAddress(facilityAddress.getText().toString());
+            current_user.setFacilityName(facilityName.getText().toString());
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()

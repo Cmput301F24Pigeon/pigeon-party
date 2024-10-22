@@ -15,7 +15,7 @@
         android:layout_gravity="center"/>
 
     <EditText
-        android:id="@+id/edit_facility_name"
+        android:id="@+id/add_facility_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -24,7 +24,7 @@
         android:layout_gravity="center"/>
 
     <EditText
-        android:id="@+id/edit_facility_address"
+        android:id="@+id/add_facility_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

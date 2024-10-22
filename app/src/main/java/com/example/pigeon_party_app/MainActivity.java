@@ -21,13 +21,23 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        User currentUser = new User("John Doe", "johndoe@gmail.com");
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new OrganizerFragment())
-                    .addToBackStack(null)
-                    .commit();
+            if (currentUser.isOrganizer()){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.organizer_fragment_container, new OrganizerFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+            else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.organizer_fragment_container, new FacilityFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
     }
 }

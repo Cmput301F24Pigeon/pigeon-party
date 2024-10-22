@@ -2,29 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_container"
+    android:id="@+id/organizer_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF0000">
+    android:background="@color/appBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_section"
-        android:layout_width="408dp"
-        android:layout_height="95dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:background="@color/headingBackground"
         app:layout_constraintBottom_toTopOf="@+id/organizer_event_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/button_organizer_notifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/headingBackground"
             android:text="Notifications"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/button_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.508"
+            app:srcCompat="@drawable/ic_notification_button" />
 
         <TextView
             android:id="@+id/title"
@@ -38,29 +41,38 @@
             android:text="Pigeon Party"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toStartOf="@+id/button_facility_profile"
             app:layout_constraintStart_toEndOf="@+id/button_organizer_notifications"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.551" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-        <ImageView
+        <ImageButton
             android:id="@+id/button_facility_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/headingBackground"
+            android:text="Facility Profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/title"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_home_button" />
 
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/headingBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/button_add_organizer_event"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:backgroundTint="@color/appBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

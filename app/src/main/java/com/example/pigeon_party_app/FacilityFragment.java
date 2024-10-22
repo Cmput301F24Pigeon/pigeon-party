@@ -60,7 +60,7 @@ public class FacilityFragment extends Fragment {
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.organizer_fragment_container, new OrganizerFragment())
+                    .replace(R.id.fragment_container, new OrganizerFragment())
                     .addToBackStack(null)
                     .commit();
         });

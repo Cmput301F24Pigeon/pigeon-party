@@ -31,14 +31,14 @@ public class MainActivity extends AppCompatActivity {
             if (currentUser.isOrganizer()){
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.organizer_fragment_container, new OrganizerFragment())
+                        .replace(R.id.fragment_container, new OrganizerFragment())
                         .addToBackStack(null)
                         .commit();
             }
             else {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.organizer_fragment_container, new FacilityFragment())
+                        .replace(R.id.fragment_container, new FacilityFragment())
                         .addToBackStack(null)
                         .commit();
             }

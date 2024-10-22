@@ -1,5 +1,6 @@
 package com.example.pigeon_party_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,11 +57,34 @@ public class CreateEventFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    User user = new User("john doe", "johndoe@gmail.com");
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_event, container, false);
+
+        //add an addimage button later
+        Button createEventButton = view.findViewById(R.id.button_create_event);
+        Button backButton = view.findViewById(R.id.button_back);
+        EditText eventTitle = view.findViewById(R.id.edit_event_title);
+        //String eventAddress = user.facility.getFacilityAddress(); //need to figure this out still
+        EditText eventDetails = view.findViewById(R.id.edit_event_details);
+        EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
+
+
+        createEventButton.setOnClickListener(v -> {
+            //add event to list of events
+            //turn event into qr code
+        });
+        backButton.setOnClickListener(v -> {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                .addToBackStack(null)
+                .commit();
+    });
+
+
+        return view;
     }
 }

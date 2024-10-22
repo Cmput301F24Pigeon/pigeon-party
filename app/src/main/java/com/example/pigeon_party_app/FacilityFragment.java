@@ -55,8 +55,8 @@ public class FacilityFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-            current_user.setFacilityAddress(facilityAddress.getText().toString()); //might be incorrecy
-            current_user.setFacilityName(facilityName.getText().toString());
+            Facility facility = new Facility(facilityAddress.getText().toString(),facilityName.getText().toString());
+            current_user.setFacility(facility); //might be incorrecy
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()

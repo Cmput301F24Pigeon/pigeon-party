@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083332735919",
+    "project_id": "pigeon-party-f46ea",
+    "storage_bucket": "pigeon-party-f46ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083332735919:android:2c08554393e3249c24755a",
+        "android_client_info": {
+          "package_name": "com.example.pigeon_party_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfW6IF_32gvspvORWW9rc6pkvvEtSvuFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,6 +9,7 @@ public class User implements Serializable {
     private String phoneNumber;             // optional
     private boolean isEntrant;
     private boolean isOrganizer;
+    private String id;
     //private boolean isAdmin;
     private String facilityAddress;
     private String facilityName;
@@ -30,6 +31,11 @@ public class User implements Serializable {
 
         return name;
     }
+
+    public String getId() {
+        return id;
+    }
+
     public String getEmail() {
         return email;
     }

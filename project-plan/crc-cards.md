@@ -24,7 +24,7 @@
 | - Allows us to view the lists of our users   | - Collaborates with User <br>  |
 
 
-| **EventArrayAdapter**|                   | 
+| **com.example.pigeon_party_app.EventArrayAdapter**|                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view the lists of our events  | - Collaborates with Events <br>  |

@@ -1,23 +1,31 @@
 package com.example.pigeon_party_app;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     //first testing with just name
+    private Facility facility;
     private String name;
     private String email;
-    private String phoneNumber;   // optional
-    private String role;
-//    private boolean entrant;
-//    private boolean organizer;
-//    private boolean admin;
-    //TODO: make images for our profile
+    private String phoneNumber;             // optional
+    private boolean isEntrant;
+    private boolean isOrganizer;
+    private String id;
+    //private boolean isAdmin;
+    // need to make an images for our profile
 
-    public User(String name, String email, String phoneNumber, String role) {
+
+    //default user object doesnt need facility information
+    public User(String name, String email) {
+        this(name, email, null, false, true);
+    }
+
+    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.role = role;
-
-        // Could put (if role == 'entrant') {this.entrant = true;} etc. for bool roles
+        this.isOrganizer = isOrganizer;
+        this.isEntrant = isEntrant;
     }
 
     public String getName() {
@@ -26,6 +34,11 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+    public String getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -42,26 +55,20 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    public boolean isEntrant() {
+        return isEntrant;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isOrganizer() {
+        return isOrganizer;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setOrganizer(boolean organizer) {
+        isOrganizer = organizer;
     }
 
-//    public boolean isEntrant() {
-//        return entrant;
-//    }
-//
-//    public boolean isOrganizer() {
-//        return organizer;
-//    }
-//
-//    public boolean isAdmin() {
-//        return admin;
-//    }
+    public void setFacility(Facility facility) {
+        this.facility = facility;
+    }
 
 }

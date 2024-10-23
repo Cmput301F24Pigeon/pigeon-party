@@ -1,6 +1,8 @@
 package com.example.pigeon_party_app;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -8,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import org.w3c.dom.Text;
 
 public class EventDetailsFragment extends AppCompatActivity {
     private TextView eventName;
@@ -39,5 +39,23 @@ public class EventDetailsFragment extends AppCompatActivity {
     eventLocation.setText("Location:\n" + getIntent().getStringExtra("eventLocation"));
     eventDetails.setText("Details:\n" + getIntent().getStringExtra("eventDetails"));
     eventCapacity.setText("Capacity:\n" + getIntent().getStringExtra("eventCapacity"));
+
+
+    }
+
+    public interface signUpListener {
+        void signUp(Boolean isSignedUp);
+    }
+
+    private signUpListener listener;
+
+    private void signUpButton(){
+        Button signUpButton = findViewById(R.id.signupButton);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.signUp(Boolean.TRUE);
+            }
+        });
     }
 }

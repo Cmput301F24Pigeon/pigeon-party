@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 /**
@@ -69,13 +70,23 @@ public class OrganizerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_organizer, container, false);
-       ImageView backButton = view.findViewById(R.id.button_back);
+        ImageButton newEventButton = view.findViewById(R.id.button_add_organizer_event);
+        newEventButton.setOnClickListener( v-> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new CreateEventFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             getActivity().finish();
         });
+
 
 
         return view;

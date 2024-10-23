@@ -107,6 +107,27 @@
         app:layout_constraintTop_toBottomOf="@+id/text_upload"
         app:layout_constraintBottom_toTopOf="@+id/text_event_details"/>
 
+    <EditText
+        android:id="@+id/edit_event_date"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintBottom_toTopOf="@+id/text_event_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
+    <EditText
+        android:id="@+id/edit_event_time"
+        android:layout_width="128dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:inputType="time"
+        app:layout_constraintBottom_toTopOf="@+id/text_event_details"
+        app:layout_constraintEnd_toStartOf="@+id/edit_event_date"
+        app:layout_constraintStart_toEndOf="@+id/text_date_time"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
     <TextView
         android:id="@+id/text_event_details"
         android:layout_width="wrap_content"
@@ -167,9 +188,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/text_waitlist_cap"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
 
 
 

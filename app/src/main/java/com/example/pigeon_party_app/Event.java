@@ -1,6 +1,7 @@
 package com.example.pigeon_party_app;
 
 public class Event {
+    private String eventId;
     private String title;
     private String dateTime;
     private int waitlistCapacity; // Optional, set to -1 if not applicable
@@ -11,7 +12,8 @@ public class Event {
     private boolean requiresLocation;// later add event image
 
     //for organizer events
-    public Event(String title, String dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+    public Event(String eventId, String title, String dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+        this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;

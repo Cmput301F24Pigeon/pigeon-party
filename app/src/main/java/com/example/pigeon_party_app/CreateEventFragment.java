@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -87,9 +88,17 @@ public class CreateEventFragment extends Fragment {
         qrCode = view.findViewById(R.id.eventQrcode);
 
         createEventButton.setOnClickListener(v -> {
-            String eventId = UUID.randomUUID().toString();
-            generateQRCode(eventId);
-
+            boolean isValid = true;
+            if (Validator.isEmpty(eventDetails, "Event details cannot be empty")) {
+                isValid = false;
+            }
+            if (Validator.isEmpty(eventTitle, "Event title cannot be empty")){
+                isValid = false;
+            }
+            if (isValid) {
+                String eventId = UUID.randomUUID().toString();
+                generateQRCode(eventId);
+            }
         });
 
             //Event event = new Event(eventId,eventTitle.getText().toString(), null , parseInt(waitlistCap.getText().toString()), eventDetails.getText().toString(), null, requiresLocation.isChecked());
@@ -110,7 +119,7 @@ public class CreateEventFragment extends Fragment {
     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
         // Generate a QR code with size 400x400 pixels
-        Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+        Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 500, 500);
         qrCode.setImageBitmap(bitmap); // Display the QR code in the ImageView
     } catch (WriterException e) {
         e.printStackTrace();

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -75,21 +77,40 @@ public class CreateEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         //add an addimage button later
         Button createEventButton = view.findViewById(R.id.button_create_event);
         ImageButton backButton = view.findViewById(R.id.button_back);
         EditText eventTitle = view.findViewById(R.id.edit_event_title);
-        //String eventAddress = user.facility.getFacilityAddress(); //need to figure this out still
+        EditText eventDate = view.findViewById(R.id.edit_event_date);
+        String eventAddress = ("hello");//current_user.facility.getFacilityAddress(); //need to figure this out still
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
         qrCode = view.findViewById(R.id.eventQrcode);
 
         createEventButton.setOnClickListener(v -> {
-            String eventId = UUID.randomUUID().toString();
-            generateQRCode(eventId);
-
+            boolean isValid = true;
+            if (Validator.isEmpty(eventDetails, "Event details cannot be empty")) {
+                isValid = false;
+            }
+            if (Validator.isEmpty(eventTitle, "Event title cannot be empty")){
+                isValid = false;
+            }
+            if (isValid) {
+                String eventId = UUID.randomUUID().toString();
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDate.getText().toString(),Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
+                generateQRCode(eventId);
+                db.collection("events").document(eventId)
+                        .set(event)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("FireStore", "Event successfully added");
+                        })
+                        .addOnFailureListener(e ->{
+                            Log.w("FireStore", "Error adding event", e);
+                        });
+            }
         });
 
             //Event event = new Event(eventId,eventTitle.getText().toString(), null , parseInt(waitlistCap.getText().toString()), eventDetails.getText().toString(), null, requiresLocation.isChecked());
@@ -110,7 +131,7 @@ public class CreateEventFragment extends Fragment {
     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
         // Generate a QR code with size 400x400 pixels
-        Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+        Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 500, 500);
         qrCode.setImageBitmap(bitmap); // Display the QR code in the ImageView
     } catch (WriterException e) {
         e.printStackTrace();

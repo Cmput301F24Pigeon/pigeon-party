@@ -1,5 +1,9 @@
 package com.example.pigeon_party_app;
 
+import com.google.type.DateTime;
+
+import java.time.LocalDateTime;
+
 public class Event {
     private String eventId;
     private String title;

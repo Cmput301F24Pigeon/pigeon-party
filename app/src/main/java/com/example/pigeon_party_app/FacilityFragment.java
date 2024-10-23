@@ -5,11 +5,14 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class FacilityFragment extends Fragment {
@@ -44,7 +47,7 @@ public class FacilityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_facility, container, false);
-
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         //add an addimage button later
         Button confirmButton = view.findViewById(R.id.button_confirm);
         Button cancelButton = view.findViewById(R.id.button_cancel);
@@ -55,8 +58,16 @@ public class FacilityFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-            Facility facility = new Facility(facilityAddress.getText().toString(),facilityName.getText().toString());
-            current_user.setFacility(facility); //might be incorrecy
+            Facility facility = new Facility(current_user,facilityAddress.getText().toString(),facilityName.getText().toString());
+            current_user.setFacility(facility);
+            db.collection("facilities").document(current_user.getId())
+                    .set(facility)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("FireStore", "Facility successfully added");
+                    })
+                    .addOnFailureListener(e ->{
+                        Log.w("FireStore", "Error adding facility", e);
+                    });
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()

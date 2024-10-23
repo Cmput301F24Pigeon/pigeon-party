@@ -7,16 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/appBackground">
 
-    <ImageView
-        android:id="@+id/eventQrcode"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_waitlist_cap"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_section"
         android:layout_width="match_parent"
@@ -117,6 +107,27 @@
         app:layout_constraintTop_toBottomOf="@+id/text_upload"
         app:layout_constraintBottom_toTopOf="@+id/text_event_details"/>
 
+    <EditText
+        android:id="@+id/edit_event_date"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintBottom_toTopOf="@+id/text_event_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
+    <EditText
+        android:id="@+id/edit_event_time"
+        android:layout_width="128dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:inputType="time"
+        app:layout_constraintBottom_toTopOf="@+id/text_event_details"
+        app:layout_constraintEnd_toStartOf="@+id/edit_event_date"
+        app:layout_constraintStart_toEndOf="@+id/text_date_time"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
     <TextView
         android:id="@+id/text_event_details"
         android:layout_width="wrap_content"
@@ -133,7 +144,7 @@
         android:layout_height="88dp"
         android:background="@android:color/white"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@+id/text_waitlist_cap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -168,9 +179,15 @@
         app:layout_constraintBottom_toTopOf="@+id/button_create_event"
         app:layout_constraintTop_toBottomOf="@+id/text_waitlist_cap"
         app:layout_constraintStart_toStartOf="parent" />
-
-
-
+    <ImageView
+        android:id="@+id/eventQrcode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_waitlist_cap"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

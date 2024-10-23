@@ -36,10 +36,13 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public String getEmail() {
     public String getId() {
         return id;
     }
+
+//    public void setId() {
+//        this.id = id;
+//    }
 
     public String getEmail() {
         return email;
@@ -55,8 +58,14 @@ public class User implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
     public boolean isEntrant() {
         return isEntrant;
+    }
+
+    public void setEntrant(boolean entrant) {
+        isEntrant = entrant;
     }
 
     public boolean isOrganizer() {

@@ -58,7 +58,7 @@ public class CreateEntrantProfileFragment extends DialogFragment {
                     String entrantName = createEntrantName.getText().toString();
                     String entrantEmail = createEntrantEmail.getText().toString();
                     String entrantPhone = createEntrantPhone.getText().toString();
-                    listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, "entrant"));
+                    listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, false, true));
                 })
                 .create();
     }

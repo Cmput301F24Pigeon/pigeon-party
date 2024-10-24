@@ -70,9 +70,11 @@
 
     <ImageButton
         android:id="@+id/button_add_organizer_event"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:backgroundTint="@color/appBackground"
+        android:scaleType="fitCenter"
+        app:tint="@color/listBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

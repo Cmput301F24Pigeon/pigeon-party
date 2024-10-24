@@ -2,6 +2,7 @@ package com.example.pigeon_party_app;
 
 import static java.lang.Integer.parseInt;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,6 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -67,29 +74,29 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
     private ImageView qrCode;
     User user = new User("john doe", "johndoe@gmail.com");
+
+    private DatePickerDialog datePickerDialog;
+    private ImageButton dateButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
+        dateButton = view.findViewById(R.id.button_date_picker);
         //add an addimage button later
         Button createEventButton = view.findViewById(R.id.button_create_event);
         ImageButton backButton = view.findViewById(R.id.button_back);
         EditText eventTitle = view.findViewById(R.id.edit_event_title);
-        EditText eventDate = view.findViewById(R.id.edit_event_date);
+
         String eventAddress = ("hello");//current_user.facility.getFacilityAddress(); //need to figure this out still
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
         qrCode = view.findViewById(R.id.eventQrcode);
-
+        //need to add error handling if watlistcap is empty
         createEventButton.setOnClickListener(v -> {
             boolean isValid = true;
             if (Validator.isEmpty(eventDetails, "Event details cannot be empty")) {
@@ -100,7 +107,16 @@ public class CreateEventFragment extends Fragment {
             }
             if (isValid) {
                 String eventId = UUID.randomUUID().toString();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDate.getText().toString(),Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
+                EditText dateEditText= view.findViewById(R.id.edit_event_date);
+                String dateString = dateEditText.getText().toString();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                Date date = null;
+                try {
+                    date = dateFormat.parse(dateString);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                Event event = new Event(eventId,eventTitle.getText().toString(),date,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
                 generateQRCode(eventId);
                 db.collection("events").document(eventId)
                         .set(event)
@@ -110,6 +126,16 @@ public class CreateEventFragment extends Fragment {
                         .addOnFailureListener(e ->{
                             Log.w("FireStore", "Error adding event", e);
                         });
+                createEventButton.setText("Finish");
+                createEventButton.setOnClickListener(v2->{
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                            .addToBackStack(null)
+                            .commit();
+
+                });
+
             }
         });
 
@@ -137,4 +163,6 @@ public class CreateEventFragment extends Fragment {
         e.printStackTrace();
     }
 }
+
+
 }

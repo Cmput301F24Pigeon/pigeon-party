@@ -14,4 +14,16 @@ public class Facility {
         //this.facilityPoster = facilityPoster;
         this.owner = owner;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
 }

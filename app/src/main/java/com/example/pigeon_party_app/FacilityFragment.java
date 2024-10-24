@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user = new User("john doe", "johndoe@gmail.com"); //will need to add like current_user = phone id
+    private User current_user = new User("john doe", "johndoe@gmail.com", null, true, true); //will need to add like current_user = phone id
 
 
     public FacilityFragment() {
@@ -60,7 +60,7 @@ public class FacilityFragment extends Fragment {
             current_user.setOrganizer(true);
             Facility facility = new Facility(current_user,facilityAddress.getText().toString(),facilityName.getText().toString());
             current_user.setFacility(facility);
-            db.collection("facilities").document(current_user.getId())
+            db.collection("facilities").document("usertest")
                     .set(facility)
                     .addOnSuccessListener(aVoid -> {
                         Log.d("FireStore", "Facility successfully added");

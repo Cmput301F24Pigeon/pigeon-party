@@ -73,7 +73,6 @@ public class CreateEventFragment extends Fragment {
         }
     }
     private ImageView qrCode;
-    User user = new User("john doe", "johndoe@gmail.com");
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

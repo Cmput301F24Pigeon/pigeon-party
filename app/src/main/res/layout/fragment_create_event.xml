@@ -109,24 +109,27 @@
 
     <EditText
         android:id="@+id/edit_event_date"
-        android:layout_width="140dp"
-        android:layout_height="45dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintBottom_toTopOf="@+id/text_event_details"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_upload" />
-
-    <EditText
-        android:id="@+id/edit_event_time"
         android:layout_width="128dp"
         android:layout_height="47dp"
         android:ems="10"
-        android:inputType="time"
+        android:inputType="date"
         app:layout_constraintBottom_toTopOf="@+id/text_event_details"
-        app:layout_constraintEnd_toStartOf="@+id/edit_event_date"
         app:layout_constraintStart_toEndOf="@+id/text_date_time"
         app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
+
+    <ImageButton
+        android:id="@+id/button_date_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_event_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintStart_toEndOf="@+id/edit_event_date"
+        app:layout_constraintTop_toBottomOf="@+id/text_upload"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_calendar_button"
+        android:onClick="openDatePicker"/>
 
     <TextView
         android:id="@+id/text_event_details"
@@ -179,6 +182,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_create_event"
         app:layout_constraintTop_toBottomOf="@+id/text_waitlist_cap"
         app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/eventQrcode"
         android:layout_width="match_parent"
@@ -186,10 +190,10 @@
         android:layout_centerHorizontal="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/text_waitlist_cap"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

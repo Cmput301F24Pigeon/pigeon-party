@@ -110,6 +110,16 @@ public class CreateEventFragment extends Fragment {
                         .addOnFailureListener(e ->{
                             Log.w("FireStore", "Error adding event", e);
                         });
+                createEventButton.setText("Finish");
+                createEventButton.setOnClickListener(v2->{
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                            .addToBackStack(null)
+                            .commit();
+
+                });
+
             }
         });
 

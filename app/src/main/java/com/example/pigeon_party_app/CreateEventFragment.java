@@ -39,7 +39,7 @@ import java.util.UUID;
  * create an instance of this fragment.
  */
 public class CreateEventFragment extends Fragment {
-
+    private User current_user = MainActivity.getCurrentUser();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -77,7 +77,7 @@ public class CreateEventFragment extends Fragment {
     }
     private ImageView qrCode;
     private View qrBackground;
-    User user = new User("john doe", "johndoe@gmail.com");
+    //User user = new User("john doe", "johndoe@gmail.com"); need to get actual user
 
     private DatePickerDialog datePickerDialog;
     private ImageButton dateButton;
@@ -93,7 +93,7 @@ public class CreateEventFragment extends Fragment {
         ImageButton backButton = view.findViewById(R.id.button_back);
         EditText eventTitle = view.findViewById(R.id.edit_event_title);
 
-        String eventAddress = ("hello");//current_user.facility.getFacilityAddress(); //need to figure this out still
+        String eventAddress = current_user.getFacility().getAddress();
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);

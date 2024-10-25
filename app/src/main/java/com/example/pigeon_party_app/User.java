@@ -70,4 +70,7 @@ public class User implements Serializable {
         this.facility = facility;
     }
 
+    public Facility getFacility() {
+        return facility;
+    }
 }

@@ -32,7 +32,7 @@ public class EditEntrantProfileFragment extends DialogFragment {
         EditText editEntrantEmail = view.findViewById(R.id.editText_edit_user_email);
         EditText editEntrantPhoneNumber = view.findViewById(R.id.editText_edit_user_phone);
 
-        editEntrantName.setText(entrant.getId());
+        editEntrantName.setText(entrant.getName());
         editEntrantEmail.setText(entrant.getEmail());
         editEntrantPhoneNumber.setText(entrant.getPhoneNumber());
 

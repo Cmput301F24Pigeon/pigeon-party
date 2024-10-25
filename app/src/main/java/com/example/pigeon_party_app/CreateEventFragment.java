@@ -81,6 +81,7 @@ public class CreateEventFragment extends Fragment {
 
     private DatePickerDialog datePickerDialog;
     private ImageButton dateButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

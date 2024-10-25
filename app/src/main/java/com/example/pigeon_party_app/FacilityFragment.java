@@ -54,7 +54,6 @@ public class FacilityFragment extends Fragment {
         EditText facilityAddress = view.findViewById(R.id.add_facility_address);
         EditText facilityName = view.findViewById(R.id.add_facility_name);
 
-
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
@@ -82,6 +81,8 @@ public class FacilityFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         });
+
+
 
         return view;
     }

@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -50,12 +51,36 @@ public class MainActivity extends AppCompatActivity {
         //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        Map<String, Object> Users = new HashMap<>();
+        Users.put("name", user.getName());
+        Users.put("email", user.getEmail());
+        Users.put("phoneNumber", user.getPhoneNumber());
+        Users.put("entrant", user.isEntrant());
+        Users.put("organizer", user.isOrganizer());
+        Users.put("facility", user.getFacility());
+
+        db.collection("user")
+                .add(Users)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>(){
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                        public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error adding document", e);
+                    }
+                });
+        /*
         db.collection("User").document(uniqueId).set(user).addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "Event successfully added");
                 })
                 .addOnFailureListener(e -> {
                     Log.w("FireStore", "Error adding event");
                 });
+                */
     }
 
 
@@ -68,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("was","yo", "780", true, false);
+        User user = new User("was","yo", "780", true, false, null);
         addUser(user);
 
 
@@ -80,10 +105,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         //firebase getting currentUser
+
         DocumentReference docRef = db.collection("User").document(uniqueId);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                currentUser = documentSnapshot.toObject(User.class);
+
+
+                /*
                 String name = documentSnapshot.getString("name");
                 String email = documentSnapshot.getString("email");
                 String phone = documentSnapshot.getString("phoneNumber");
@@ -91,28 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 Boolean organizer = documentSnapshot.getBoolean("organizer");
 
                 currentUser = new User(name, email, phone, entrant, organizer);
-            }
-        });
-        /*
-        DocumentReference userRef = db.collection("user").document(uniqueId);
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {if (task.isSuccessful()) {
-                Log.d("Firestore", String.format("User(%s, %s) fetched", uniqueId, "user"));
 
-                //User current_user = new User(doc.getString("name"), doc.getString("email"), doc.getString("number"), doc.getBoolean("entrant"), doc.getBoolean("organizer")  );;
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-
-                    }}
+                 */
             }
         });
 
-        */
 
 
         facilityButton = findViewById(R.id.button_facility);

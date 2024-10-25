@@ -13,14 +13,17 @@ public class User implements Serializable {
     //private boolean isAdmin;
     // need to make an images for our profile
 
+    public User(){
 
+    }
 
-    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant) {
+    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant, Facility facility) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.isOrganizer = isOrganizer;
         this.isEntrant = isEntrant;
+        this.facility = facility;
     }
 
 

@@ -32,6 +32,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     ImageView facilityButton;
@@ -53,10 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.w("FireStore", "Error adding event");
                 });
-    }
-
-    public interface UserCallback {
-        void onCallback(User user);
     }
 
 
@@ -81,15 +80,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         //firebase getting currentUser
-        DocumentReference docRef = db.collection("user").document(uniqueId);
+        DocumentReference docRef = db.collection("User").document(uniqueId);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User user = documentSnapshot.toObject(User.class);
-                currentUser = user;
+                String name = documentSnapshot.getString("name");
+                String email = documentSnapshot.getString("email");
+                String phone = documentSnapshot.getString("phoneNumber");
+                Boolean entrant = documentSnapshot.getBoolean("entrant");
+                Boolean organizer = documentSnapshot.getBoolean("organizer");
+
+                currentUser = new User(name, email, phone, entrant, organizer);
             }
         });
-
         /*
         DocumentReference userRef = db.collection("user").document(uniqueId);
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

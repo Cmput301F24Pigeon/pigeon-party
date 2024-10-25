@@ -76,6 +76,7 @@ public class CreateEventFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
     private ImageView qrCode;
+    private View qrBackground;
     User user = new User("john doe", "johndoe@gmail.com");
 
     private DatePickerDialog datePickerDialog;
@@ -96,6 +97,7 @@ public class CreateEventFragment extends Fragment {
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
         qrCode = view.findViewById(R.id.eventQrcode);
+        qrBackground= view.findViewById(R.id.background_view);
         //need to add error handling if watlistcap is empty
         createEventButton.setOnClickListener(v -> {
             boolean isValid = true;
@@ -117,6 +119,7 @@ public class CreateEventFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
                 Event event = new Event(eventId,eventTitle.getText().toString(),date,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
+                qrBackground.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
                 db.collection("events").document(eventId)
                         .set(event)

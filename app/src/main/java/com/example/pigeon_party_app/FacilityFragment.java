@@ -17,8 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user = new User("john doe", "johndoe@gmail.com", null, true, true); //will need to add like current_user = phone id
-
+    private User current_user = MainActivity.getCurrentUser();
 
     public FacilityFragment() {
         // Required empty public constructor
@@ -36,6 +35,7 @@ public class FacilityFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             current_user = (User) getArguments().getSerializable("user");

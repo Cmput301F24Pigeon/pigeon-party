@@ -76,10 +76,7 @@ public class CreateEventFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
     private ImageView qrCode;
-    User user = new User("john doe", "johndoe@gmail.com");
-
-    private DatePickerDialog datePickerDialog;
-    private ImageButton dateButton;
+  
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

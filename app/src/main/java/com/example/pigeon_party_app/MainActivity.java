@@ -11,7 +11,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
     ImageView facilityButton;
+    ImageView profileButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        User currentUser = new User("John Doe", "johndoe@gmail.com"); //need to pass user to different fragments
+        User currentUser = new User("John Doe", "johndoe@gmail.com", "123-456-7890", false, true); //need to pass user to different fragments
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
             if (currentUser.isOrganizer()){
@@ -43,5 +46,17 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         });
+
+        profileButton = findViewById(R.id.button_profile);
+        profileButton.setOnClickListener(v -> {
+            if (currentUser.isEntrant()){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
     }
 }

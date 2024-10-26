@@ -33,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Map<String, Object> Users = new HashMap<>();
+
         Users.put("name", user.getName());
         Users.put("email", user.getEmail());
         Users.put("phoneNumber", user.getPhoneNumber());
@@ -59,20 +61,15 @@ public class MainActivity extends AppCompatActivity {
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
 
-        db.collection("user")
-                .add(Users)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>(){
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("firebase", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
+        db.collection("user").document(uniqueId)
+                .set(Users)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FireStore", "Facility successfully added");
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                        public void onFailure(@NonNull Exception e) {
-                        Log.w("firebase", "Error adding document", e);
-                    }
+                .addOnFailureListener(e ->{
+                    Log.w("FireStore", "Error adding facility", e);
                 });
+
         /*
         db.collection("User").document(uniqueId).set(user).addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "Event successfully added");
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("was","yo", "780", true, false, null);
+        User user = new User("john","johndoe@gmail.com", "780", true, false, null);
         addUser(user);
 
 
@@ -105,24 +102,26 @@ public class MainActivity extends AppCompatActivity {
 
 
         //firebase getting currentUser
+        DocumentReference docRef = db.collection("user").document(uniqueId);
+        Log.w("FireStore", uniqueId);
 
-        DocumentReference docRef = db.collection("User").document(uniqueId);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 currentUser = documentSnapshot.toObject(User.class);
-
-
+                Log.w("FireStore", currentUser.getName());
                 /*
                 String name = documentSnapshot.getString("name");
                 String email = documentSnapshot.getString("email");
                 String phone = documentSnapshot.getString("phoneNumber");
                 Boolean entrant = documentSnapshot.getBoolean("entrant");
                 Boolean organizer = documentSnapshot.getBoolean("organizer");
-
-                currentUser = new User(name, email, phone, entrant, organizer);
+                Log.w("FireStore", "f123");
+                Facility facility = (Facility)documentSnapshot.get("facility");
+                currentUser = new User(name, email, phone, entrant, organizer,facility);
 
                  */
+
             }
         });
 

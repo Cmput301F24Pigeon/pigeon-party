@@ -1,9 +1,14 @@
 package com.example.pigeon_party_app;
 
+import com.google.type.DateTime;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+
 public class Event {
     private String eventId;
     private String title;
-    private String dateTime;
+    private Date dateTime;
     private int waitlistCapacity; // Optional, set to -1 if not applicable
     private String status;
     private String imageUrl;
@@ -12,7 +17,7 @@ public class Event {
     private boolean requiresLocation;// later add event image
 
     //for organizer events
-    public Event(String eventId, String title, String dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
@@ -25,7 +30,7 @@ public class Event {
     }
 
     //for entrant events
-    public Event(String title, String dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
+    public Event(String title, Date dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
         this.title = title;
         this.dateTime = dateTime;
         this.status = status;
@@ -40,7 +45,7 @@ public class Event {
         return title;
     }
 
-    public String getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 

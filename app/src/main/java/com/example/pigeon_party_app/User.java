@@ -10,23 +10,24 @@ public class User implements Serializable {
     private String phoneNumber;             // optional
     private boolean isEntrant;
     private boolean isOrganizer;
-    private String id;
     //private boolean isAdmin;
     // need to make an images for our profile
 
+    public User(){
 
-    //default user object doesnt need facility information
-    public User(String name, String email) {
-        this(name, email, null, false, true);
     }
 
-    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant) {
+    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant, Facility facility) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.isOrganizer = isOrganizer;
         this.isEntrant = isEntrant;
+        this.facility = facility;
     }
+
+
+
 
     public String getName() {
         return name;
@@ -35,14 +36,6 @@ public class User implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getId() {
-        return id;
-    }
-
-//    public void setId() {
-//        this.id = id;
-//    }
 
     public String getEmail() {
         return email;
@@ -80,4 +73,7 @@ public class User implements Serializable {
         this.facility = facility;
     }
 
+    public Facility getFacility() {
+        return facility;
+    }
 }

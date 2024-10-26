@@ -33,7 +33,7 @@ public class ViewEntrantProfileFragment extends Fragment {
         TextView entrantEmail = view.findViewById(R.id.textView_entrant_email);
         TextView entrantPhoneNumber = view.findViewById(R.id.textView_entrant_phone);
 
-        entrantName.setText(entrant.getId());
+        entrantName.setText(entrant.getName());
         entrantEmail.setText(entrant.getEmail());
         entrantPhoneNumber.setText(entrant.getPhoneNumber());
 

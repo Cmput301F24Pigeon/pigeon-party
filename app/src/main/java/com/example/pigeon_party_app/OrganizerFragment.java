@@ -71,6 +71,8 @@ public class OrganizerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_organizer, container, false);
         ImageButton newEventButton = view.findViewById(R.id.button_add_organizer_event);
+        ImageButton editFacilityButton = view.findViewById(R.id.button_facility_profile);
+
         newEventButton.setOnClickListener( v-> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -85,6 +87,14 @@ public class OrganizerFragment extends Fragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             getActivity().finish();
+        });
+
+        editFacilityButton.setOnClickListener( v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new EditFacilityFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
 

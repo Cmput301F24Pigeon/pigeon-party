@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class FacilityFragment extends Fragment {
 
     private User current_user = MainActivity.getCurrentUser();
-
+    private String uniqueId = MainActivity.getUniqueId();
     public FacilityFragment() {
         // Required empty public constructor
     }
@@ -63,6 +64,10 @@ public class FacilityFragment extends Fragment {
                     .set(facility)
                     .addOnSuccessListener(aVoid -> {
                         Log.d("FireStore", "Facility successfully added");
+                        db.collection("user").document(uniqueId)
+                                .update("facility", facility)
+                                .addOnSuccessListener(aVoid2 -> Log.d("Firestore", "User's facility successfully updated"))
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
                     })
                     .addOnFailureListener(e ->{
                         Log.w("FireStore", "Error adding facility", e);

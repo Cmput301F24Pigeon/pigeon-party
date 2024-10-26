@@ -38,7 +38,10 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
+
     ImageView facilityButton;
+    ImageView profileButton;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static User currentUser;
 
@@ -141,6 +144,17 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new FacilityFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        profileButton = findViewById(R.id.button_profile);
+        profileButton.setOnClickListener(v -> {
+            if (currentUser.isEntrant()){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
             }

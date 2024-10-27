@@ -5,17 +5,19 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class FacilityFragment extends Fragment {
 
-    private User current_user; //will need to add like current_user = phone id
-
+    private User current_user = MainActivity.getCurrentUser();
 
     public FacilityFragment() {
         // Required empty public constructor
@@ -33,6 +35,7 @@ public class FacilityFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             current_user = (User) getArguments().getSerializable("user");
@@ -44,23 +47,30 @@ public class FacilityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_facility, container, false);
-
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         //add an addimage button later
         Button confirmButton = view.findViewById(R.id.button_confirm);
         Button cancelButton = view.findViewById(R.id.button_cancel);
         EditText facilityAddress = view.findViewById(R.id.add_facility_address);
         EditText facilityName = view.findViewById(R.id.add_facility_name);
 
-
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-            current_user.setFacilityAddress(facilityAddress.getText().toString()); //might be incorrecy
-            current_user.setFacilityName(facilityName.getText().toString());
+            Facility facility = new Facility(current_user,facilityAddress.getText().toString(),facilityName.getText().toString());
+            current_user.setFacility(facility);
+            db.collection("facilities").document("usertest")
+                    .set(facility)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("FireStore", "Facility successfully added");
+                    })
+                    .addOnFailureListener(e ->{
+                        Log.w("FireStore", "Error adding facility", e);
+                    });
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.organizer_fragment_container, new OrganizerFragment())
+                    .replace(R.id.fragment_container, new OrganizerFragment())
                     .addToBackStack(null)
                     .commit();
         });
@@ -71,6 +81,8 @@ public class FacilityFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         });
+
+
 
         return view;
     }

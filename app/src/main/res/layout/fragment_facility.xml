@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="Facility Name"
+        android:hint="Facility Name"
         android:layout_gravity="center"/>
 
     <EditText
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="Facility Address"
+        android:hint="Facility Address"
         android:layout_gravity="center"/>
     <Button
         android:id="@+id/button_confirm"

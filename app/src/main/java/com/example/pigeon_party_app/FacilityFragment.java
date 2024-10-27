@@ -15,11 +15,14 @@ import android.widget.EditText;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class FacilityFragment extends Fragment {
 
     private User current_user = MainActivity.getCurrentUser();
-    private String uniqueId = MainActivity.getUniqueId();
+
     public FacilityFragment() {
         // Required empty public constructor
     }
@@ -48,6 +51,7 @@ public class FacilityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_facility, container, false);
+        String uniqueId = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //add an addimage button later
         Button confirmButton = view.findViewById(R.id.button_confirm);
@@ -58,20 +62,16 @@ public class FacilityFragment extends Fragment {
         confirmButton.setOnClickListener(v -> {
             //need to add validation functionality (ensure fields arent empty)
             current_user.setOrganizer(true);
-            Facility facility = new Facility(current_user,facilityAddress.getText().toString(),facilityName.getText().toString());
+            Facility facility = new Facility(uniqueId,facilityAddress.getText().toString(),facilityName.getText().toString());
             current_user.setFacility(facility);
-            db.collection("facilities").document("usertest")
-                    .set(facility)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("FireStore", "Facility successfully added");
-                        db.collection("user").document(uniqueId)
-                                .update("facility", facility)
-                                .addOnSuccessListener(aVoid2 -> Log.d("Firestore", "User's facility successfully updated"))
-                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
-                    })
-                    .addOnFailureListener(e ->{
-                        Log.w("FireStore", "Error adding facility", e);
-                    });
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("facility", facility);
+            updates.put("isOrganizer", true);
+            db.collection("user").document(uniqueId)
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()

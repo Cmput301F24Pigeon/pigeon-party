@@ -45,11 +45,11 @@ public class NotificationHelper
      * @param event
      */
     public void notifyUserIfChosen(User user, Event event) {
-        if (event.isChosen() && user.isEntrant()) {
+         if (event.isChosen() && user.isEntrant()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(android.R.drawable.ic_dialog_info)
                     .setContentTitle("Great news!")
-                    .setContentText("You have been chosen for " + event.getEventTitle() + "!")
+                   .setContentText("You have been chosen for " + event.getEventTitle() + "!")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

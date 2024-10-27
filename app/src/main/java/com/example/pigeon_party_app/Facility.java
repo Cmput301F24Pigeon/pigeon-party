@@ -5,17 +5,17 @@ import android.widget.ImageView;
 public class Facility {
     private String address;
     private String name;
-    private User owner;
+    private String ownerId;
     //private ImageView facilityPoster;
 
     public Facility(){
 
     }
-    public Facility(User owner, String address, String name) {
+    public Facility( String ownerId, String address, String name) {
         this.address = address;
         this.name = name;
         //this.facilityPoster = facilityPoster;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
     public void setName(String name) {
@@ -34,7 +34,7 @@ public class Facility {
         return name;
     }
 
-    public User getOwner() {
-        return owner;
+    public String getOwnerId() {
+        return ownerId;
     }
 }

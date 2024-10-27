@@ -41,9 +41,9 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     ImageView facilityButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private static User currentUser;
+    public static User currentUser;
 
-    // how to access in other classes
+
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public void addUser(User user) {
         //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
 
         Map<String, Object> Users = new HashMap<>();
 
@@ -90,8 +91,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("john","johndoe@gmail.com", "780", true, false, null);
+        User user = new User("john","johndoe@gmail.com", "780", false, true, null);
         addUser(user);
+
+        receiveCurrentUser();
+
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -101,29 +106,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //firebase getting currentUser
-        DocumentReference docRef = db.collection("user").document(uniqueId);
-        Log.w("FireStore", uniqueId);
 
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                currentUser = documentSnapshot.toObject(User.class);
-                Log.w("FireStore", currentUser.getName());
-                /*
-                String name = documentSnapshot.getString("name");
-                String email = documentSnapshot.getString("email");
-                String phone = documentSnapshot.getString("phoneNumber");
-                Boolean entrant = documentSnapshot.getBoolean("entrant");
-                Boolean organizer = documentSnapshot.getBoolean("organizer");
-                Log.w("FireStore", "f123");
-                Facility facility = (Facility)documentSnapshot.get("facility");
-                currentUser = new User(name, email, phone, entrant, organizer,facility);
-
-                 */
-
-            }
-        });
 
 
 
@@ -146,4 +129,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    public void receiveCurrentUser(){
+        String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        DocumentReference docRef = db.collection("user").document(uniqueId);
+
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+
+            }
+        });
+
+    }
+
 }

@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 
         User user = new User("john","johndoe@gmail.com", "780", false, true, null);
         addUser(user);
-
         receiveCurrentUser();
 
 
@@ -118,19 +117,23 @@ public class MainActivity extends AppCompatActivity {
 
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
-            if (currentUser.isOrganizer()){
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new OrganizerFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-            else {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new FacilityFragment())
-                        .addToBackStack(null)
-                        .commit();
+            if (MainActivity.currentUser != null) {
+                if (MainActivity.currentUser.isOrganizer()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new OrganizerFragment())
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new FacilityFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            } else {
+                // Handle the case where currentUser is null, e.g., show a toast or log an error
+                Log.e("MainActivity", "Current user is null. Cannot determine organizer status.");
             }
         });
 
@@ -139,12 +142,12 @@ public class MainActivity extends AppCompatActivity {
             if (currentUser.isEntrant()){
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        //.replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
             }
         });
-      
+
            // TEST NOTIFICATION
         // Create an Event where the entrant is chosen
         //Event event = new Event("Swimming Lessons", true);

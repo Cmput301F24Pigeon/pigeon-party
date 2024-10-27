@@ -21,9 +21,9 @@ public class ViewEntrantProfileFragment extends Fragment {
 
     public ViewEntrantProfileFragment() {}
 
-//    public ViewEntrantProfileFragment(User entrant) {
-//        this.entrant = entrant;
-//    }
+       public ViewEntrantProfileFragment(User entrant) {
+        this.entrant = entrant;
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class ViewEntrantProfileFragment extends Fragment {
         edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new EditEntrantProfileFragment().show(getFragmentManager(), "Edit Profile");
+                //new EditEntrantProfileFragment().show(getFragmentManager(), "Edit Profile");
             }
         });
 

@@ -71,6 +71,7 @@
         android:id="@+id/textView_entrant_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="10"
         app:layout_constraintBottom_toTopOf="@+id/textView_entrant_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -8,6 +8,9 @@ public class Facility {
     private User owner;
     //private ImageView facilityPoster;
 
+    public Facility(){
+
+    }
     public Facility(User owner, String address, String name) {
         this.address = address;
         this.name = name;

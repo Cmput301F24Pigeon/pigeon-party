@@ -8,8 +8,8 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String phoneNumber;             // optional
-    private boolean isEntrant;
-    private boolean isOrganizer;
+    private boolean entrant;
+    private boolean organizer;
     //private boolean isAdmin;
     // need to make an images for our profile
 
@@ -21,8 +21,8 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.isOrganizer = isOrganizer;
-        this.isEntrant = isEntrant;
+        this.organizer = isOrganizer;
+        this.entrant = isEntrant;
         this.facility = facility;
     }
 
@@ -54,19 +54,19 @@ public class User implements Serializable {
     }
 
     public boolean isEntrant() {
-        return isEntrant;
+        return entrant;
     }
 
-    public void setEntrant(boolean entrant) {
-        isEntrant = entrant;
+    public void setEntrant(boolean Entrant) {
+        entrant = Entrant;
     }
 
     public boolean isOrganizer() {
-        return isOrganizer;
+        return organizer;
     }
 
-    public void setOrganizer(boolean organizer) {
-        isOrganizer = organizer;
+    public void setOrganizer(boolean Organizer) {
+        organizer = Organizer;
     }
 
     public void setFacility(Facility facility) {

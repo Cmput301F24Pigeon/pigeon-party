@@ -1,6 +1,5 @@
 package com.example.pigeon_party_app;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 public class ViewEntrantProfileFragment extends Fragment {
@@ -21,12 +19,11 @@ public class ViewEntrantProfileFragment extends Fragment {
 
     public ViewEntrantProfileFragment() {}
 
-       public ViewEntrantProfileFragment(User entrant) {
+    public ViewEntrantProfileFragment(User entrant) {
         this.entrant = entrant;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_entrant_profile, container, false);
 
         TextView entrantName = view.findViewById(R.id.textView_entrant_name);
@@ -37,12 +34,13 @@ public class ViewEntrantProfileFragment extends Fragment {
         entrantEmail.setText(entrant.getEmail());
         entrantPhoneNumber.setText(entrant.getPhoneNumber());
 
-        final Button edit_button = view.findViewById(R.id.edit_entrant_profile_button);
-        edit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //new EditEntrantProfileFragment().show(getFragmentManager(), "Edit Profile");
-            }
+        Button edit_button = view.findViewById(R.id.edit_entrant_profile_button);
+        edit_button.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new EditEntrantProfileFragment(entrant))
+                    .addToBackStack(null)
+                    .commit();
         });
 
         ImageButton backButton = view.findViewById(R.id.button_back);

@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("john","johndoe@gmail.com", "780", false, true, null);
+        User user = new User("Jane","johndoe@gmail.com", "780", false, true, null);
         addUser(user);
         receiveCurrentUser();
 
@@ -139,10 +139,11 @@ public class MainActivity extends AppCompatActivity {
 
         profileButton = findViewById(R.id.button_profile);
         profileButton.setOnClickListener(v -> {
+            User currentUser = MainActivity.getCurrentUser();
             if (currentUser.isEntrant()){
                 getSupportFragmentManager()
                         .beginTransaction()
-                        //.replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
             }

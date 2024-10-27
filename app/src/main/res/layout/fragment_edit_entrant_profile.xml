@@ -15,31 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/headingBackground"
-            android:fontFamily="@font/roboto_light"
-            android:gravity="center"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:text="Pigeon Party"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/button_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/headingBackground"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_back_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
@@ -60,7 +35,7 @@
     <EditText
         android:id="@+id/editText_edit_user_email"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Email address"
         android:inputType="textEmailAddress"
@@ -72,7 +47,7 @@
     <EditText
         android:id="@+id/editText_edit_user_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Name"
         app:layout_constraintBottom_toTopOf="@+id/editText_edit_user_email"
@@ -82,22 +57,12 @@
     <EditText
         android:id="@+id/editText_edit_user_phone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="Phone number"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_edit_user_email" />
-
-    <Button
-        android:id="@+id/edit_user_profile_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_edit_user_phone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

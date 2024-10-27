@@ -35,12 +35,11 @@ public class ViewEntrantProfileFragment extends Fragment {
         entrantPhoneNumber.setText(entrant.getPhoneNumber());
 
         Button edit_button = view.findViewById(R.id.edit_entrant_profile_button);
-        edit_button.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new EditEntrantProfileFragment(entrant))
-                    .addToBackStack(null)
-                    .commit();
+        edit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new EditEntrantProfileFragment(entrant).show(getChildFragmentManager(), EditEntrantProfileFragment.TAG);
+            }
         });
 
         ImageButton backButton = view.findViewById(R.id.button_back);

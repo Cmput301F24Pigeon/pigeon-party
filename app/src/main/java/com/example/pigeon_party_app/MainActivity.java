@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView facilityButton;
     ImageView profileButton;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 
 
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Users.put("name", user.getName());
         Users.put("email", user.getEmail());
         Users.put("phoneNumber", user.getPhoneNumber());
+        Users.put("uniqueId", user.getUniqueId());
         Users.put("entrant", user.isEntrant());
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());

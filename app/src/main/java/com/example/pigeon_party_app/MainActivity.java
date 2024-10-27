@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
 
 import static java.lang.reflect.Array.get;
 
@@ -14,6 +16,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -159,6 +162,16 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         });
+      
+           // TEST NOTIFICATION
+        // Create an Event where the entrant is chosen
+        //Event event = new Event("Swimming Lessons", true);
+
+        // Create NotificationHelper instance
+        //NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
+
+        // Trigger notification for the current user if chosen
+        //notificationHelper.notifyUserIfChosen(currentUser, event);
 
     }
 }

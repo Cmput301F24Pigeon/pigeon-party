@@ -1,8 +1,5 @@
 package com.example.pigeon_party_app;
 
-import com.google.type.DateTime;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Event {
@@ -13,11 +10,11 @@ public class Event {
     private String status;
     private String imageUrl;
     private String details;
-    private String location;
+    private Facility facility;
     private boolean requiresLocation;// later add event image
 
     //for organizer events
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
@@ -25,18 +22,18 @@ public class Event {
         this.status = null; // No status for organizer events
         this.imageUrl = null; // No image for organizer events
         this.details = details;
-        this.location = location;
+        this.facility = facility;
         this.requiresLocation = requiresLocation;
     }
 
     //for entrant events
-    public Event(String title, Date dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
+    public Event(String title, Date dateTime, String status, String imageUrl, String details, Facility facility, boolean requiresLocation) {
         this.title = title;
         this.dateTime = dateTime;
         this.status = status;
         this.imageUrl = imageUrl;
         this.details = details;
-        this.location = location;
+        this.facility = facility;
         this.requiresLocation = requiresLocation;
         this.waitlistCapacity = -1; // No capacity for entrant events
     }
@@ -65,8 +62,8 @@ public class Event {
         return details;
     }
 
-    public String getLocation() {
-        return location;
+    public Facility getFacility() {
+        return facility;
     }
 
     public boolean requiresLocation() {

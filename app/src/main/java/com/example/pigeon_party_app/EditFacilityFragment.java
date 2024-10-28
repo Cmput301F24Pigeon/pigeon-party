@@ -4,14 +4,21 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.w3c.dom.Text;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +70,7 @@ public class EditFacilityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_edit_facility, container, false);
         EditText editFacilityName = view.findViewById(R.id.editText_edit_facility_name);
         EditText editFacilityAddress = view.findViewById(R.id.editText_edit_facility_address);
@@ -72,15 +79,33 @@ public class EditFacilityFragment extends Fragment {
         String currentFacilityName = current_user.getFacility().getName();
         editFacilityAddress.setText(currentFacilityAddress);
         editFacilityName.setText(currentFacilityName);
+        User current_user = MainActivity.getCurrentUser();
+        String uniqueId = current_user.getUniqueId();
 
         Button updateProfileButton = view.findViewById(R.id.edit_facility_button);
-
+        ImageButton backButton = view.findViewById(R.id.button_back);
         updateProfileButton.setOnClickListener(v->{
             currentFacility.setAddress(editFacilityAddress.getText().toString());
             currentFacility.setName(editFacilityName.getText().toString());
+            Map<String, Object> facilityUpdates = new HashMap<>();
+            facilityUpdates.put("facility.name", currentFacility.getName());
+            facilityUpdates.put("facility.address", currentFacility.getAddress());
+
+            db.collection("user").document(uniqueId)
+                    .update(facilityUpdates)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        backButton.setOnClickListener(v2 -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
                     .addToBackStack(null)
                     .commit();
         });

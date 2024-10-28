@@ -87,4 +87,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/text_facility_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name: "
+        app:layout_constraintBottom_toTopOf="@+id/editText_edit_facility_address"
+        app:layout_constraintEnd_toStartOf="@+id/editText_edit_facility_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editText_edit_facility_name" />
+
+    <TextView
+        android:id="@+id/text_facility_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address: "
+        app:layout_constraintBottom_toBottomOf="@+id/editText_edit_facility_address"
+        app:layout_constraintEnd_toStartOf="@+id/editText_edit_facility_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editText_edit_facility_address" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

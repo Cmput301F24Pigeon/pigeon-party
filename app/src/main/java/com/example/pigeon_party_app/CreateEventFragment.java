@@ -104,14 +104,7 @@ public class CreateEventFragment extends Fragment {
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
 
-                db.collection("events").document(eventId)
-                        .set(event)
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d("FireStore", "Event successfully added");
-                        })
-                        .addOnFailureListener(e ->{
-                            Log.w("FireStore", "Error adding event", e);
-                        });
+                addEvent(db, eventId,event);
 
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
@@ -191,6 +184,17 @@ public class CreateEventFragment extends Fragment {
         e.printStackTrace();
     }
 }
+
+    private void addEvent(FirebaseFirestore db, String eventId, Event event){
+        db.collection("events").document(eventId)
+                .set(event)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FireStore", "Event successfully added");
+                })
+                .addOnFailureListener(e ->{
+                    Log.w("FireStore", "Error adding event", e);
+                });
+    }
 
 
 }

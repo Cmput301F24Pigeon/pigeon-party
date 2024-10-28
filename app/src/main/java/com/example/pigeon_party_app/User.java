@@ -11,6 +11,10 @@ public class User {
     // need to make an images for our profile
 
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

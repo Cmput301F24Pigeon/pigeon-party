@@ -1,70 +1,72 @@
 package com.example.pigeon_party_app;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 
 public class Event {
-    private LocalDate date;
-    private LocalTime time;
+    private String title;
+    private String dateTime;
+    private int waitlistCapacity; // Optional, set to -1 if not applicable
+    private String status;
+    private String imageUrl;
     private String details;
-    private int capacity;
-    private String name;
     private String location;
+    private boolean requiresLocation;// later add event image
 
-    public Event(LocalDate date, LocalTime time, String details, int capacity, String name, String location) {
-        this.date = date;
-        this.time = time;
+    //for organizer events
+    public Event(String title, String dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+        this.title = title;
+        this.dateTime = dateTime;
+        this.waitlistCapacity = waitlistCapacity;
+        this.status = null; // No status for organizer events
+        this.imageUrl = null; // No image for organizer events
         this.details = details;
-        this.capacity = capacity;
-        this.name = name;
         this.location = location;
+        this.requiresLocation = requiresLocation;
     }
 
-    public LocalDate getDate() {
-        return date;
+    //for entrant events
+    public Event(String title, String dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
+        this.title = title;
+        this.dateTime = dateTime;
+        this.status = status;
+        this.imageUrl = imageUrl;
+        this.details = details;
+        this.location = location;
+        this.requiresLocation = requiresLocation;
+        this.waitlistCapacity = -1; // No capacity for entrant events
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public String getTitle() {
+        return title;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
+    public int getWaitlistCapacity() {
+        return waitlistCapacity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getDetails() {
         return details;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public boolean requiresLocation() {
+        return requiresLocation;
     }
 }

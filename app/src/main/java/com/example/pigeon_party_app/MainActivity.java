@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
-        User user = new User("John","johndoe@gmail.com", "780", uniqueId, false, true, null, true);
+        //uncomment if you don't have a user made
+        User user = new User("John","johndoe@gmail.com", "7802232", uniqueId, false, true, null);
         addUser(user);
         receiveCurrentUser();
 
@@ -185,8 +185,17 @@ public class MainActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                MainActivity.currentUser = (documentSnapshot.toObject(User.class));
 
+                if (documentSnapshot.exists()) {
+                    MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                }
+                else{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

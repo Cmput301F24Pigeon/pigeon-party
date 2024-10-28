@@ -84,8 +84,17 @@ public class EditFacilityFragment extends Fragment {
 
         Button updateProfileButton = view.findViewById(R.id.edit_facility_button);
         ImageButton backButton = view.findViewById(R.id.button_back);
-        updateProfileButton.setOnClickListener(v->{
-            currentFacility.setAddress(editFacilityAddress.getText().toString());
+
+        updateProfileButton.setOnClickListener(v-> {
+            boolean isValid = true;
+            if (Validator.isEmpty(editFacilityAddress, "Your facility must have an address.")) {
+                isValid = false;
+            }
+            if (Validator.isEmpty(editFacilityName, "Your facility must have a name.")) {
+                isValid = false;
+            }
+            if (isValid){
+                currentFacility.setAddress(editFacilityAddress.getText().toString());
             currentFacility.setName(editFacilityName.getText().toString());
             Map<String, Object> facilityUpdates = new HashMap<>();
             facilityUpdates.put("facility.name", currentFacility.getName());
@@ -100,6 +109,7 @@ public class EditFacilityFragment extends Fragment {
                     .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
                     .addToBackStack(null)
                     .commit();
+        }
         });
 
         backButton.setOnClickListener(v2 -> {

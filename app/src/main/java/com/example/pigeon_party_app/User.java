@@ -28,9 +28,6 @@ public class User implements Serializable {
         this.facility = facility;
     }
 
-
-
-
     public String getName() {
         return name;
     }

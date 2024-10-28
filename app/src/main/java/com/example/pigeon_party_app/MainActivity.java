@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView facilityButton;
     ImageView profileButton;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 
 
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Users.put("name", user.getName());
         Users.put("email", user.getEmail());
         Users.put("phoneNumber", user.getPhoneNumber());
+        Users.put("uniqueId", user.getUniqueId());
         Users.put("entrant", user.isEntrant());
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
@@ -97,10 +98,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("john","johndoe@gmail.com", "780", false, true, null);
+        User user = new User("Jane","johndoe@gmail.com", "780", uniqueId, false, true, null);
         addUser(user);
         receiveCurrentUser();
-
 
 
 
@@ -139,10 +139,11 @@ public class MainActivity extends AppCompatActivity {
 
         profileButton = findViewById(R.id.button_profile);
         profileButton.setOnClickListener(v -> {
+            User currentUser = MainActivity.getCurrentUser();
             if (currentUser.isEntrant()){
                 getSupportFragmentManager()
                         .beginTransaction()
-                        //.replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
             }

@@ -8,6 +8,7 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String phoneNumber;             // optional
+    private String uniqueId;
     private boolean entrant;
     private boolean organizer;
     //private boolean isAdmin;
@@ -17,10 +18,11 @@ public class User implements Serializable {
 
     }
 
-    public User(String name, String email, String phoneNumber, boolean isOrganizer, boolean isEntrant, Facility facility) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.uniqueId = uniqueId;
         this.organizer = isOrganizer;
         this.entrant = isEntrant;
         this.facility = facility;
@@ -51,6 +53,14 @@ public class User implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public boolean isEntrant() {

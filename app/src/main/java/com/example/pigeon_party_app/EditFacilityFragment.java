@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
@@ -74,13 +75,21 @@ public class EditFacilityFragment extends Fragment {
         editFacilityName.setText(currentFacilityName);
 
         Button updateProfileButton = view.findViewById(R.id.edit_facility_button);
-
+        ImageButton backButton = view.findViewById(R.id.button_back);
         updateProfileButton.setOnClickListener(v->{
             currentFacility.setAddress(editFacilityAddress.getText().toString());
             currentFacility.setName(editFacilityName.getText().toString());
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        backButton.setOnClickListener(v2 -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
                     .addToBackStack(null)
                     .commit();
         });

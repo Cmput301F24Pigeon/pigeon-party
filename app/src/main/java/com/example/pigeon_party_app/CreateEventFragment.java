@@ -3,6 +3,7 @@ package com.example.pigeon_party_app;
 import static java.lang.Integer.parseInt;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -29,58 +30,30 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreateEventFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CreateEventFragment extends Fragment {
     private User current_user = MainActivity.getCurrentUser();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private Calendar selectedDateTime = Calendar.getInstance();
+    private ImageView qrCode;
+    private ImageButton dateButton;
+    private View qrBackground;
+    private TextView eventCreatedMessage;
+    private EditText dateText;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public CreateEventFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateEventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateEventFragment newInstance(String param1, String param2) {
-        CreateEventFragment fragment = new CreateEventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-    private ImageView qrCode;
-    private View qrBackground;
     //User user = new User("john doe", "johndoe@gmail.com"); need to get actual user
 
     private DatePickerDialog datePickerDialog;
-    private ImageButton dateButton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,20 +61,29 @@ public class CreateEventFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         dateButton = view.findViewById(R.id.button_date_picker);
+        dateText = view.findViewById(R.id.text_event_date);
+
         //add an addimage button later
         Button createEventButton = view.findViewById(R.id.button_create_event);
         ImageButton backButton = view.findViewById(R.id.button_back);
         EditText eventTitle = view.findViewById(R.id.edit_event_title);
-
         String eventAddress = current_user.getFacility().getAddress();
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
         qrCode = view.findViewById(R.id.eventQrcode);
         qrBackground= view.findViewById(R.id.background_view);
-        //need to add error handling if watlistcap is empty
+        eventCreatedMessage = view.findViewById(R.id.text_event_created);
+
+        dateButton.setOnClickListener(v -> showDateTimePicker());
+
+
+
         createEventButton.setOnClickListener(v -> {
             boolean isValid = true;
+            if (Validator.isEmpty(dateText, "Please select a date and time.")) {
+                isValid = false;
+            }
             if (Validator.isEmpty(eventDetails, "Event details cannot be empty")) {
                 isValid = false;
             }
@@ -110,18 +92,18 @@ public class CreateEventFragment extends Fragment {
             }
             if (isValid) {
                 String eventId = UUID.randomUUID().toString();
-                EditText dateEditText= view.findViewById(R.id.edit_event_date);
-                String dateString = dateEditText.getText().toString();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Date date = null;
-                try {
-                    date = dateFormat.parse(dateString);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
+
+
+
+                if (waitlistCap.getText().toString().isEmpty()){
+                    waitlistCap.setText("-1");
                 }
-                Event event = new Event(eventId,eventTitle.getText().toString(),date,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
+                Date eventDateTime = selectedDateTime.getTime();
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
                 qrBackground.setVisibility(View.VISIBLE);
+                eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
+
                 db.collection("events").document(eventId)
                         .set(event)
                         .addOnSuccessListener(aVoid -> {
@@ -130,6 +112,7 @@ public class CreateEventFragment extends Fragment {
                         .addOnFailureListener(e ->{
                             Log.w("FireStore", "Error adding event", e);
                         });
+
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
                     getActivity().getSupportFragmentManager()
@@ -143,13 +126,10 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-            //Event event = new Event(eventId,eventTitle.getText().toString(), null , parseInt(waitlistCap.getText().toString()), eventDetails.getText().toString(), null, requiresLocation.isChecked());
-            //turn event id into qr code
-
         backButton.setOnClickListener(v -> {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                .replace(R.id.fragment_container, new OrganizerFragment())
                 .addToBackStack(null)
                 .commit();
     });
@@ -157,6 +137,50 @@ public class CreateEventFragment extends Fragment {
 
         return view;
     }
+    private void showDateTimePicker(){
+        showDatePicker();
+    }
+
+    private void displaySelectedDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        String dateString = dateFormat.format(selectedDateTime.getTime());
+        dateText.setText(dateString);
+    }
+
+    private void showDatePicker(){
+        int year = selectedDateTime.get(Calendar.YEAR);
+        int month = selectedDateTime.get(Calendar.MONTH);
+        int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    selectedDateTime.set(selectedYear, selectedMonth, selectedDay);
+                    showTimePicker();
+                },
+                year, month, day
+        );
+        datePickerDialog.show();
+    }
+
+    private void showTimePicker() {
+        int hour = selectedDateTime.get(Calendar.HOUR_OF_DAY);
+        int minute = selectedDateTime.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                getContext(),
+                (view, selectedHour, selectedMinute) -> {
+                    selectedDateTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                    selectedDateTime.set(Calendar.MINUTE, selectedMinute);
+                    displaySelectedDateTime();
+                },
+                hour, minute, true
+        );
+        timePickerDialog.show();
+    }
+
+
+    //possibly add option to save qr code to phone (implement later)
     private void generateQRCode(String text){
     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {

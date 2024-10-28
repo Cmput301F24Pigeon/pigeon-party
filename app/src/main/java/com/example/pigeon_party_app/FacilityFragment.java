@@ -60,24 +60,33 @@ public class FacilityFragment extends Fragment {
         EditText facilityName = view.findViewById(R.id.add_facility_name);
 
         confirmButton.setOnClickListener(v -> {
-            //need to add validation functionality (ensure fields arent empty)
-            current_user.setOrganizer(true);
-            Facility facility = new Facility(uniqueId,facilityAddress.getText().toString(),facilityName.getText().toString());
-            current_user.setFacility(facility);
+            boolean isValid = true;
+            if (Validator.isEmpty(facilityAddress, "Your facility must have an address.")) {
+                isValid = false;
+            }
+            if (Validator.isEmpty(facilityName, "Your facility must have a name.")) {
+                isValid = false;
+            }
+            if (isValid) {
+                //need to add validation functionality (ensure fields arent empty)
+                current_user.setOrganizer(true);
+                Facility facility = new Facility(uniqueId, facilityAddress.getText().toString(), facilityName.getText().toString());
+                current_user.setFacility(facility);
 
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("facility", facility);
-            updates.put("isOrganizer", true);
-            db.collection("user").document(uniqueId)
-                    .update(updates)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("facility", facility);
+                updates.put("isOrganizer", true);
+                db.collection("user").document(uniqueId)
+                        .update(updates)
+                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                        .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
 
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new OrganizerFragment())
-                    .addToBackStack(null)
-                    .commit();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new OrganizerFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         cancelButton.setOnClickListener(v -> {

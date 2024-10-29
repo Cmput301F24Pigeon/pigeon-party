@@ -18,7 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Fragment which prompts the user for initial facility creation in order to create events
+ */
 public class FacilityFragment extends Fragment {
 
     private User current_user = MainActivity.getCurrentUser();
@@ -36,16 +38,18 @@ public class FacilityFragment extends Fragment {
         return fragment;
     }*/
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            current_user = (User) getArguments().getSerializable("user");
-        }
-    }
-
+    /**
+     * Initiates the fragment and manages the users controls within the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view The view of the fragment which contains all of the workings of the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

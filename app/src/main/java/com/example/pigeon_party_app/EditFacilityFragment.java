@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditFacilityFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * The fragment which allows the user to manage their facility
  */
 public class EditFacilityFragment extends Fragment {
     private User current_user = MainActivity.getCurrentUser();
@@ -33,7 +31,18 @@ public class EditFacilityFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view The view of the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

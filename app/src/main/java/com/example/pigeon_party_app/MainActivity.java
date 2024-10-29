@@ -11,12 +11,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements EventDetailsFragment.signUpListener{
     Event event;
     User user;
     ArrayList<User> userList;
     ArrayAdapter<User> userAdapter;
+    Date d1 = new Date();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements EventDetailsFragm
             return insets;
         });
         user = new User("Paul Blart");
-        event = new Event("Dodge ball Tournament", "October 20th 5:00PM", 50, "A Dodge ball tournament", "Gym", Boolean.FALSE);
+        event = new Event("beans", "Dodge ball Tournament", d1, 50, "A Dodge ball tournament", "Gym", Boolean.FALSE);
         Intent intent = new Intent(MainActivity.this, EventDetailsFragment.class);
         intent.putExtra("eventName", event.getTitle());
         intent.putExtra("eventDateTime", event.getDateTime());

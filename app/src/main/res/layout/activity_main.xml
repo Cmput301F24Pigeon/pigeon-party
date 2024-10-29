@@ -62,14 +62,17 @@
 
     <ImageButton
         android:id="@+id/button_add_event"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:backgroundTint="@color/appBackground"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_list"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@android:drawable/ic_menu_add"
+        app:tint="#01A282" />
 
     <ImageButton
         android:id="@+id/button_facility"
@@ -79,8 +82,6 @@
         android:backgroundTint="@color/appBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_list"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_home_button" />
 
     <ListView

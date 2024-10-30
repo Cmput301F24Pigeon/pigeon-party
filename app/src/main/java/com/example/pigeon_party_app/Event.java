@@ -77,4 +77,16 @@ public class Event {
     public boolean requiresLocation() {
         return requiresLocation;
     }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public ArrayList<User> getConfirmedList() {
+        return confirmedList;
+    }
+
+    public ArrayList<User> getWaitlist() {
+        return waitlist;
+    }
 }

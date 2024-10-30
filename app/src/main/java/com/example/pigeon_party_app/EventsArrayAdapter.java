@@ -34,15 +34,15 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         }
 
         Event event = events.get(position);
-        /*
+
         TextView date = view.findViewById(R.id.date);
         TextView eventName = view.findViewById(R.id.eventName);
-        TextView status = view.findViewById(R.id.status);
+       // TextView status = view.findViewById(R.id.status);
         //address.setText(event.getFacility.getAddress);
-        date.setText(event.getDateTime());
+        date.setText(event.getDateTime().toString());
         eventName.setText(event.getTitle());
         //date.setText(event.getStatus());
-        */
+
         return view;
 
 

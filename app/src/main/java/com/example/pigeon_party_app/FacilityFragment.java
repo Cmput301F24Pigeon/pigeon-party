@@ -79,7 +79,7 @@ public class FacilityFragment extends Fragment {
 
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("facility", facility);
-                updates.put("isOrganizer", true);
+                updates.put("organizer", true);
                 db.collection("user").document(uniqueId)
                         .update(updates)
                         .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))

@@ -44,13 +44,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView facilityButton;
-    ImageView profileButton;
-    ImageView notificationButton;
-
     private ImageView facilityButton;
     private ImageView profileButton;
+    private ImageView notificationButton;
     private ImageButton addEventButton;
+
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 

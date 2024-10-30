@@ -5,9 +5,12 @@ import android.content.Context;
 
 import static java.lang.reflect.Array.get;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +38,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.Currency;
 import java.util.HashMap;
@@ -43,9 +48,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
-    ImageView facilityButton;
-    ImageView profileButton;
-
+    private ImageView facilityButton;
+    private ImageView profileButton;
+    private ImageButton addEventButton;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 
@@ -156,8 +161,10 @@ public class MainActivity extends AppCompatActivity{
         //NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
 
         // Trigger notification for the current user if chosen
-        //notificationHelper.notifyUserIfChosen(currentUser, event);
+        // notificationHelper.notifyUserIfChosen(currentUser, event);
 
+        addEventButton = findViewById(R.id.button_add_event);
+        addEventButton.setOnClickListener(v->startQRScanner());
     }
 
     public void receiveCurrentUser(){
@@ -174,5 +181,31 @@ public class MainActivity extends AppCompatActivity{
         });
 
     }
+
+    private void startQRScanner() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setPrompt("Scan the event QR code");
+        integrator.setOrientationLocked(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.initiateScan();
+    }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            String qrContent = result.getContents();
+            //showEventDetailsFragment(qrContent);
+        }
+    }
+    //uncomment once eventdetails can accept eventid
+    /*private void showEventDetailsFragment(String eventId) {
+        EventDetailsFragment fragment = EventDetailsFragment.newInstance(eventId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }*/
+
 
 }

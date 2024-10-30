@@ -40,21 +40,15 @@ public class EventDetailsFragment extends AppCompatActivity {
     eventDetails.setText("Details:\n" + getIntent().getStringExtra("eventDetails"));
     eventCapacity.setText("Capacity:\n" + getIntent().getStringExtra("eventCapacity"));
 
-
+    signUpButton();
     }
-
-    public interface signUpListener {
-        void signUp(Boolean isSignedUp);
-    }
-
-    private signUpListener listener;
 
     private void signUpButton(){
         Button signUpButton = findViewById(R.id.signupButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.signUp(Boolean.TRUE);
+
             }
         });
     }

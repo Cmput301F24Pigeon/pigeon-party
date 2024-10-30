@@ -3,6 +3,7 @@ package com.example.pigeon_party_app;
 import com.google.type.DateTime;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
@@ -15,9 +16,11 @@ public class Event {
     private String details;
     private String location;
     private boolean requiresLocation;// later add event image
+    private ArrayList<User>  waitlist;
+    private ArrayList<User> confirmedList;
 
     //for organizer events
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation, ArrayList<User> waitlist, ArrayList<User> confirmedList) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
@@ -27,6 +30,8 @@ public class Event {
         this.details = details;
         this.location = location;
         this.requiresLocation = requiresLocation;
+        this.waitlist = waitlist;
+        this.confirmedList = confirmedList;
     }
 
     //for entrant events

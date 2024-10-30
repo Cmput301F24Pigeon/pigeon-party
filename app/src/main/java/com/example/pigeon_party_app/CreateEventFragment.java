@@ -30,6 +30,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -99,7 +100,9 @@ public class CreateEventFragment extends Fragment {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked());
+                ArrayList<User> waitlist = new ArrayList<>();
+                ArrayList<User> confirmedList = new ArrayList<>();
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked(), waitlist, confirmedList);
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);

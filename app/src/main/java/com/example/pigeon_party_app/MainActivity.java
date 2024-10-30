@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     ImageView facilityButton;
     ImageView profileButton;
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 });
                 */
     }
-
 
 
     @Override

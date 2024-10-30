@@ -21,52 +21,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditFacilityFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * The fragment which allows the user to manage their facility
  */
 public class EditFacilityFragment extends Fragment {
     private User current_user = MainActivity.getCurrentUser();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean isEditing;
 
     public EditFacilityFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditFacilityFragment.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view The view of the fragment
      */
-    // TODO: Rename and change types and number of parameters
-    public static EditFacilityFragment newInstance(String param1, String param2) {
-        EditFacilityFragment fragment = new EditFacilityFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,31 +61,51 @@ public class EditFacilityFragment extends Fragment {
         Button updateProfileButton = view.findViewById(R.id.edit_facility_button);
         ImageButton backButton = view.findViewById(R.id.button_back);
 
-        updateProfileButton.setOnClickListener(v-> {
-            boolean isValid = true;
-            if (Validator.isEmpty(editFacilityAddress, "Your facility must have an address.")) {
-                isValid = false;
-            }
-            if (Validator.isEmpty(editFacilityName, "Your facility must have a name.")) {
-                isValid = false;
-            }
-            if (isValid){
-                currentFacility.setAddress(editFacilityAddress.getText().toString());
-            currentFacility.setName(editFacilityName.getText().toString());
-            Map<String, Object> facilityUpdates = new HashMap<>();
-            facilityUpdates.put("facility.name", currentFacility.getName());
-            facilityUpdates.put("facility.address", currentFacility.getAddress());
 
-            db.collection("user").document(uniqueId)
-                    .update(facilityUpdates)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
-                    .addToBackStack(null)
-                    .commit();
-        }
+        updateProfileButton.setOnClickListener(v -> {
+            if (!isEditing) {
+                // Switch to editing mode
+                editFacilityAddress.setFocusableInTouchMode(true);
+                editFacilityAddress.setFocusable(true);
+                editFacilityName.setFocusableInTouchMode(true);
+                editFacilityName.setFocusable(true);
+
+                updateProfileButton.setText("Confirm");
+                isEditing = true; // Update state to editing
+            } else {
+                // Confirm changes
+                boolean isValid = true;
+                if (Validator.isEmpty(editFacilityAddress, "Your facility must have an address.")) {
+                    isValid = false;
+                }
+                if (Validator.isEmpty(editFacilityName, "Your facility must have a name.")) {
+                    isValid = false;
+                }
+                if (isValid) {
+                    currentFacility.setAddress(editFacilityAddress.getText().toString());
+                    currentFacility.setName(editFacilityName.getText().toString());
+                    Map<String, Object> facilityUpdates = new HashMap<>();
+                    facilityUpdates.put("facility.name", currentFacility.getName());
+                    facilityUpdates.put("facility.address", currentFacility.getAddress());
+
+                    db.collection("user").document(uniqueId)
+                            .update(facilityUpdates)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firestore", "User's facility successfully updated");
+
+                                // Change the button text back to "Edit Facility" after a successful update
+                                updateProfileButton.setText("Edit Facility");
+
+                                // Disable editing after confirming
+                                editFacilityAddress.setFocusable(false);
+                                editFacilityAddress.setFocusableInTouchMode(false);
+                                editFacilityName.setFocusable(false);
+                                editFacilityName.setFocusableInTouchMode(false);
+                                isEditing = false; // Reset state
+                            })
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+                }
+            }
         });
 
         backButton.setOnClickListener(v2 -> {

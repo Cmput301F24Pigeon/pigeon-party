@@ -1,8 +1,16 @@
 package com.example.pigeon_party_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
+
+import static java.lang.reflect.Array.get;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 
@@ -13,11 +21,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView profileButton;
     ImageView notificationButton;
 
+    private ImageView facilityButton;
+    private ImageView profileButton;
+    private ImageButton addEventButton;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 
@@ -150,8 +173,10 @@ public class MainActivity extends AppCompatActivity {
         //NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
 
         // Trigger notification for the current user if chosen
-        //notificationHelper.notifyUserIfChosen(currentUser, event);
+        // notificationHelper.notifyUserIfChosen(currentUser, event);
 
+        addEventButton = findViewById(R.id.button_add_event);
+        addEventButton.setOnClickListener(v->startQRScanner());
     }
 
     public void receiveCurrentUser(){
@@ -168,5 +193,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void startQRScanner() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setPrompt("Scan the event QR code");
+        integrator.setOrientationLocked(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.initiateScan();
+    }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            String qrContent = result.getContents();
+            //showEventDetailsFragment(qrContent);
+        }
+    }
+    //uncomment once eventdetails can accept eventid
+    /*private void showEventDetailsFragment(String eventId) {
+        EventDetailsFragment fragment = EventDetailsFragment.newInstance(eventId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }*/
+
 
 }

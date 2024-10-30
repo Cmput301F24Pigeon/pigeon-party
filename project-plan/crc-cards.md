@@ -4,7 +4,7 @@
 | **User**              |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Has a profile<br><br>**Role as Entrant:** <br> - Sign up for events <br> - View event details <br> - Confirm participation <br> <br> **Role as Organizer:** <br> - Create and publish events <br> - Upload event images <br> - Initiate lottery <br> <br> **Role as Admin:** <br> - Manage app data - Will also allow users to put in their names email and profile photo| - Collaborates with Event <br>  - Collaborates with Facility|
+| - Has a profile<br><br>**Role as Entrant:** <br> - Sign up for events <br> - View event details <br> - Confirm participation <br> <br> **Role as Organizer:** <br> - Create and publish events <br> - Upload event images <br> - Initiate lottery <br>   |
 
 
 | **Event**             |                   | 
@@ -58,4 +58,9 @@
 |---------------------------|-------------------|
 | **Responsibilities**      | **Collaborators** |
 | - Allows us to remove hashdata from the qr code as an admin  | -Collaborates with Events<br>  |
+
+| **Admin**|                   | 
+|---------------------------|-------------------|
+| **Responsibilities**      | **Collaborators** |
+| - Manages app data (users, events, facilities, images)  | -Collaborates with Events<br> -Collaborates with Facility<br> -Collaborates with User<br> |
 

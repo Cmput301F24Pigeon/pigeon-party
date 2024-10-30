@@ -12,14 +12,10 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -50,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView facilityButton;
     private ImageView profileButton;
+    private ImageView notificationButton;
     private ImageButton addEventButton;
+
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
 
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Users.put("entrant", user.isEntrant());
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
+        Users.put("notificationStatus", user.hasNotificationsOn());
 
         db.collection("user").document(uniqueId)
                 .set(Users)
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("Jane","johndoe@gmail.com", "780", uniqueId, false, true, null);
+        User user = new User("John","johndoe@gmail.com", "780", uniqueId, false, true, null, true);
         addUser(user);
         receiveCurrentUser();
 
@@ -152,6 +151,16 @@ public class MainActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
             }
+        });
+
+        notificationButton = findViewById(R.id.button_notifications);
+        notificationButton.setOnClickListener(v -> {
+            User currentUser = MainActivity.getCurrentUser();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ViewNotificationsFragment(user))
+                    .addToBackStack(null)
+                    .commit();
         });
 
            // TEST NOTIFICATION

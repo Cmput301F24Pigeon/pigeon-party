@@ -44,8 +44,9 @@ public class NotificationHelper
      * @param user
      * @param event
      */
+    //Added condition to check if user has notifications turned on
     /*public void notifyUserIfChosen(User user, Event event) {
-         if (event.isChosen() && user.isEntrant()) {
+         if (event.isChosen() && user.isEntrant() && user.hasNotificationsOn()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(android.R.drawable.ic_dialog_info)
                     .setContentTitle("Great news!")

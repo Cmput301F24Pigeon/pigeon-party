@@ -12,7 +12,7 @@ public class Event {
     private String details;
     private Facility facility;
     private boolean requiresLocation;// later add event image
-
+    private NotificationHelper notificationHelper; //add to constructors
     //for organizer events
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation) {
         this.eventId = eventId;
@@ -69,4 +69,25 @@ public class Event {
     public boolean requiresLocation() {
         return requiresLocation;
     }
+
+    public boolean isRequiresLocation() {
+        return requiresLocation;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+    /*
+    public void notifyUserByStatus(String status){ //something like this
+        for --iterate through event hash map of users
+            String message
+            if (status.equals("selected"){
+                message = "Congratulations! You have been selected for the event: " + title;
+            } else if (status.equals("waitlisted")) {
+                message = "You are on the waitlist for the event: " + title;
+            } else if (status.equals("cancelled")) {
+                message = "Sorry, you have not been selected for the event: " + title;
+               }
+    }
+    */
 }

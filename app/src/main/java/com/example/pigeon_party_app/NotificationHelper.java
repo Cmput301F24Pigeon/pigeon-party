@@ -40,20 +40,21 @@ public class NotificationHelper
     }
 
     /**
-     * Lets an entrant know by notification if they've been selected for an event or not.
+     * Allows notification to be sent to entrants based on their status
      * @param user
      * @param event
+     * @param message
      */
-    /*public void notifyUserIfChosen(User user, Event event) {
-         if (event.isChosen() && user.isEntrant()) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(android.R.drawable.ic_dialog_info)
-                    .setContentTitle("Great news!")
-                   .setContentText("You have been chosen for " + event.getEventTitle() + "!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+    public void notifyUser(User user, Event event, String message) {
+        int notificationId = (user.getUniqueId() + event.getEventId()).hashCode(); //this way a new notification doesnt ovveride the previous
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Event Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(1, builder.build());
-        }
-    }*/
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notificationId, builder.build());
+
+    }
 }

@@ -8,6 +8,7 @@ import static java.lang.reflect.Array.get;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView facilityButton;
     ImageView profileButton;
+    ArrayList<Event> eventDataList;
+    EventsArrayAdapter eventArrayAdapter;
 
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
@@ -101,6 +105,11 @@ public class MainActivity extends AppCompatActivity {
         User user = new User("John","johndoe@gmail.com", "7802232", uniqueId, false, true, null);
         addUser(user);
         receiveCurrentUser();
+
+        eventDataList = new ArrayList<>();
+
+        eventDataList.add(new Event("dogtooth", "dog", , null, null, null, null, null));
+        eventArrayAdapter = new EventsArrayAdapter(this, eventDataList);
 
 
 

@@ -36,6 +36,20 @@ public class NotificationHelper {
         }
     }
 
+
+    // Added condition to check if user has notifications turned on
+    public void notifyUserIfChosen(User user, Event event) {
+        if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setContentTitle("Great news!")
+                    .setContentText("You have been chosen for " + event.getTitle() + "!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(1, builder.build());
+        }
+    }
     /**
      * Allows notification to be sent to entrants based on their status
      *
@@ -43,29 +57,17 @@ public class NotificationHelper {
      * @param event
      * @param message
      */
-
-    // Added condition to check if user has notifications turned on
-    public void notifyUserIfChosen(User user, Event event) {
-         if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(android.R.drawable.ic_dialog_info)
-                    .setContentTitle("Great news!")
-                   .setContentText("You have been chosen for " + event.getTitle() + "!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(1, builder.build());
-        }
-
     public void notifyUser(User user, Event event, String message) {
         int notificationId = (user.getUniqueId() + event.getEventId()).hashCode(); //this way a new notification doesnt ovveride the previous
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("Event Notification")
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, builder.build());
+        if (user.hasNotificationsOn()) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setContentTitle("Event Notification")
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(notificationId, builder.build());
+        }
     }
 }
 

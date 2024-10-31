@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -102,8 +103,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("John","johndoe@gmail.com", "780", uniqueId, false, true, null, true);
-        addUser(user);
         receiveCurrentUser();
 
 
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             User currentUser = MainActivity.getCurrentUser();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewNotificationsFragment(user))
+                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
                     .addToBackStack(null)
                     .commit();
         });
@@ -185,8 +184,17 @@ public class MainActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                MainActivity.currentUser = (documentSnapshot.toObject(User.class));
 
+                if (documentSnapshot.exists()) {
+                    MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                }
+                else{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
+import org.checkerframework.common.aliasing.qual.Unique;
 
 public class CreateEntrantProfileFragment extends DialogFragment {
 
@@ -58,7 +61,8 @@ public class CreateEntrantProfileFragment extends DialogFragment {
                     String entrantName = createEntrantName.getText().toString();
                     String entrantEmail = createEntrantEmail.getText().toString();
                     String entrantPhone = createEntrantPhone.getText().toString();
-                    //listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, false, true, null));
+                    String Id = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+                    listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, Id, false, true, null, true));
                 })
                 .create();
     }

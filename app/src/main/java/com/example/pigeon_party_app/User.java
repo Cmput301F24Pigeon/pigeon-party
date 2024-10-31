@@ -30,9 +30,6 @@ public class User implements Serializable {
         this.notificationStatus = notificationStatus;
     }
 
-
-
-
     public String getName() {
         return name;
     }

@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import android.widget.ImageView;
+
 import com.google.type.DateTime;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,7 @@ public class Event {
     private Date dateTime;
     private int waitlistCapacity; // Optional, set to -1 if not applicable
     private String status;
-    private String imageUrl;
+    private ImageView imageUrl;
     private String details;
     private Facility facility;
     private boolean requiresLocation;// later add event image
@@ -27,13 +29,12 @@ public class Event {
     //for organizer events
 
 
-    public Event(String eventId, String string, Date eventDateTime, int i, String string1, Facility facility, boolean checked, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
-        this.status = status;
-        this.imageUrl = imageUrl;
+        //this.imageUrl = imageUrl;
         this.details = details;
         this.facility = facility;
         this.requiresLocation = requiresLocation;
@@ -44,7 +45,7 @@ public class Event {
     }
 
     //for entrant events
-    public Event(String title, Date dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
+    public Event(String title, Date dateTime, String status, String details,ImageView imageUrl, Facility facility, boolean requiresLocation) {
         this.title = title;
         this.dateTime = dateTime;
         this.status = status;
@@ -71,7 +72,7 @@ public class Event {
         return status;
     }
 
-    public String getImageUrl() {
+    public ImageView getImageUrl() {
         return imageUrl;
     }
 

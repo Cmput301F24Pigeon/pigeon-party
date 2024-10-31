@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -12,7 +13,12 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.checkerframework.common.aliasing.qual.Unique;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateEntrantProfileFragment extends DialogFragment {
 
@@ -21,8 +27,37 @@ public class CreateEntrantProfileFragment extends DialogFragment {
     private EditText createEntrantName;
     private EditText createEntrantEmail;
     private EditText createEntrantPhone;
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private CreateEntrantProfileDialogListener listener;
+
+    public void addUser(User user) {
+        //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
+        String uniqueId = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
+        Map<String, Object> Users = new HashMap<>();
+
+        Users.put("name", user.getName());
+        Users.put("email", user.getEmail());
+        Users.put("phoneNumber", user.getPhoneNumber());
+        Users.put("uniqueId", user.getUniqueId());
+        Users.put("entrant", user.isEntrant());
+        Users.put("organizer", user.isOrganizer());
+        Users.put("facility", user.getFacility());
+        Users.put("notificationStatus", user.hasNotificationsOn());
+
+        db.collection("user").document(uniqueId)
+                .set(Users)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FireStore", "Facility successfully added");
+                })
+                .addOnFailureListener(e ->{
+                    Log.w("FireStore", "Error adding facility", e);
+                });
+
+
+    }
 
     public CreateEntrantProfileFragment(User entrant) {
         this.entrant = entrant;
@@ -44,6 +79,7 @@ public class CreateEntrantProfileFragment extends DialogFragment {
         }
     }
 
+
     @NonNull
     public Dialog OnCreateDialog( Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_create_entrant_profile, null);
@@ -63,6 +99,7 @@ public class CreateEntrantProfileFragment extends DialogFragment {
                     String entrantPhone = createEntrantPhone.getText().toString();
                     String Id = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
                     listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, Id, false, true, null, true));
+                    addUser(new User(entrantName, entrantEmail, entrantPhone, Id, false, true, null, true));
                 })
                 .create();
     }

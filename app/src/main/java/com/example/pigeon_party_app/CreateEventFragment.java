@@ -54,7 +54,6 @@ public class CreateEventFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
     //User user = new User("john doe", "johndoe@gmail.com"); need to get actual user
-
     private DatePickerDialog datePickerDialog;
 
 
@@ -104,22 +103,10 @@ public class CreateEventFragment extends Fragment {
                 Date eventDateTime = selectedDateTime.getTime();
 
                 //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
-                Event event = new Event(
-                        eventId,
-                        eventTitle.getText().toString(),
-                        eventDateTime,
-                        Integer.parseInt(waitlistCap.getText().toString()),
-                        eventDetails.getText().toString(),
-                        eventFacility,
-                        requiresLocation.isChecked(),
-                        current_user // Assuming `current_user` is the organizer
-                );
-
                 Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
                 Map<String, Map<String, Object>> usersInvited = new HashMap<>();
                 Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
                 Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
-
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);

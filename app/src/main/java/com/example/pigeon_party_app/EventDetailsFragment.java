@@ -65,6 +65,7 @@ public class EventDetailsFragment extends AppCompatActivity {
                 if (event.getWaitlistCapacity() != 0){
                     event.addUserToWaitlist(user);
                 }
+                finish();
             }
         });
     }

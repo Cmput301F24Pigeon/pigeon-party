@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity{
             Intent EventDetailsFragmentIntent = new Intent(MainActivity.this, EventDetailsFragment.class);
             EventDetailsFragmentIntent.putExtra("user", currentUser);
             EventDetailsFragmentIntent.putExtra("event", (Parcelable) currentEvent);
+            startActivity(EventDetailsFragmentIntent);
         }
     }
     //uncomment once eventdetails can accept eventid

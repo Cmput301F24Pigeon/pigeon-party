@@ -7,6 +7,7 @@ import static java.lang.reflect.Array.get;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
@@ -201,7 +202,9 @@ public class MainActivity extends AppCompatActivity{
                     MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
                 }
             });
-            //showEventDetailsFragment(qrContent);
+            Intent EventDetailsFragmentIntent = new Intent(MainActivity.this, EventDetailsFragment.class);
+            EventDetailsFragmentIntent.putExtra("user", currentUser);
+            EventDetailsFragmentIntent.putExtra("event", (Parcelable) currentEvent);
         }
     }
     //uncomment once eventdetails can accept eventid

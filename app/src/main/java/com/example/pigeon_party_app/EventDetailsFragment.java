@@ -56,10 +56,15 @@ public class EventDetailsFragment extends AppCompatActivity {
 
     private void signUpButton(){
         Button signUpButton = findViewById(R.id.signupButton);
+        if (event.getWaitlistCapacity() != 0){
+            signUpButton.setText("Waitlist is Full");
+        }
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                event.getWaitlist().add(user);
+                if (event.getWaitlistCapacity() != 0){
+                    event.addUserToWaitlist(user);
+                }
             }
         });
     }

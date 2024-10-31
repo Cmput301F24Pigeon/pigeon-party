@@ -5,6 +5,8 @@ import com.google.type.DateTime;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Event {
     private String eventId;
@@ -16,22 +18,28 @@ public class Event {
     private String details;
     private String location;
     private boolean requiresLocation;// later add event image
-    private ArrayList<User>  waitlist;
-    private ArrayList<User> confirmedList;
+    private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
+    private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
+    private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+    private User organizer;
 
     //for organizer events
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, String location, boolean requiresLocation, ArrayList<User> waitlist, ArrayList<User> confirmedList) {
+
+
+    public Event(String eventId, String string, Date eventDateTime, int i, String string1, String eventAddress, boolean checked, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
-        this.status = null; // No status for organizer events
-        this.imageUrl = null; // No image for organizer events
+        this.status = status;
+        this.imageUrl = imageUrl;
         this.details = details;
         this.location = location;
         this.requiresLocation = requiresLocation;
-        this.waitlist = waitlist;
-        this.confirmedList = confirmedList;
+        this.usersWaitlist = usersWaitlist;
+        this.usersInvited = usersInvited;
+        this.usersCancelled = usersCancelled;
+        this.organizer = organizer;
     }
 
     //for entrant events
@@ -82,11 +90,24 @@ public class Event {
         return eventId;
     }
 
-    public ArrayList<User> getConfirmedList() {
-        return confirmedList;
+    // Add user to waitlist, invited, or cancelled list
+    public void addUserToWaitlist(User user) {
+        usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
     }
 
-    public ArrayList<User> getWaitlist() {
-        return waitlist;
+    public void addUserToInvited(User user) {
+        usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
+    }
+
+    public void addUserToCancelled(User user) {
+        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
+    }
+
+    private Map<String, Object> createUserDetails(User user, String status) {
+        Map<String, Object> userDetails = new HashMap<>();
+        userDetails.put("name", user.getName());
+        userDetails.put("status", status);
+        // Add more user-specific fields as needed
+        return userDetails;
     }
 }

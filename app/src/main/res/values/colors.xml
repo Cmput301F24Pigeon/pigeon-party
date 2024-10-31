@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="appBackground">#F0F0F0FF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="appBackground">#B1B0B0</color>
     <color name="headingBackground">#AA96BB</color>
     <color name="listBackground">#36A78A</color>
 

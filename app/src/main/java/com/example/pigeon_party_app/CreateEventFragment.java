@@ -105,7 +105,7 @@ public class CreateEventFragment extends Fragment {
                 Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
                 Map<String, Map<String, Object>> usersInvited = new HashMap<>();
                 Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventAddress, requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);

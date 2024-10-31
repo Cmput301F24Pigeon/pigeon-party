@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import android.widget.ImageView;
+
 import com.google.type.DateTime;
 
 import java.time.LocalDateTime;
@@ -14,27 +16,27 @@ public class Event {
     private Date dateTime;
     private int waitlistCapacity; // Optional, set to -1 if not applicable
     private String status;
-    private String imageUrl;
+    private ImageView imageUrl;
     private String details;
-    private String location;
+    private Facility facility;
     private boolean requiresLocation;// later add event image
     private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
     private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
     private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
     private User organizer;
 
+    private NotificationHelper notificationHelper; //add to constructors
     //for organizer events
 
 
-    public Event(String eventId, String string, Date eventDateTime, int i, String string1, String eventAddress, boolean checked, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
-        this.status = status;
-        this.imageUrl = imageUrl;
+        //this.imageUrl = imageUrl;
         this.details = details;
-        this.location = location;
+        this.facility = facility;
         this.requiresLocation = requiresLocation;
         this.usersWaitlist = usersWaitlist;
         this.usersInvited = usersInvited;
@@ -43,13 +45,13 @@ public class Event {
     }
 
     //for entrant events
-    public Event(String title, Date dateTime, String status, String imageUrl, String details, String location, boolean requiresLocation) {
+    public Event(String title, Date dateTime, String status, String details,ImageView imageUrl, Facility facility, boolean requiresLocation) {
         this.title = title;
         this.dateTime = dateTime;
         this.status = status;
         this.imageUrl = imageUrl;
         this.details = details;
-        this.location = location;
+        this.facility = facility;
         this.requiresLocation = requiresLocation;
         this.waitlistCapacity = -1; // No capacity for entrant events
     }
@@ -70,7 +72,7 @@ public class Event {
         return status;
     }
 
-    public String getImageUrl() {
+    public ImageView getImageUrl() {
         return imageUrl;
     }
 
@@ -78,8 +80,8 @@ public class Event {
         return details;
     }
 
-    public String getLocation() {
-        return location;
+    public Facility getFacility() {
+        return facility;
     }
 
     public boolean requiresLocation() {
@@ -110,4 +112,22 @@ public class Event {
         // Add more user-specific fields as needed
         return userDetails;
     }
+
+    public boolean isRequiresLocation() {
+        return requiresLocation;
+    }
+
+    /*
+    public void notifyUserByStatus(String status){ //need to make separate one for each status
+        for --iterate through event hash map of users
+            String message
+            if (status.equals("selected"){
+                message = "Congratulations! You have been selected for the event: " + title;
+            } else if (status.equals("waitlisted")) {
+                message = "You are on the waitlist for the event: " + title;
+            } else if (status.equals("cancelled")) {
+                message = "Sorry, you have not been selected for the event: " + title;
+               }
+    }
+    */
 }

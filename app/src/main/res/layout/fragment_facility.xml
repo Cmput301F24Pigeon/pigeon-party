@@ -9,28 +9,32 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="In order to create events, you must first add your facility."
+        android:text="In order to create an event, you must first register your facility."
         android:textStyle="bold"
         android:textSize="20dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="120dp"
-        android:layout_gravity="center"/>
+        android:paddingTop="70dp"
+        android:paddingRight="40dp"
+        android:paddingLeft="40dp"
+        android:paddingBottom="40dp"
+        android:layout_gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/add_facility_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
         android:hint="Facility Name"
+        android:padding="20dp"
         android:layout_gravity="center"/>
 
     <EditText
         android:id="@+id/add_facility_address"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
+        android:padding="20dp"
         android:hint="Facility Address"
         android:layout_gravity="center"/>
     <Button
@@ -38,13 +42,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
+        android:backgroundTint="@color/listBackground"
         android:layout_gravity="center" />
 
     <Button
         android:id="@+id/button_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/zxing_transparent"
+        android:padding="0dp"
         android:text="Cancel"
-        android:layout_gravity="center" />
+        android:textColor="@color/black" />
 
 </LinearLayout>

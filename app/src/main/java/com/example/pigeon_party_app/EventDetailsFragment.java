@@ -45,7 +45,7 @@ public class EventDetailsFragment extends AppCompatActivity {
         assert event != null;
         eventTitle.setText(event.getTitle());
     eventDateTime.setText(formatter.format(event.getDateTime()));
-    eventLocation.setText(event.getLocation());
+    //eventLocation.setText(event.getLocation());
     eventDetails.setText(event.getDetails());
     eventCapacity.setText(event.getWaitlistCapacity());
 

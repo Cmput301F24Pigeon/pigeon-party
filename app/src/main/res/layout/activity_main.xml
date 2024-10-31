@@ -38,6 +38,7 @@
             android:gravity="center"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
+            android:textStyle="bold"
             android:text="Pigeon Party"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,8 +63,8 @@
 
     <ImageButton
         android:id="@+id/button_add_event"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
         android:backgroundTint="@color/appBackground"
         android:padding="0dp"
         android:scaleType="fitCenter"

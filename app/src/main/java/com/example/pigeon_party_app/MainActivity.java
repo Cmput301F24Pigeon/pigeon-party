@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
 
+
         receiveCurrentUser();
 
 
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
     }
-
+    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setPrompt("Scan the event QR code");
@@ -223,6 +224,9 @@ public class MainActivity extends AppCompatActivity{
             EventDetailsFragmentIntent.putExtra("user", currentUser);
             EventDetailsFragmentIntent.putExtra("event", (Parcelable) currentEvent);
             startActivity(EventDetailsFragmentIntent);
+        }
+        else {
+            finish();
         }
     }
     //uncomment once eventdetails can accept eventid

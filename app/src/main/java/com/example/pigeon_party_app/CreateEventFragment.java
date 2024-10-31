@@ -99,7 +99,18 @@ public class CreateEventFragment extends Fragment {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
+                //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
+                Event event = new Event(
+                        eventId,
+                        eventTitle.getText().toString(),
+                        eventDateTime,
+                        Integer.parseInt(waitlistCap.getText().toString()),
+                        eventDetails.getText().toString(),
+                        eventFacility,
+                        requiresLocation.isChecked(),
+                        current_user // Assuming `current_user` is the organizer
+                );
+
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);

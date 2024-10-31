@@ -7,6 +7,7 @@ import static java.lang.reflect.Array.get;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
@@ -43,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private ImageView facilityButton;
     private ImageView profileButton;
@@ -52,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
-
+    public static Event currentEvent;
 
     public static User getCurrentUser() {
         return currentUser;
+    }
+    public static Event getCurrentEvent() {
+        return currentEvent;
     }
 
     public void addUser(User user) {
@@ -94,13 +98,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
 
 
         receiveCurrentUser();
@@ -184,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = (documentSnapshot.toObject(User.class));
                 }
@@ -199,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setPrompt("Scan the event QR code");
@@ -209,21 +212,31 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null && result.getContents() != null) {
             String qrContent = result.getContents();
-            //showEventDetailsFragment(qrContent);
+            DocumentReference docRef = db.collection("events").document(qrContent);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
+                        showEventDetailsFragment();
+                    }
+                }
+            });
+        }
+        else {
+            finish();
         }
     }
     //uncomment once eventdetails can accept eventid
-    /*private void showEventDetailsFragment(String eventId) {
-        EventDetailsFragment fragment = EventDetailsFragment.newInstance(eventId);
+    private void showEventDetailsFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
-    }*/
+    }
 
 
 }

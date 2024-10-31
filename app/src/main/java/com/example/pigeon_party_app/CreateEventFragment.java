@@ -30,9 +30,12 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -67,7 +70,7 @@ public class CreateEventFragment extends Fragment {
         Button createEventButton = view.findViewById(R.id.button_create_event);
         ImageButton backButton = view.findViewById(R.id.button_back);
         EditText eventTitle = view.findViewById(R.id.edit_event_title);
-        Facility eventFacility = current_user.getFacility();
+        String eventAddress = current_user.getFacility().getAddress();
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
@@ -99,6 +102,7 @@ public class CreateEventFragment extends Fragment {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
+
                 //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
                 Event event = new Event(
                         eventId,
@@ -110,6 +114,11 @@ public class CreateEventFragment extends Fragment {
                         requiresLocation.isChecked(),
                         current_user // Assuming `current_user` is the organizer
                 );
+
+                Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
+                Map<String, Map<String, Object>> usersInvited = new HashMap<>();
+                Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
 
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);

@@ -12,8 +12,7 @@ import androidx.core.app.NotificationCompat;
 /**
  * This class aids in sending notifications to Users
  */
-public class NotificationHelper
-{
+public class NotificationHelper {
     private static final String CHANNEL_ID = "event_channel";
     private Context context;
 
@@ -25,10 +24,8 @@ public class NotificationHelper
     /**
      * Allows the system to group and manage notifications based on user preferences/choices.
      */
-    private void createNotificationChannel()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Event Channel";
             String description = "Notifications for event selection";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
@@ -40,10 +37,13 @@ public class NotificationHelper
     }
 
     /**
-     * Lets an entrant know by notification if they've been selected for an event or not.
+     * Allows notification to be sent to entrants based on their status
+     *
      * @param user
      * @param event
+     * @param message
      */
+
     // Added condition to check if user has notifications turned on
     public void notifyUserIfChosen(User user, Event event) {
          if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
@@ -56,5 +56,18 @@ public class NotificationHelper
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(1, builder.build());
         }
+
+    public void notifyUser(User user, Event event, String message) {
+        int notificationId = (user.getUniqueId() + event.getEventId()).hashCode(); //this way a new notification doesnt ovveride the previous
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Event Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notificationId, builder.build());
     }
 }
+
+
+

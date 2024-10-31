@@ -38,6 +38,7 @@
             android:gravity="center"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
+            android:textStyle="bold"
             android:text="Pigeon Party"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"

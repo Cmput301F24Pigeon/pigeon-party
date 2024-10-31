@@ -117,7 +117,7 @@ public class Event {
     }
 
     /*
-    public void notifyUserByStatus(String status){ //something like this
+    public void notifyUserByStatus(String status){ //need to make separate one for each status
         for --iterate through event hash map of users
             String message
             if (status.equals("selected"){

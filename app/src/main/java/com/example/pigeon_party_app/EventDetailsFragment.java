@@ -11,12 +11,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 public class EventDetailsFragment extends AppCompatActivity {
-    private TextView eventName;
+    private TextView eventTitle;
     private TextView eventDateTime;
     private TextView eventLocation;
     private TextView eventDetails;
     private TextView eventCapacity;
+    private Event event;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,33 +33,38 @@ public class EventDetailsFragment extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-    eventName = findViewById(R.id.eventName);
+    eventTitle = findViewById(R.id.eventName);
     eventDateTime = findViewById(R.id.eventDateTime);
     eventLocation = findViewById(R.id.eventLocation);
     eventDetails = findViewById(R.id.eventDetails);
     eventCapacity = findViewById(R.id.eventCapacity);
 
-    eventName.setText(getIntent().getStringExtra("eventName"));
-    eventDateTime.setText("Date and Time:\n" + getIntent().getStringExtra("eventDateTime"));
-    eventLocation.setText("Location:\n" + getIntent().getStringExtra("eventLocation"));
-    eventDetails.setText("Details:\n" + getIntent().getStringExtra("eventDetails"));
-    eventCapacity.setText("Capacity:\n" + getIntent().getStringExtra("eventCapacity"));
+    Format formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
 
+    event = getIntent().getParcelableExtra("event");
+        assert event != null;
+        eventTitle.setText(event.getTitle());
+    eventDateTime.setText(formatter.format(event.getDateTime()));
+    eventLocation.setText(event.getLocation());
+    eventDetails.setText(event.getDetails());
+    eventCapacity.setText(event.getWaitlistCapacity());
 
+    user = getIntent().getParcelableExtra("user");
+
+    signUpButton();
     }
-
-    public interface signUpListener {
-        void signUp(Boolean isSignedUp);
-    }
-
-    private signUpListener listener;
 
     private void signUpButton(){
         Button signUpButton = findViewById(R.id.signupButton);
+        if (event.getWaitlistCapacity() != 0){
+            signUpButton.setText("Waitlist is Full");
+        }
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.signUp(Boolean.TRUE);
+                if (event.getWaitlistCapacity() != 0){
+                    event.addUserToWaitlist(user);
+                }
             }
         });
     }

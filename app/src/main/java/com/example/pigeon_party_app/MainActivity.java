@@ -7,6 +7,7 @@ import static java.lang.reflect.Array.get;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
@@ -43,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private ImageView facilityButton;
     private ImageView profileButton;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
-
+    public static Event currentEvent;
 
     public static User getCurrentUser() {
         return currentUser;
@@ -92,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 });
                 */
     }
-
 
 
     @Override
@@ -184,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = (documentSnapshot.toObject(User.class));
                 }
@@ -213,7 +212,16 @@ public class MainActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null && result.getContents() != null) {
             String qrContent = result.getContents();
-            //showEventDetailsFragment(qrContent);
+            DocumentReference docRef = db.collection("event").document(qrContent);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
+                }
+            });
+            Intent EventDetailsFragmentIntent = new Intent(MainActivity.this, EventDetailsFragment.class);
+            EventDetailsFragmentIntent.putExtra("user", currentUser);
+            EventDetailsFragmentIntent.putExtra("event", (Parcelable) currentEvent);
         }
     }
     //uncomment once eventdetails can accept eventid

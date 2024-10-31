@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageButton addEventButton;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
-
+    public static Event currentEvent;
 
     public static User getCurrentUser() {
         return currentUser;
@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 MainActivity.currentUser = (documentSnapshot.toObject(User.class));
-
             }
         });
 
@@ -195,6 +194,13 @@ public class MainActivity extends AppCompatActivity{
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null && result.getContents() != null) {
             String qrContent = result.getContents();
+            DocumentReference docRef = db.collection("event").document(qrContent);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
+                }
+            });
             //showEventDetailsFragment(qrContent);
         }
     }

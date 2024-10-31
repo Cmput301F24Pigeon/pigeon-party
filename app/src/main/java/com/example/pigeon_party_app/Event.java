@@ -4,13 +4,14 @@ import android.widget.ImageView;
 
 import com.google.type.DateTime;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Event {
+public class Event implements Serializable {
     private String eventId;
     private String title;
     private Date dateTime;
@@ -28,6 +29,9 @@ public class Event {
     private NotificationHelper notificationHelper; //add to constructors
     //for organizer events
 
+    public Event(){
+
+    }
 
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation, Map<String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User organizer) {
         this.eventId = eventId;
@@ -105,7 +109,7 @@ public class Event {
         usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
     }
 
-    private Map<String, Object> createUserDetails(User user, String status) {
+    public Map<String, Object> createUserDetails(User user, String status) {
         Map<String, Object> userDetails = new HashMap<>();
         userDetails.put("name", user.getName());
         userDetails.put("status", status);

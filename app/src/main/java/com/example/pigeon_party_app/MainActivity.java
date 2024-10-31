@@ -58,6 +58,9 @@ public class MainActivity extends AppCompatActivity{
     public static User getCurrentUser() {
         return currentUser;
     }
+    public static Event getCurrentEvent() {
+        return currentEvent;
+    }
 
     public void addUser(User user) {
         //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
@@ -209,34 +212,31 @@ public class MainActivity extends AppCompatActivity{
     }
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null && result.getContents() != null) {
             String qrContent = result.getContents();
-            DocumentReference docRef = db.collection("event").document(qrContent);
+            DocumentReference docRef = db.collection("events").document(qrContent);
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
+                    if (documentSnapshot.exists()) {
+                        MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
+                        showEventDetailsFragment();
+                    }
                 }
             });
-            Intent EventDetailsFragmentIntent = new Intent(MainActivity.this, EventDetailsFragment.class);
-            EventDetailsFragmentIntent.putExtra("user", currentUser);
-            EventDetailsFragmentIntent.putExtra("event", (Parcelable) currentEvent);
-            startActivity(EventDetailsFragmentIntent);
         }
         else {
             finish();
         }
     }
     //uncomment once eventdetails can accept eventid
-    /*private void showEventDetailsFragment(String eventId) {
-        EventDetailsFragment fragment = EventDetailsFragment.newInstance(eventId);
+    private void showEventDetailsFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
-    }*/
+    }
 
 
 }

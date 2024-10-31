@@ -1,6 +1,8 @@
 package com.example.pigeon_party_app;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Event {
     private String eventId;
@@ -10,32 +12,25 @@ public class Event {
     private String status;
     private String imageUrl;
     private String details;
-    private Facility facility;
+    private Facility location; // facility object
+    private User organizer;
     private boolean requiresLocation;// later add event image
+    private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
+    private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
+    private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
 
-    //for organizer events
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation) {
+    // Constructor for organizer events
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility location, boolean requiresLocation, User organizer) {
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
-        this.status = null; // No status for organizer events
-        this.imageUrl = null; // No image for organizer events
+        this.status = null;
+        this.imageUrl = null;
         this.details = details;
-        this.facility = facility;
+        this.location = location;
         this.requiresLocation = requiresLocation;
-    }
-
-    //for entrant events
-    public Event(String title, Date dateTime, String status, String imageUrl, String details, Facility facility, boolean requiresLocation) {
-        this.title = title;
-        this.dateTime = dateTime;
-        this.status = status;
-        this.imageUrl = imageUrl;
-        this.details = details;
-        this.facility = facility;
-        this.requiresLocation = requiresLocation;
-        this.waitlistCapacity = -1; // No capacity for entrant events
+        this.organizer = organizer;
     }
 
     public String getTitle() {
@@ -63,10 +58,32 @@ public class Event {
     }
 
     public Facility getFacility() {
-        return facility;
+        return location;
     }
 
     public boolean requiresLocation() {
         return requiresLocation;
+    }
+
+
+    // Add user to waitlist, invited, or cancelled list
+    public void addUserToWaitlist(User user) {
+        usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
+    }
+
+    public void addUserToInvited(User user) {
+        usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
+    }
+
+    public void addUserToCancelled(User user) {
+        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
+    }
+
+    private Map<String, Object> createUserDetails(User user, String status) {
+        Map<String, Object> userDetails = new HashMap<>();
+        userDetails.put("name", user.getName());
+        userDetails.put("status", status);
+        // Add more user-specific fields as needed
+        return userDetails;
     }
 }

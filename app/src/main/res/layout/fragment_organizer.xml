@@ -70,7 +70,7 @@
 
     <ImageButton
         android:id="@+id/button_add_organizer_event"
-        android:layout_width="match_parent"
+        android:layout_width="72dp"
         android:layout_height="72dp"
         android:backgroundTint="@color/appBackground"
         android:padding="0dp"

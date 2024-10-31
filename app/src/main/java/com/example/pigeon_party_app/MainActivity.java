@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         });
 
-           // TEST NOTIFICATION
+        // TEST NOTIFICATION
         // Create an Event where the entrant is chosen
         //Event event = new Event("Swimming Lessons", true);
 

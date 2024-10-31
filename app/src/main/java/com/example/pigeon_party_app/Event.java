@@ -1,10 +1,14 @@
 package com.example.pigeon_party_app;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Event {
+    private NotificationHelper notificationHelper;
     private String eventId;
     private String title;
     private Date dateTime;
@@ -66,24 +70,100 @@ public class Event {
     }
 
 
-    // Add user to waitlist, invited, or cancelled list
+    /**
+     * Adds a user to the usersWaitList map.
+     * @param user
+     */
     public void addUserToWaitlist(User user) {
         usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
     }
 
+    /**
+     * Adds a user to the usersInvited map.
+     * @param user
+     */
     public void addUserToInvited(User user) {
         usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
     }
 
+    /**
+     * Adds a user to the usersCancelled map.
+     * @param user
+     */
     public void addUserToCancelled(User user) {
         usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
     }
 
+    /**
+     * Retrieves the list of users who are currently on the waitlist for the event.
+     * @return A map where each key is a user's unique ID and each value is a map of user details.
+     */
+    public Map<String, Map<String, Object>> getUsersWaitlisted() {
+        return usersWaitlist;
+    }
+
+    /**
+     * Retrieves the list of users who have been invited to the event.*
+     * @return A map where each key is a user's unique ID and each value is a map of user details.
+     */
+    public Map<String, Map<String, Object>> getUsersInvited() {
+        return usersInvited;
+    }
+
+    /**
+     * Retrieves the list of users who have cancelled their participation in the event.
+     * @return A map where each key is a user's unique ID and each value is a map of user details.
+     */
+    public Map<String, Map<String, Object>> getUsersCancelled() {
+        return usersCancelled;
+    }
+
+    /**
+     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
+     * @param user
+     * @param status
+     * @return
+     */
     private Map<String, Object> createUserDetails(User user, String status) {
         Map<String, Object> userDetails = new HashMap<>();
         userDetails.put("name", user.getName());
         userDetails.put("status", status);
         // Add more user-specific fields as needed
         return userDetails;
+    }
+
+    /**
+     * Samples/Draws a specific number of users among the waitlist to be invited to an event.
+     * @param drawAmount
+     */
+    public void runLottery(int drawAmount) {
+        // If the amount to draw is more than the waitlist size, match the draw amount with
+        // the amount of people in the current waitlist.
+        if (usersWaitlist.size() < drawAmount) {
+            drawAmount = usersWaitlist.size();
+        }
+
+        // Creates a list of user IDs (from waitlist)
+        List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
+
+        // Shuffles and picks a sample of users
+        // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
+        Collections.shuffle(waitlistUserIds);
+        List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
+
+        // Moves users from waitlist to the invited/joined list
+        for (String userId : selectedUsers) {
+            usersInvited.put(userId, usersWaitlist.get(userId));
+            usersWaitlist.remove(userId);
+
+            // Notify them afterwards...
+            Map<String, Object> userData = usersInvited.get(userId); // Adjust based on how your data is structured
+            User selectedUser = (User) userData.get("user"); // Cast to User type
+
+            // Notify the user if they've been chosen
+            if (selectedUser != null && selectedUser.hasNotificationsOn()) {
+                notificationHelper.notifyUserIfChosen(selectedUser, this);
+            }
+        }
     }
 }

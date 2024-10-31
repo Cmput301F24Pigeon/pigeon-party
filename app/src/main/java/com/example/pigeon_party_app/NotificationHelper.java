@@ -44,17 +44,17 @@ public class NotificationHelper
      * @param user
      * @param event
      */
-    //Added condition to check if user has notifications turned on
-    /*public void notifyUserIfChosen(User user, Event event) {
-         if (event.isChosen() && user.isEntrant() && user.hasNotificationsOn()) {
+    // Added condition to check if user has notifications turned on
+    public void notifyUserIfChosen(User user, Event event) {
+         if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(android.R.drawable.ic_dialog_info)
                     .setContentTitle("Great news!")
-                   .setContentText("You have been chosen for " + event.getEventTitle() + "!")
+                   .setContentText("You have been chosen for " + event.getTitle() + "!")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(1, builder.build());
         }
-    }*/
+    }
 }

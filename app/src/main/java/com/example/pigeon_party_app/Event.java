@@ -1,6 +1,7 @@
 package com.example.pigeon_party_app;
 
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import android.widget.ImageView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.type.DateTime;
 
 import java.io.Serializable;
@@ -207,21 +209,44 @@ public class Event implements Serializable {
             }
         }
 
-    /*
-    public void notifyUserByStatus(String status){ //need to make separate one for each status
-        for --iterate through event hash map of users
-            String message
-            if (status.equals("selected"){
-                message = "Congratulations! You have been selected for the event: " + title;
-            } else if (status.equals("waitlisted")) {
-                message = "You are on the waitlist for the event: " + title;
-            } else if (status.equals("cancelled")) {
-                message = "Sorry, you have not been selected for the event: " + title;
-               }
-    }
-    */
+    public void notifyUserByStatus(String status) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String message;
 
+        switch (status) {
+            case "selected":
+                message = "Congratulations! You have been selected for the event: " + title;
+                break;
+            case "waitlisted":
+                message = "You are on the waitlist for the event: " + title;
+                break;
+            case "cancelled":
+                message = "Sorry, you have not been selected for the event: " + title;
+                break;
+            default:
+                return;
+        }
+
+        db.collection("events").document(eventId) // Assuming you have eventId in your class
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Map<String, Object>> usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get(status);
+                        if (usersToNotify != null) {
+                            for (Map.Entry<String, Map<String, Object>> entry : usersToNotify.entrySet()) {
+                                User user = (User) entry.getValue().get("user");
+                                if (user != null && user.hasNotificationsOn()) {
+                                    notificationHelper.notifyUser(user, this, message);
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firebase", "Error getting users for status: " + status, e);
+                });
     }
+}
 
 
 

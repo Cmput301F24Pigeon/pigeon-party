@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -101,9 +102,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        //uncomment if you don't have a user made
-        User user = new User("John","johndoe@gmail.com", "7802232", uniqueId, false, true, null);
-        addUser(user);
+
         receiveCurrentUser();
 
 
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             User currentUser = MainActivity.getCurrentUser();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewNotificationsFragment(user))
+                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
                     .addToBackStack(null)
                     .commit();
         });

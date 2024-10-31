@@ -62,7 +62,7 @@ public class CreateEntrantProfileFragment extends DialogFragment {
                     String entrantEmail = createEntrantEmail.getText().toString();
                     String entrantPhone = createEntrantPhone.getText().toString();
                     String Id = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-                    listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, Id, false, true, null));
+                    listener.createEntrantProfile(new User(entrantName, entrantEmail, entrantPhone, Id, false, true, null, true));
                 })
                 .create();
     }

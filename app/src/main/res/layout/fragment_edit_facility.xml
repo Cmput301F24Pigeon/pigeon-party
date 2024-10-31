@@ -59,26 +59,37 @@
 
     <EditText
         android:id="@+id/editText_edit_facility_address"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         android:ems="10"
+        android:focusable="false"
         android:hint="Facility Address"
         android:inputType="textEmailAddress"
-        android:focusable="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/edit_facility_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_edit_facility_name" />
 
     <EditText
         android:id="@+id/editText_edit_facility_name"
-        android:layout_width="211dp"
-        android:layout_height="45dp"
-        android:hint="Facility Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/appBackground"
+        android:backgroundTint="@color/white"
         android:focusable="false"
+        android:hint="Facility Name"
         app:layout_constraintBottom_toTopOf="@+id/editText_edit_facility_address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/facility_profile_image" />
 
     <Button
         android:id="@+id/edit_facility_button"
@@ -93,20 +104,22 @@
         android:id="@+id/text_facility_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name: "
-        app:layout_constraintBottom_toTopOf="@+id/editText_edit_facility_address"
-        app:layout_constraintEnd_toStartOf="@+id/editText_edit_facility_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editText_edit_facility_name" />
+        android:paddingLeft="16dp"
+        android:text="Name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/editText_edit_facility_name"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/text_facility_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Address: "
-        app:layout_constraintBottom_toBottomOf="@+id/editText_edit_facility_address"
-        app:layout_constraintEnd_toStartOf="@+id/editText_edit_facility_address"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editText_edit_facility_address" />
+        android:paddingLeft="16dp"
+        android:text="Address"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/editText_edit_facility_address"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

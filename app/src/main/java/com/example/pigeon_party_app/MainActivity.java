@@ -216,6 +216,9 @@ public class MainActivity extends AppCompatActivity {
             String qrContent = result.getContents();
             //showEventDetailsFragment(qrContent);
         }
+        else {
+            finish();
+        }
     }
     //uncomment once eventdetails can accept eventid
     /*private void showEventDetailsFragment(String eventId) {

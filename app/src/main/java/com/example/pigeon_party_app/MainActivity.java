@@ -13,14 +13,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,7 +48,9 @@ public class MainActivity extends AppCompatActivity{
 
     private ImageView facilityButton;
     private ImageView profileButton;
+    private ImageView notificationButton;
     private ImageButton addEventButton;
+
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
     public static Event currentEvent;
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity{
         Users.put("entrant", user.isEntrant());
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
+        Users.put("notificationStatus", user.hasNotificationsOn());
 
         db.collection("user").document(uniqueId)
                 .set(Users)
@@ -103,8 +103,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
 
-        User user = new User("Jane","johndoe@gmail.com", "780", uniqueId, false, true, null);
-        addUser(user);
         receiveCurrentUser();
 
 
@@ -154,6 +152,16 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        notificationButton = findViewById(R.id.button_notifications);
+        notificationButton.setOnClickListener(v -> {
+            User currentUser = MainActivity.getCurrentUser();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
+                    .addToBackStack(null)
+                    .commit();
+        });
+
            // TEST NOTIFICATION
         // Create an Event where the entrant is chosen
         //Event event = new Event("Swimming Lessons", true);
@@ -176,7 +184,16 @@ public class MainActivity extends AppCompatActivity{
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                if (documentSnapshot.exists()) {
+                    MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                }
+                else{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

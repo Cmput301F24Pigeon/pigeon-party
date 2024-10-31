@@ -11,6 +11,7 @@ public class User implements Serializable {
     private String uniqueId;
     private boolean entrant;
     private boolean organizer;
+    private boolean notificationStatus;
     //private boolean isAdmin;
     // need to make an images for our profile
 
@@ -18,7 +19,7 @@ public class User implements Serializable {
 
     }
 
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -26,10 +27,8 @@ public class User implements Serializable {
         this.organizer = isOrganizer;
         this.entrant = isEntrant;
         this.facility = facility;
+        this.notificationStatus = notificationStatus;
     }
-
-
-
 
     public String getName() {
         return name;
@@ -85,5 +84,13 @@ public class User implements Serializable {
 
     public Facility getFacility() {
         return facility;
+    }
+
+    public void setNotificationsOn(boolean notificationStatus) {
+        this.notificationStatus = notificationStatus;
+    }
+
+    public boolean hasNotificationsOn() {
+        return notificationStatus;
     }
 }

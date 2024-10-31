@@ -227,11 +227,22 @@ public class Event implements Serializable {
                 return;
         }
 
-        db.collection("events").document(eventId) // Assuming you have eventId in your class
+        db.collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Map<String, Map<String, Object>> usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get(status);
+                        Map<String, Map<String, Object>> usersToNotify;
+
+                        usersToNotify = null;
+                        if ("selected".equals(status)) {
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
+                        } else if ("waitlisted".equals(status)) {
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
+                        }
+                        else if ("cancelled".equals(status)) {
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
+                        }
+
                         if (usersToNotify != null) {
                             for (Map.Entry<String, Map<String, Object>> entry : usersToNotify.entrySet()) {
                                 User user = (User) entry.getValue().get("user");

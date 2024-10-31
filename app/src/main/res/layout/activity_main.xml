@@ -63,8 +63,8 @@
 
     <ImageButton
         android:id="@+id/button_add_event"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
         android:backgroundTint="@color/appBackground"
         android:padding="0dp"
         android:scaleType="fitCenter"

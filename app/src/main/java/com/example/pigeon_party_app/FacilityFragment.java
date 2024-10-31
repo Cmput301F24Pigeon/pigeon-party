@@ -38,18 +38,7 @@ public class FacilityFragment extends Fragment {
         return fragment;
     }*/
 
-    /**
-     * Initiates the fragment and manages the users controls within the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return view The view of the fragment which contains all of the workings of the fragment
-     */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,18 +62,8 @@ public class FacilityFragment extends Fragment {
             }
             if (isValid) {
                 //need to add validation functionality (ensure fields arent empty)
-                current_user.setOrganizer(true);
                 Facility facility = new Facility(uniqueId, facilityAddress.getText().toString(), facilityName.getText().toString());
-                current_user.setFacility(facility);
-
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("facility", facility);
-                updates.put("organizer", true);
-                db.collection("user").document(uniqueId)
-                        .update(updates)
-                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                        .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
-
+                createFacility(db,uniqueId,facility);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new OrganizerFragment())
@@ -105,5 +84,21 @@ public class FacilityFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Function which adds a facility to the current users document on firebase
+     * @param db FireBase database
+     * @param uniqueId Current users id
+     * @param facility New facility created by user
+     */
+    private void createFacility(FirebaseFirestore db, String uniqueId, Facility facility) {
+        current_user.setFacility(facility);
+        current_user.setFacility(facility);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("facility", facility);
+        updates.put("organizer", true);
+        db.collection("user").document(uniqueId)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+    }
 }

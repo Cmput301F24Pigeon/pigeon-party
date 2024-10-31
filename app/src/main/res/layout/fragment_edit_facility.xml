@@ -24,7 +24,7 @@
             android:gravity="center"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
-            android:text="Pigeon Party"
+            android:text="Manage Facility"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

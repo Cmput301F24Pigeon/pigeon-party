@@ -24,6 +24,10 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is a dialogue fragment that allows the user to change their profile information
+ */
+
 public class EditEntrantProfileFragment extends DialogFragment {
 
     public User entrant;
@@ -70,6 +74,10 @@ public class EditEntrantProfileFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * Function updates a user's name, email and phone in their profile in Firebase
+     * @param entrant The User object that has been changed through the app's UI
+     */
     public void updateUserProfile(User entrant) {
         String entrantId = entrant.getUniqueId();
 

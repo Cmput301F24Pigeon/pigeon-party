@@ -4,13 +4,7 @@ package com.example.pigeon_party_app;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class Event implements Serializable {
     private NotificationHelper notificationHelper;

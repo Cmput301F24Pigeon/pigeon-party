@@ -26,7 +26,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button_back"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.508"
             app:srcCompat="@drawable/ic_notification_button" />
 
         <TextView
@@ -40,6 +39,7 @@
             android:paddingRight="18dp"
             android:text="Pigeon Party"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/button_facility_profile"
             app:layout_constraintStart_toStartOf="parent"

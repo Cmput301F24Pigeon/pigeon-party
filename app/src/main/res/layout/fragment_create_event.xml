@@ -209,7 +209,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_waitlist_cap" />
 
-    <!-- Background view covering majority of the screen -->
     <View
         android:id="@+id/background_view"
         android:layout_width="0dp"
@@ -240,7 +239,6 @@
         android:id="@+id/eventQrcode"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
         android:layout_centerHorizontal="true"
         app:layout_constraintBottom_toTopOf="@+id/button_create_event"
         app:layout_constraintEnd_toEndOf="parent"

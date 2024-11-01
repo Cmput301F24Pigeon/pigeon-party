@@ -8,11 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -68,7 +63,7 @@ public class EventDetailsFragment extends Fragment {
             public void onClick(View v) {
                 if (event.getWaitlistCapacity() != 0){
                     event.addUserToWaitlist(current_user);
-                    Map<String, Object> updates = event.createUserDetails(current_user, "Waitlist");
+                    Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
                     db.collection("events").document(event.getEventId())
                             .update(updates)
                             .addOnSuccessListener(aVoid -> {

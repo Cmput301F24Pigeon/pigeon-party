@@ -10,16 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.widget.ImageView;
-
-import com.google.type.DateTime;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Event implements Serializable {
     private NotificationHelper notificationHelper;
@@ -171,6 +161,17 @@ public class Event implements Serializable {
             return userDetails;
         }
 
+    /**
+     * Creates the hash map needed to update the waitlist in firebase
+     *
+     * @param event
+     * @return
+     */
+    public Map<String, Object> updateFirebaseEventWaitlist(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("Waitlist", event.getUsersWaitlisted());
+        return updates;
+    }
 
         /**
          * Samples/Draws a specific number of users among the waitlist to be invited to an event.

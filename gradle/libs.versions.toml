@@ -8,6 +8,8 @@ material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 leanback = "1.0.0"
+junitJupiter = "5.8.1"
+fragmentTesting = "1.8.5"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -18,6 +20,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

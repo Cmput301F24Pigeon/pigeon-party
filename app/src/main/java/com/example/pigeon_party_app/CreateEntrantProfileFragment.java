@@ -1,11 +1,13 @@
 package com.example.pigeon_party_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -26,10 +28,35 @@ public class CreateEntrantProfileFragment extends Fragment {
         EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
         EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
         EditText createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);
+        Button createProfileButton = view.findViewById(R.id.create_user_profile_button);
 
-        User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true);
+        createProfileButton.setOnClickListener(v -> {
+            createEntrantName.setFocusableInTouchMode(true);
+            createEntrantName.setFocusable(true);
+            createEntrantEmail.setFocusableInTouchMode(true);
+            createEntrantEmail.setFocusable(true);
+            createEntrantPhone.setFocusableInTouchMode(true);
+            createEntrantPhone.setFocusable(true);
 
-        addUser(user);
+            boolean isValid = false;
+            if (Validator.isName(createEntrantName, "Your profile must include a name.")) {
+                isValid = true;
+            }
+            if (Validator.isEmail(createEntrantEmail, "Your profile must have a valid email.")) {
+                isValid = true;
+            }
+            if (Validator.isPhoneNumber(createEntrantPhone, "Your phone number must be 10 digits or empty.")) {
+                isValid = true;
+            }
+            if (isValid) {
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true);
+                addUser(user);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
         return view;
     }

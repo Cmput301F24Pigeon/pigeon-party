@@ -35,7 +35,7 @@ public class Validator {
 
         String input = field.getText().toString().trim();
 
-        if (input.isEmpty() || input.contains("\n")) {
+        if (input.isEmpty()) {
             field.setError(errorMessage);
             field.requestFocus();
             return false;

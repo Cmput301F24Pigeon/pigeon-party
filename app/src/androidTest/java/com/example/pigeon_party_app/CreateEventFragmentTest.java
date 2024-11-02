@@ -20,10 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -35,7 +31,9 @@ public class CreateEventFragmentTest {
     private Facility testFacility;
     private User testUser;
 
-
+    /**
+     * Method to be performed before the test to ensure the necessary attributes are created first
+     */
     @Before
     public void setUp() {
         db = FirebaseFirestore.getInstance();
@@ -43,6 +41,9 @@ public class CreateEventFragmentTest {
         testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false);
     }
 
+    /**
+     * Test to check that addEvent method from CreateEventFragment properly adds the event to firebase
+     */
     @Test
     public void testAddEvent() {
 
@@ -62,6 +63,10 @@ public class CreateEventFragmentTest {
         });
     }
 
+    /**
+     * Method to verify that the event was added to the firebase
+     * @param eventId The unique id of an event
+     */
     private void verifyEventInFirestore(String eventId) {
         db.collection("events").document(eventId).get(Source.SERVER)
                 .addOnCompleteListener(task -> {
@@ -87,6 +92,9 @@ public class CreateEventFragmentTest {
 
     }
 
+    /**
+     * A method to be performed after the test method to remove any data that was added to the firebase
+     */
     @After
     public void removeData() {
         if (testEventId != null) {

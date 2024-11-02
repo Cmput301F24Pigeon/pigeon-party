@@ -18,6 +18,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 
+/**
+ * This class is a fragment that allows the user to view their notifications and to turn their notifications on or off
+ */
+
 public class ViewNotificationsFragment extends Fragment {
 
     public User user;
@@ -41,8 +45,6 @@ public class ViewNotificationsFragment extends Fragment {
             notificationSwitch.setChecked(true);
         }
 
-        // Set on click listener for switch
-        // if clicked change status
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -63,6 +65,10 @@ public class ViewNotificationsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This function updates the user's notification status (on/off) in Firebase
+     * @param user The User object that has had the notification status changed through the app's UI
+     */
     private void updateUserNotificationStatus(User user) {
         String userId = user.getUniqueId();
 

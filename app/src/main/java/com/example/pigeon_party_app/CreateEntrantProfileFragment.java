@@ -21,6 +21,13 @@ public class CreateEntrantProfileFragment extends Fragment {
 
     public CreateEntrantProfileFragment() {}
 
+    public static CreateEntrantProfileFragment newInstance() {
+        CreateEntrantProfileFragment fragment = new CreateEntrantProfileFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

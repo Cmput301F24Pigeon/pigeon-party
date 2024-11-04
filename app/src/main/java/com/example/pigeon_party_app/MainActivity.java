@@ -143,26 +143,14 @@ public class MainActivity extends AppCompatActivity{
 
         profileButton = findViewById(R.id.button_profile);
         profileButton.setOnClickListener(v -> {
-            // The code commented out here is the correct code to open the ViewEntrantProfileFragment
-            // DO NOT CHANGE IT!
-            // Uncomment it once the logic has been implemented for the CreateEntrantProfileFragment
-
-//            User currentUser = MainActivity.getCurrentUser();
-//            if (currentUser.isEntrant()){
-//                getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-
-            // Code below is a temporary test to use the profile button to open the CreateUserProfileFragment
-            // Delete it once the correct logic has been implemented
-            getSupportFragmentManager()
+            User currentUser = MainActivity.getCurrentUser();
+            if (currentUser.isEntrant()){
+                getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
+            }
         });
 
         notificationButton = findViewById(R.id.button_notifications);

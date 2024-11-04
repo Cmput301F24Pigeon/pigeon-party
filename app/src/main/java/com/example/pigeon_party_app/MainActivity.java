@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
     }
+
     //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);

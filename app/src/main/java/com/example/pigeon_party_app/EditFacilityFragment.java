@@ -28,21 +28,25 @@ public class EditFacilityFragment extends Fragment {
     private boolean isEditing;
 
     public EditFacilityFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return view The view of the fragment
-     */
+    public static EditFacilityFragment newInstance(User user) {
+        EditFacilityFragment fragment = new EditFacilityFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("current_user", user);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            current_user = (User) getArguments().getSerializable("current_user");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,7 +59,6 @@ public class EditFacilityFragment extends Fragment {
         String currentFacilityName = current_user.getFacility().getName();
         editFacilityAddress.setText(currentFacilityAddress);
         editFacilityName.setText(currentFacilityName);
-        User current_user = MainActivity.getCurrentUser();
         String uniqueId = current_user.getUniqueId();
 
         Button updateProfileButton = view.findViewById(R.id.edit_facility_button);
@@ -82,28 +85,19 @@ public class EditFacilityFragment extends Fragment {
                     isValid = false;
                 }
                 if (isValid) {
-                    currentFacility.setAddress(editFacilityAddress.getText().toString());
-                    currentFacility.setName(editFacilityName.getText().toString());
-                    Map<String, Object> facilityUpdates = new HashMap<>();
-                    facilityUpdates.put("facility.name", currentFacility.getName());
-                    facilityUpdates.put("facility.address", currentFacility.getAddress());
+                    String facilityAddress = editFacilityAddress.getText().toString();
+                    String facilityName = editFacilityName.getText().toString();
+                    editFacility(db, currentFacility,facilityName,facilityAddress);
+                    // Change the button text back to "Edit Facility" after a successful update
+                    updateProfileButton.setText("Edit Facility");
 
-                    db.collection("user").document(uniqueId)
-                            .update(facilityUpdates)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "User's facility successfully updated");
+                    // Disable editing after confirming
+                    editFacilityAddress.setFocusable(false);
+                    editFacilityAddress.setFocusableInTouchMode(false);
+                    editFacilityName.setFocusable(false);
+                    editFacilityName.setFocusableInTouchMode(false);
+                    isEditing = false; // Reset state
 
-                                // Change the button text back to "Edit Facility" after a successful update
-                                updateProfileButton.setText("Edit Facility");
-
-                                // Disable editing after confirming
-                                editFacilityAddress.setFocusable(false);
-                                editFacilityAddress.setFocusableInTouchMode(false);
-                                editFacilityName.setFocusable(false);
-                                editFacilityName.setFocusableInTouchMode(false);
-                                isEditing = false; // Reset state
-                            })
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
                 }
             }
         });
@@ -118,4 +112,27 @@ public class EditFacilityFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * The method is used to edit a users facility in firebase
+     * @param db The firebase database to store the user
+     * @param facility The facility object which is being updated
+     * @param facilityName The new facility name
+     * @param facilityAddress The new facility address
+     */
+    public void editFacility(FirebaseFirestore db,  Facility facility, String facilityName, String facilityAddress) {
+        facility.setAddress(facilityAddress);
+        facility.setName(facilityName);
+        Map<String, Object> facilityUpdates = new HashMap<>();
+        facilityUpdates.put("facility.name", facility.getName());
+        facilityUpdates.put("facility.address", facility.getAddress());
+
+        db.collection("user").document(facility.getOwnerId())
+                .update(facilityUpdates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "User's facility successfully updated");
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+
+                }
 }

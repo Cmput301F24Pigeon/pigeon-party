@@ -217,6 +217,10 @@ public class Event implements Serializable {
             }
         }
 
+    /**
+     * This method sends notifications to all of the users in the event list based on their status.
+     * @param status The status of the user in the event list
+     */
     public void notifyUserByStatus(String status) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String message;

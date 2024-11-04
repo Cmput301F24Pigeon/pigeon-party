@@ -57,7 +57,7 @@ public class CreateEventFragmentTest {
             testEventTitle= "test-event-title";
             testEventDetails = "test-details";
             Event testEvent = new Event(testEventId,testEventTitle, new Date(), 50, testEventDetails,testFacility,false,null, null, null, testUser);
-            createdFragment.addEvent(db, testEventId, testEvent);
+            createdFragment.addEvent(db, testEvent);
 
             verifyEventInFirestore(testEventId);
         });
@@ -78,7 +78,7 @@ public class CreateEventFragmentTest {
                             assertEquals("Event title should match", testEventTitle, document.getString("title"));
                             assertEquals("Event details should match", testEventDetails, document.getString("details"));
                             assertEquals("Event Id should match", testEventId, document.getString("eventID"));
-                            assertEquals("Event Id should match", testFacility, document.getString("facility"));
+                            assertEquals("Event Facility should match", testFacility, document.toObject(Facility.class));
 
                         } else {
                             fail("Event was not found in Firestore");

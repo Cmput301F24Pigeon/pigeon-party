@@ -37,10 +37,6 @@ public class Event implements Serializable {
     private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
     private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
 
-
-    public Event() {
-    }
-
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
             details, Facility facility, boolean requiresLocation, Map<
             String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User

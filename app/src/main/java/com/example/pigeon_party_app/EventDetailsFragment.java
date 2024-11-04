@@ -59,6 +59,7 @@ public class EventDetailsFragment extends Fragment {
         return view;
     }
 
+    // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void signUpButton(){
         if (event.getWaitlistCapacity() == 0){
             signUpButton.setText("Waitlist is Full");
@@ -76,7 +77,8 @@ public class EventDetailsFragment extends Fragment {
                             })
                             .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
                 }
-                getFragmentManager().popBackStack();
+                //getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }

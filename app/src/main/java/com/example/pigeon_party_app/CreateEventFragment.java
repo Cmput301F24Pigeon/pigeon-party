@@ -39,7 +39,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-
+/**
+ * This is a fragment in which the user can create an event
+ */
 public class CreateEventFragment extends Fragment {
     private User current_user = MainActivity.getCurrentUser();
     private Calendar selectedDateTime = Calendar.getInstance();
@@ -54,7 +56,7 @@ public class CreateEventFragment extends Fragment {
     public static CreateEventFragment newInstance(User user) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
-        args.putSerializable("current_user", user);  // Make sure User implements Serializable
+        args.putSerializable("current_user", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +70,6 @@ public class CreateEventFragment extends Fragment {
         }
     }
 
-    //User user = new User("john doe", "johndoe@gmail.com"); need to get actual user
     private DatePickerDialog datePickerDialog;
 
 
@@ -126,7 +127,7 @@ public class CreateEventFragment extends Fragment {
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
 
-                addEvent(db, eventId,event);
+                addEvent(db,event);
 
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
@@ -152,16 +153,26 @@ public class CreateEventFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * This is a method to show the date and time to be chosen by the user
+     */
     private void showDateTimePicker(){
         showDatePicker();
     }
 
+    /**
+     * This is a method that formats the selected date and time to be displayed to the user
+     */
     private void displaySelectedDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         String dateString = dateFormat.format(selectedDateTime.getTime());
         dateText.setText(dateString);
     }
 
+    /**
+     * This is a method to show the calendar to the user to select the date
+     */
     private void showDatePicker(){
         int year = selectedDateTime.get(Calendar.YEAR);
         int month = selectedDateTime.get(Calendar.MONTH);
@@ -178,6 +189,9 @@ public class CreateEventFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    /**
+     * This is a method to show the clock to the user to select the time
+     */
     private void showTimePicker() {
         int hour = selectedDateTime.get(Calendar.HOUR_OF_DAY);
         int minute = selectedDateTime.get(Calendar.MINUTE);
@@ -194,21 +208,28 @@ public class CreateEventFragment extends Fragment {
         timePickerDialog.show();
     }
 
-
+    /**
+     * This generates a qr code based on a string
+     * @param text The text which the qr code will represent (in this case event id)
+     */
     //possibly add option to save qr code to phone (implement later)
     private void generateQRCode(String text){
     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
-        // Generate a QR code with size 400x400 pixels
         Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 500, 500);
-        qrCode.setImageBitmap(bitmap); // Display the QR code in the ImageView
+        qrCode.setImageBitmap(bitmap);
     } catch (WriterException e) {
         e.printStackTrace();
     }
 }
 
-    public void addEvent(@NonNull FirebaseFirestore db, String eventId, Event event){
-        db.collection("events").document(eventId)
+    /**
+     * This adds an event to the firebase
+     * @param db The firebase database
+     * @param event The event
+     */
+    public void addEvent(@NonNull FirebaseFirestore db, Event event){
+        db.collection("events").document(event.getEventId())
                 .set(event)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "Event successfully added");

@@ -22,13 +22,26 @@ import java.util.Map;
  * Fragment which prompts the user for initial facility creation in order to create events
  */
 public class FacilityFragment extends Fragment {
+    public FacilityFragment() {}
 
-    private User current_user = MainActivity.getCurrentUser();
-
-    public FacilityFragment() {
-        // Required empty public constructor
+    public static FacilityFragment newInstance(User user) {
+        FacilityFragment fragment = new FacilityFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("current_user", user);
+        fragment.setArguments(args);
+        return fragment;
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            current_user = (User) getArguments().getSerializable("current_user");
+        }
+    }
+
+    private User current_user = MainActivity.getCurrentUser();
 
    /* public static FacilityFragment newInstance(String param1, String param2) {
         FacilityFragment fragment = new FacilityFragment();
@@ -61,9 +74,8 @@ public class FacilityFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                //need to add validation functionality (ensure fields arent empty)
                 Facility facility = new Facility(uniqueId, facilityAddress.getText().toString(), facilityName.getText().toString());
-                createFacility(db,uniqueId,facility);
+                createFacility(db,facility);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new OrganizerFragment())
@@ -87,16 +99,14 @@ public class FacilityFragment extends Fragment {
     /**
      * Function which adds a facility to the current users document on firebase
      * @param db FireBase database
-     * @param uniqueId Current users id
      * @param facility New facility created by user
      */
-    private void createFacility(FirebaseFirestore db, String uniqueId, Facility facility) {
-        current_user.setFacility(facility);
+    public void createFacility(FirebaseFirestore db,  Facility facility) {
         current_user.setFacility(facility);
         Map<String, Object> updates = new HashMap<>();
         updates.put("facility", facility);
         updates.put("organizer", true);
-        db.collection("user").document(uniqueId)
+        db.collection("user").document(facility.getOwnerId())
                 .update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));

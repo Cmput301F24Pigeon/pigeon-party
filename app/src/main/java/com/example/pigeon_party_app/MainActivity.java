@@ -58,45 +58,10 @@ public class MainActivity extends AppCompatActivity{
     public static User getCurrentUser() {
         return currentUser;
     }
+
     public static Event getCurrentEvent() {
         return currentEvent;
     }
-
-//    public void addUser(User user) {
-//        //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
-//        String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-//
-//
-//        Map<String, Object> Users = new HashMap<>();
-//
-//        Users.put("name", user.getName());
-//        Users.put("email", user.getEmail());
-//        Users.put("phoneNumber", user.getPhoneNumber());
-//        Users.put("uniqueId", user.getUniqueId());
-//        Users.put("entrant", user.isEntrant());
-//        Users.put("organizer", user.isOrganizer());
-//        Users.put("facility", user.getFacility());
-//        Users.put("notificationStatus", user.hasNotificationsOn());
-//
-//        db.collection("user").document(uniqueId)
-//                .set(Users)
-//                .addOnSuccessListener(aVoid -> {
-//                    Log.d("FireStore", "Facility successfully added");
-//                })
-//                .addOnFailureListener(e ->{
-//                    Log.w("FireStore", "Error adding facility", e);
-//                });
-//
-//        /*
-//        db.collection("User").document(uniqueId).set(user).addOnSuccessListener(aVoid -> {
-//                    Log.d("FireStore", "Event successfully added");
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.w("FireStore", "Error adding event");
-//                });
-//                */
-//    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,26 +108,14 @@ public class MainActivity extends AppCompatActivity{
 
         profileButton = findViewById(R.id.button_profile);
         profileButton.setOnClickListener(v -> {
-            // The code commented out here is the correct code to open the ViewEntrantProfileFragment
-            // DO NOT CHANGE IT!
-            // Uncomment it once the logic has been implemented for the CreateEntrantProfileFragment
-
-//            User currentUser = MainActivity.getCurrentUser();
-//            if (currentUser.isEntrant()){
-//                getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-
-            // Code below is a temporary test to use the profile button to open the CreateUserProfileFragment
-            // Delete it once the correct logic has been implemented
-            getSupportFragmentManager()
+            User currentUser = MainActivity.getCurrentUser();
+            if (currentUser.isEntrant()){
+                getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
                         .addToBackStack(null)
                         .commit();
+            }
         });
 
         notificationButton = findViewById(R.id.button_notifications);
@@ -211,6 +164,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
     }
+
     //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);

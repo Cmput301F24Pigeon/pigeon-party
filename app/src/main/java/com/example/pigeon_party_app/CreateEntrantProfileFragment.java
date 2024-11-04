@@ -21,8 +21,9 @@ public class CreateEntrantProfileFragment extends DialogFragment {
 
     public User entrant;
 
-import java.util.HashMap;
-import java.util.Map;
+    private EditText createEntrantName;
+    private EditText createEntrantEmail;
+    private EditText createEntrantPhone;
 
 /**
  * this class is a fragment that allows app users to create a  profile with their information

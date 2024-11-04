@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
@@ -48,11 +49,25 @@ public class CreateEventFragment extends Fragment {
     private TextView eventCreatedMessage;
     private EditText dateText;
 
+    public CreateEventFragment() {}
+
+    public static CreateEventFragment newInstance(User user) {
+        CreateEventFragment fragment = new CreateEventFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("current_user", user);  // Make sure User implements Serializable
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            current_user = (User) getArguments().getSerializable("current_user");
+        }
     }
+
     //User user = new User("john doe", "johndoe@gmail.com"); need to get actual user
     private DatePickerDialog datePickerDialog;
 
@@ -192,7 +207,7 @@ public class CreateEventFragment extends Fragment {
     }
 }
 
-    private void addEvent(FirebaseFirestore db, String eventId, Event event){
+    public void addEvent(@NonNull FirebaseFirestore db, String eventId, Event event){
         db.collection("events").document(eventId)
                 .set(event)
                 .addOnSuccessListener(aVoid -> {

@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    testImplementation("org.robolectric:robolectric:4.8")
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation(libs.appcompat)
@@ -41,6 +42,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.leanback)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.fragment.testing)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
@@ -48,11 +51,13 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")
+    debugImplementation("androidx.fragment:fragment-testing-manifest:1.8.5")
 
+    androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
 }

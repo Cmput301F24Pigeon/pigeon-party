@@ -3,7 +3,7 @@ package com.example.pigeon_party_app;
 import android.widget.EditText;
 import org.apache.commons.validator.routines.EmailValidator;
 
-/*
+/**
 Purpose: this is to ensure the user input is valid. The validator needs to be customizable (custom error messages)
 because this class is needed to validate several attributes.
  */
@@ -17,11 +17,13 @@ public class Validator {
      */
     public static boolean isEmpty(EditText field, String errorMessage) {
         String input = field.getText().toString().trim();
+
         if (input.isEmpty()) {
             field.setError(errorMessage);
             field.requestFocus();
             return true;
         }
+
         return false;
     }
 
@@ -55,6 +57,7 @@ public class Validator {
         String input = field.getText().toString().trim();
 
         EmailValidator validator = EmailValidator.getInstance();
+
         if (input.isEmpty() || !validator.isValid(input)) {
             field.setError(errorMessage);
             field.requestFocus();
@@ -66,12 +69,12 @@ public class Validator {
 
     /**
      * Function checks if an EditText field is a phone number, and creates an error in the UI if it's not
-     * @param field EditText object being checked
+     *
+     * @param field        EditText object being checked
      * @param errorMessage String object that will be displayed if the EditText field is not a phone number
      * @return true if the field is a phone number, false if the field doesn't contain either 0 or 10 digits
      */
     public static boolean isPhoneNumber(EditText field, String errorMessage) {
-
         String input = field.getText().toString().trim();
 
         // https://stackoverflow.com/questions/14392270/how-do-i-check-if-a-string-contains-any-characters-from-a-given-set-of-character
@@ -83,5 +86,4 @@ public class Validator {
 
         return true;
     }
-
 }

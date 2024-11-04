@@ -1,5 +1,8 @@
 package com.example.pigeon_party_app;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,19 +17,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+import org.checkerframework.common.aliasing.qual.Unique;
+
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * this class is a fragment that allows app users to create a  profile with their information
+ */
 
 public class CreateEntrantProfileFragment extends Fragment {
 
     public CreateEntrantProfileFragment() {}
-
-    public static CreateEntrantProfileFragment newInstance() {
-        CreateEntrantProfileFragment fragment = new CreateEntrantProfileFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Nullable
     @Override
@@ -94,5 +97,16 @@ public class CreateEntrantProfileFragment extends Fragment {
                     Log.w("FireStore", "Error adding user", e);
                 });
 
+    }
+
+    /**
+     * newInstance method creates a mock fragment to for testing
+     * @return CreateEntrantProfileFragment the mock fragment being used for testing
+     */
+    public static CreateEntrantProfileFragment newInstance() {
+        CreateEntrantProfileFragment fragment = new CreateEntrantProfileFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

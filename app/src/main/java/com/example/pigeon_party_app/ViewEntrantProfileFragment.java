@@ -13,6 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * This class is a fragment that allows the user to view their profile and has a button to take them to an edit fragment
+ */
+
 public class ViewEntrantProfileFragment extends Fragment {
 
     public User entrant;

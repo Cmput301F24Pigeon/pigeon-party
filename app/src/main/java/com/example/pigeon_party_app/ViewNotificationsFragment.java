@@ -69,7 +69,7 @@ public class ViewNotificationsFragment extends Fragment {
      * This function updates the user's notification status (on/off) in Firebase
      * @param user The User object that has had the notification status changed through the app's UI
      */
-    private void updateUserNotificationStatus(User user) {
+    public void updateUserNotificationStatus(User user) {
         String userId = user.getUniqueId();
 
         // Update syntax from Firebase docs: https://firebase.google.com/docs/firestore/manage-data/add-data#java_10
@@ -88,5 +88,18 @@ public class ViewNotificationsFragment extends Fragment {
                         Log.w(TAG, "Error updating document", e);
                     }
                 });
+    }
+
+    /**
+     * newInstance method creates a mock fragment to for testing
+     * @param user The User object being passed to the fragment for testing
+     * @return ViewNotificationsFragment the mock fragment being used for testing
+     */
+    public static ViewNotificationsFragment newInstance(User user) {
+        ViewNotificationsFragment fragment = new ViewNotificationsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("current_user", user);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

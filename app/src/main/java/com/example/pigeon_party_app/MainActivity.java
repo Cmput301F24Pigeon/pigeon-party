@@ -228,11 +228,11 @@ public class MainActivity extends AppCompatActivity{
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(!queryDocumentSnapshots.isEmpty()){
+                        if(queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()){
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list){
                                 Event event = d.toObject(Event.class);
-                                if(!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+                                if(event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
                                     eventArrayList.add(event);
                                 }
                             }
@@ -241,6 +241,23 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
                 });
+    }
+    public void checkUserNotifications(User user) {
+        db.collection("users").document(user.getUniqueId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+                        if (notifications != null && !notifications.isEmpty()) {
+                            for (String notification : notifications) {
+                                Log.d("User Notification", notification);
+                            }
+                            user.clearNotifications();
+                            db.collection("users").document(user.getUniqueId()).update("notifications", user.getNotifications());
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error retrieving notifications", e));
     }
 
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {

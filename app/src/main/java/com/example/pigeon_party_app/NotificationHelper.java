@@ -6,6 +6,10 @@ import android.content.Context;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
+
 // https://stackoverflow.com/questions/48198954/creating-a-notification-with-notification-channel-gives-no-effect
 // Stack thread on creating a Notification class
 

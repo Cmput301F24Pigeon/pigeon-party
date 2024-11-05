@@ -1,6 +1,8 @@
 package com.example.pigeon_party_app;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
     //first testing with just name
@@ -12,11 +14,12 @@ public class User implements Serializable {
     private boolean entrant;
     private boolean organizer;
     private boolean notificationStatus;
+    private List<String> notifications;
     //private boolean isAdmin;
     // need to make an images for our profile
 
-    public User(){
-
+    public User() {
+        notifications = new ArrayList<>();
     }
 
     public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus) {
@@ -28,6 +31,7 @@ public class User implements Serializable {
         this.entrant = isEntrant;
         this.facility = facility;
         this.notificationStatus = notificationStatus;
+        this.notifications = notifications != null ? notifications : new ArrayList<>();
     }
 
     public String getName() {
@@ -92,5 +96,17 @@ public class User implements Serializable {
 
     public boolean hasNotificationsOn() {
         return notificationStatus;
+    }
+
+    public List<String> getNotifications() {
+        return notifications;
+    }
+
+    public void addNotification(String notification) {
+        this.notifications.add(notification);
+    }
+
+    public void clearNotifications() {
+        this.notifications.clear(); // Clear notifications if needed
     }
 }

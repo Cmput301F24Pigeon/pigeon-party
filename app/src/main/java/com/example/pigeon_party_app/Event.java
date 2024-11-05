@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
@@ -218,8 +219,7 @@ public class Event implements Serializable {
      * This method sends notifications to all of the users in the event list based on their status.
      * @param status The status of the user in the event list
      */
-    public void notifyUserByStatus(String status) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public void notifyUserByStatus(FirebaseFirestore db, String status) {
         String message;
 
         switch (status) {
@@ -240,15 +240,12 @@ public class Event implements Serializable {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Map<String, Map<String, Object>> usersToNotify;
-
-                        usersToNotify = null;
+                        Map<String, Map<String, Object>> usersToNotify = null;
                         if ("selected".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("waitlisted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
-                        }
-                        else if ("cancelled".equals(status)) {
+                        } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
                         }
 
@@ -256,7 +253,7 @@ public class Event implements Serializable {
                             for (Map.Entry<String, Map<String, Object>> entry : usersToNotify.entrySet()) {
                                 User user = (User) entry.getValue().get("user");
                                 if (user != null && user.hasNotificationsOn()) {
-                                    notificationHelper.notifyUser(user, this, message);
+                                    addNotificationToUser(db, user, message);
                                 }
                             }
                         }
@@ -264,6 +261,23 @@ public class Event implements Serializable {
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firebase", "Error getting users for status: " + status, e);
+                });
+    }
+
+    /**
+     * This is a method that adds a notification to the user document in firebase
+     * @param db
+     * @param user
+     * @param message
+     */
+    public void addNotificationToUser(FirebaseFirestore db, User user, String message) {
+        db.collection("users").document(user.getUniqueId())
+                .update("notifications", FieldValue.arrayUnion(message))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "Notification added to user: " + user.getUniqueId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firebase", "Error adding notification to user: " + user.getUniqueId(), e);
                 });
     }
 }

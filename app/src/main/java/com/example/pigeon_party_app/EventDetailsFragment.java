@@ -16,10 +16,14 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
+/**
+ * This class is a fragment that shows the user event details after the user scans the QR Code, also
+ * allows the user to sign up for the event if the waitlist is not full
+ */
 public class EventDetailsFragment extends Fragment {
     private TextView eventTitle;
     private TextView eventDateTime;
-    private TextView eventLocation;
+    //private TextView eventLocation;
     private TextView eventDetails;
     private TextView eventCapacity;
     private Event event = MainActivity.getCurrentEvent();
@@ -37,7 +41,7 @@ public class EventDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
         eventTitle = view.findViewById(R.id.eventName);
         eventDateTime = view.findViewById(R.id.eventDateTime);
-        eventLocation = view.findViewById(R.id.eventLocation);
+        //eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
@@ -54,6 +58,10 @@ public class EventDetailsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This method handles everything to do with the signup button: setting the text, firebase
+     * integration, and updating the event's waitlist
+     */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void signUpButton(){
         if (event.getWaitlistCapacity() == 0){

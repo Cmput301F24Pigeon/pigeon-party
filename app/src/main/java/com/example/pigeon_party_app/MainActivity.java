@@ -1,18 +1,13 @@
 package com.example.pigeon_party_app;
 
-import android.app.NotificationManager;
-import android.content.Context;
-
-import static java.lang.reflect.Array.get;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -23,25 +18,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.util.Currency;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -50,6 +36,9 @@ public class MainActivity extends AppCompatActivity{
     private ImageView profileButton;
     private ImageView notificationButton;
     private ImageButton addEventButton;
+    private ListView eventListView;
+    private EventsArrayAdapter eventsArrayAdapter;
+    private ArrayList<Event> eventArrayList;
 
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
@@ -75,14 +64,16 @@ public class MainActivity extends AppCompatActivity{
         receiveCurrentUser();
 
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        eventArrayList = new ArrayList<>();
 
+        eventListView = findViewById(R.id.event_list);
+        receiveEvents();
 
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
@@ -199,6 +190,32 @@ public class MainActivity extends AppCompatActivity{
                 .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    //https://www.geeksforgeeks.org/how-to-create-dynamic-listview-in-android-using-firebase-firestore/
+
+    /**
+     * Receives events user is associated with and adapts them to the ListView
+     */
+    private void receiveEvents(){
+        String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("events").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(!queryDocumentSnapshots.isEmpty()){
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot d : list){
+                                Event event = d.toObject(Event.class);
+                                if(!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+                                    eventArrayList.add(event);
+                                }
+                            }
+                            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+                            eventListView.setAdapter(eventsArrayAdapter);
+                        }
+                    }
+                });
     }
 
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {

@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.uiautomator)
     testImplementation("org.robolectric:robolectric:4.8")
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")

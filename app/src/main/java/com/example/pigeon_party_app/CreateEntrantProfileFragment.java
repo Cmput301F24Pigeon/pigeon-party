@@ -62,7 +62,7 @@ public class CreateEntrantProfileFragment extends Fragment {
                 User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("user", user);
                 startActivity(intent);
                 getActivity().finish();
             }

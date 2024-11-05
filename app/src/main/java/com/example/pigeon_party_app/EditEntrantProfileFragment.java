@@ -26,6 +26,7 @@ import java.util.Map;
 
 /**
  * This class is a dialogue fragment that allows the user to change their profile information
+ * This class is part of a user story for the final milestone and is not complete
  */
 
 public class EditEntrantProfileFragment extends DialogFragment {

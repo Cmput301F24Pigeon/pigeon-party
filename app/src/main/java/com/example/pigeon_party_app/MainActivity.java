@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity{
 
         notificationButton = findViewById(R.id.button_notifications);
         notificationButton.setOnClickListener(v -> {
-            User currentUser = MainActivity.getCurrentUser();
+            currentUser = getCurrentUser();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                    MainActivity.currentUser = getUserFromFirebase(documentSnapshot);
                 }
                 else{
                     getSupportFragmentManager()
@@ -199,6 +199,20 @@ public class MainActivity extends AppCompatActivity{
                 .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
+        String userName = (documentSnapshot.get("name")).toString();
+        String userEmail = (documentSnapshot.get("email")).toString();
+        String userPhoneNumber = (documentSnapshot.get("phoneNumber")).toString();
+        String userId = (documentSnapshot.get("uniqueId")).toString();
+        boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
+        boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
+        Facility facility = (Facility)(documentSnapshot.get("facility"));
+        boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
+        User user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, facility, notificationStatus);
+
+        return user;
     }
 
 

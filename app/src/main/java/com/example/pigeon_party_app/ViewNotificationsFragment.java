@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import static com.example.pigeon_party_app.MainActivity.db;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
  * This class is a fragment that allows the user to view their notifications and to turn their notifications on or off
@@ -24,14 +27,14 @@ import com.google.firebase.firestore.DocumentReference;
 
 public class ViewNotificationsFragment extends Fragment {
 
-    public User user;
+    public User currentUser;
 
     public static String TAG = "ViewNotificationFragment";
 
     public ViewNotificationsFragment() {}
 
     public ViewNotificationsFragment(User user) {
-        this.user = user;
+        this.currentUser = user;
     }
 
     @Nullable
@@ -40,17 +43,16 @@ public class ViewNotificationsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view_notifications, container, false);
         SwitchCompat notificationSwitch = view.findViewById(R.id.notification_switch);
 
-        Log.d("Set switch", "Notification Status: " + user.hasNotificationsOn());
-        if (user.hasNotificationsOn()) {
+        if (currentUser.hasNotificationsOn()) {
             notificationSwitch.setChecked(true);
         }
 
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                boolean currentNotificationStatus = user.hasNotificationsOn();
-                user.setNotificationsOn(!currentNotificationStatus);
-                updateUserNotificationStatus(user);
+                boolean currentNotificationStatus = currentUser.hasNotificationsOn();
+                currentUser.setNotificationsOn(!currentNotificationStatus);
+                updateUserNotificationStatus(currentUser);
             }
         });
 
@@ -73,7 +75,7 @@ public class ViewNotificationsFragment extends Fragment {
         String userId = user.getUniqueId();
 
         // Update syntax from Firebase docs: https://firebase.google.com/docs/firestore/manage-data/add-data#java_10
-        DocumentReference userRef = MainActivity.db.collection("user").document(userId);
+        DocumentReference userRef = db.collection("user").document(userId);
 
         userRef.update("notificationStatus", user.hasNotificationsOn())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -1,6 +1,13 @@
 package com.example.pigeon_party_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
+
+import static java.lang.reflect.Array.get;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,11 +15,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,18 +64,13 @@ public class MainActivity extends AppCompatActivity{
     public static Event getCurrentEvent() {
         return currentEvent;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-
-
         receiveCurrentUser();
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -92,7 +100,6 @@ public class MainActivity extends AppCompatActivity{
                             .commit();
                 }
             } else {
-                // Handle the case where currentUser is null, e.g., show a toast or log an error
                 Log.e("MainActivity", "Current user is null. Cannot determine organizer status.");
             }
         });
@@ -143,6 +150,7 @@ public class MainActivity extends AppCompatActivity{
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = (documentSnapshot.toObject(User.class));
+                    askNotificationPermission();
                 }
                 else{
                     getSupportFragmentManager()
@@ -191,6 +199,27 @@ public class MainActivity extends AppCompatActivity{
                 .addToBackStack(null)
                 .commit();
     }
+    //https://www.youtube.com/watch?v=JeZJaafE5ik
+    private void askNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)==
+                PackageManager.PERMISSION_GRANTED){
+            MainActivity.currentUser.setNotificationsOn(true);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                requestPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+    private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                    MainActivity.currentUser.setNotificationsOn(false);
+                }
+            });
+
 
     //https://www.geeksforgeeks.org/how-to-create-dynamic-listview-in-android-using-firebase-firestore/
 

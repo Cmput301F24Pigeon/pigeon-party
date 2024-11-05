@@ -51,7 +51,7 @@ public class NotificationHelper {
         }
     }
     /**
-     * Allows notification to be sent to entrants based on their status
+     * Allows notification to be sent to entrants
      *
      * @param user
      * @param event

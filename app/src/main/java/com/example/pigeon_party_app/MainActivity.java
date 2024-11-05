@@ -193,6 +193,10 @@ public class MainActivity extends AppCompatActivity{
     }
 
     //https://www.geeksforgeeks.org/how-to-create-dynamic-listview-in-android-using-firebase-firestore/
+
+    /**
+     * Receives events user is associated with and adapts them to the ListView
+     */
     private void receiveEvents(){
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection("events").get()

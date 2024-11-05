@@ -5,13 +5,9 @@ import android.util.Log;
 import android.widget.ImageView;
 
 
-import android.widget.ImageView;
-
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.type.DateTime;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +31,10 @@ public class Event implements Serializable {
     private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
     private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
     private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+
+    public Event(){
+
+    }
 
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
             details, Facility facility, boolean requiresLocation, Map<
@@ -89,10 +89,12 @@ public class Event implements Serializable {
         return requiresLocation;
     }
 
-
-
     public String getEventId() {
         return eventId;
+    }
+
+    public void setUsersWaitlisted(Map<String, Map<String, Object>> usersWaitlist) {
+        this.usersWaitlist = usersWaitlist;
     }
 
     /**
@@ -103,7 +105,6 @@ public class Event implements Serializable {
     public void addUserToWaitlist(User user) {
         usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
     }
-
 
     /**
      * Adds a user to the usersInvited map.
@@ -174,7 +175,7 @@ public class Event implements Serializable {
      */
     public Map<String, Object> updateFirebaseEventWaitlist(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("Waitlist", event.getUsersWaitlisted());
+        updates.put("usersWaitlisted", event.getUsersWaitlisted());
         return updates;
     }
 

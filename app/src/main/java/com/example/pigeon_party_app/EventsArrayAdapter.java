@@ -37,14 +37,13 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
 
         TextView date = view.findViewById(R.id.date);
         TextView eventName = view.findViewById(R.id.eventName);
-       // TextView status = view.findViewById(R.id.status);
+        TextView status = view.findViewById(R.id.status);
         //address.setText(event.getFacility.getAddress);
-        date.setText(event.getDateTime().toString());
+        date.setText("Date/Time: " + event.getDateTime().toString());
         eventName.setText(event.getTitle());
-        //date.setText(event.getStatus());
+        status.setText("Status: " + (CharSequence) event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()).get("status"));
 
         return view;
-
 
     }
 

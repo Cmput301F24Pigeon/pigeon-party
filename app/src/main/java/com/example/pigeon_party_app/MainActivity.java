@@ -212,12 +212,8 @@ public class MainActivity extends AppCompatActivity{
     }
     private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),isGranted -> {
-                if (isGranted) {
-                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-                    MainActivity.currentUser.setNotificationsOn(false);
-                }
+                if (!isGranted) {
+                    MainActivity.currentUser.setNotificationsOn(false);                }
             });
 
 

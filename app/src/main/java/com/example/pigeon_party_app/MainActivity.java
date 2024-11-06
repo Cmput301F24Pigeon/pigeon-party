@@ -300,16 +300,17 @@ public class MainActivity extends AppCompatActivity{
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if(queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()){
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list){
+                            for (DocumentSnapshot d : list) {
                                 Event event = d.toObject(Event.class);
 
                                 if((!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId))
                                 || (!event.getUsersInvited().isEmpty() && event.getUsersInvited().containsKey(uniqueId))
-                                || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))){
+                                || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))) {
 
-                                if(event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+                                    if (event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)) {
 
-                                    eventArrayList.add(event);
+                                        eventArrayList.add(event);
+                                    }
                                 }
                             }
                             eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);

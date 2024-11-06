@@ -10,7 +10,7 @@
 | **Event**             |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Store details about a specific event <br> - Allow Entrants to view details and register. Gives us a qr code for the event <br> - Stores list of entrants to send notifications | - Collaborates with User <br> - Collaborates with Facility <br> - Collaborates with NotificationHelper  |
+| - Store details about a specific event <br> - Allow Entrants to view details and register <br> - Gives us a qr code for the event <br> - Stores list of entrants to send notifications | - Collaborates with User <br> - Collaborates with Facility <br> - Collaborates with NotificationHelper  |
 
 
 | **Facility**          |                   | 

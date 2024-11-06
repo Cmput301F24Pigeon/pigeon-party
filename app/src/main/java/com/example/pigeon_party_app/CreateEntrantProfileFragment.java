@@ -87,7 +87,7 @@ public class CreateEntrantProfileFragment extends Fragment {
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
         Users.put("notificationStatus", user.hasNotificationsOn());
-
+        Users.put("notifications", user.getNotifications());
         MainActivity.db.collection("user").document(uniqueId)
                 .set(Users)
                 .addOnSuccessListener(aVoid -> {

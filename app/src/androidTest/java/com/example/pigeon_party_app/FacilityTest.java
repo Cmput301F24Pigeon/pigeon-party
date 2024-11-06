@@ -20,9 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 @RunWith(AndroidJUnit4.class)
 public class FacilityTest {
@@ -97,7 +94,7 @@ public class FacilityTest {
      * Method to verify that the facility was added to the test user in firebase
      * @param userId The unique id of the user who owns the facility
      */
-    private void verifyFacilityInFirestore(String UserId) {
+    private void verifyFacilityInFirestore(String userId) {
         db.collection("user").document(userId).get(Source.SERVER)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -122,14 +119,13 @@ public class FacilityTest {
     /**
      * A method to be performed after the test method to remove any data that was added to the firebase
      */
-
     @After
-    public void removeData() {
+    public void tearDown() {
         if (testUser != null) {
             db.collection("user").document(testUser.getUniqueId())
                     .delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test event deleted"))
-                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test event", e));
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user deleted"))
+                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test user", e));
         }
     }
 

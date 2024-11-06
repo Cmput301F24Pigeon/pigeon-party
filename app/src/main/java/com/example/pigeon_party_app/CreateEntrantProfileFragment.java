@@ -59,7 +59,7 @@ public class CreateEntrantProfileFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true);
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);

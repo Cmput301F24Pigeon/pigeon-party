@@ -75,6 +75,7 @@ public class SendNotificationsFragmentTest {
      */
     @Test
     public void testSendsNotifications() throws UiObjectNotFoundException {
+        device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
         scenario.onActivity(activity  -> {
@@ -87,17 +88,16 @@ public class SendNotificationsFragmentTest {
         if (permissionDialog.waitForExists(4000)) {
             permissionDialog.click();
         }
-        onView(withId(R.id.check_selected)).perform(click());
+        onView(withId(R.id.check_invited)).perform(click());
         onView(withText("Confirm")).perform(click());
         scenario.close();
 
         ActivityScenario<MainActivity> relaunchScenario = ActivityScenario.launch(MainActivity.class);
 
         device.openNotification();
-        UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have been selected for the event: testEventTitle"));
+        UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have been invited to the event: testEventTitle"));
         if (notificationText.waitForExists(4000)){
             assertTrue("Notification was received", notificationText.exists());
-            device.pressHome();
         }
         else{
             fail("Notification was not received");

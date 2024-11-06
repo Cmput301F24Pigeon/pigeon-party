@@ -53,13 +53,13 @@ public class SendNotificationsFragment extends DialogFragment {
                 .setTitle("Send Notifications")
                 .setPositiveButton("Confirm", (dialog, id) -> {
                     CheckBox waitlisted = view.findViewById(R.id.check_waitlist);
-                    CheckBox selected = view.findViewById(R.id.check_selected);
+                    CheckBox selected = view.findViewById(R.id.check_invited);
                     CheckBox cancelled = view.findViewById(R.id.check_cancelled);
                     if (waitlisted.isChecked()) {
                         event.notifyUserByStatus(db,"waitlisted");
                     }
                     if (selected.isChecked()) {
-                        event.notifyUserByStatus(db,"selected");
+                        event.notifyUserByStatus(db,"invited");
                     }
                     if (cancelled.isChecked()) {
                         event.notifyUserByStatus(db,"cancelled");

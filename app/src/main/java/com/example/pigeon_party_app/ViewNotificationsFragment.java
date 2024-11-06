@@ -98,7 +98,7 @@ public class ViewNotificationsFragment extends Fragment {
      * @return ViewNotificationsFragment the mock fragment being used for testing
      */
     public static ViewNotificationsFragment newInstance(User user) {
-        ViewNotificationsFragment fragment = new ViewNotificationsFragment();
+        ViewNotificationsFragment fragment = new ViewNotificationsFragment(user);
         Bundle args = new Bundle();
         args.putSerializable("current_user", user);
         fragment.setArguments(args);

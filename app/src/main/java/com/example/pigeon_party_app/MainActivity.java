@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * This is the main activity which serves as the home screen of the app
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private ImageView facilityButton;
     private ImageView profileButton;
@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity{
     public static Event getCurrentEvent() {
         return currentEvent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        notificationHelper = new NotificationHelper(this);
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity{
         profileButton = findViewById(R.id.button_profile);
         profileButton.setOnClickListener(v -> {
             User currentUser = MainActivity.getCurrentUser();
-            if (currentUser.isEntrant()){
+            if (currentUser.isEntrant()) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
@@ -146,45 +148,47 @@ public class MainActivity extends AppCompatActivity{
         // notificationHelper.notifyUserIfChosen(currentUser, event);
 
         addEventButton = findViewById(R.id.button_add_event);
-        addEventButton.setOnClickListener(v->startQRScanner());
-
-        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Remove yourself from this event?");
-                builder.setCancelable(true);
-                builder.setNegativeButton("Back", (DialogInterface.OnClickListener) (dialog, which) -> {
-                    dialog.cancel();
-                });
-                builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
-                    User currentUser = MainActivity.getCurrentUser();
-                    currentEvent = eventsArrayAdapter.getItem(position);
-                    currentEvent.removeUserFromWaitlist(currentUser);
-                    currentEvent.addUserToCancelled(currentUser);
-                    Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
-                    Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
-                    db.collection("events").document(currentEvent.getEventId())
-                            .update(waitlistUpdates)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "Event's waitlist successfully updated");
-                            })
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                    db.collection("events").document(currentEvent.getEventId())
-                            .update(cancelledListUpdates)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "Event's cancelled list successfully updated");
-                            })
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                receiveEvents();
-            }
-        });
+        addEventButton.setOnClickListener(v -> startQRScanner());
+        if (currentUser != null) {
+            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Remove yourself from this event?");
+                    builder.setCancelable(true);
+                    builder.setNegativeButton("Back", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        User currentUser = MainActivity.getCurrentUser();
+                        currentEvent = eventsArrayAdapter.getItem(position);
+                        currentEvent.removeUserFromWaitlist(currentUser);
+                        currentEvent.addUserToCancelled(currentUser);
+                        Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
+                        Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+                        db.collection("events").document(currentEvent.getEventId())
+                                .update(waitlistUpdates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Event's waitlist successfully updated");
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                        db.collection("events").document(currentEvent.getEventId())
+                                .update(cancelledListUpdates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Event's cancelled list successfully updated");
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    receiveEvents();
+                }
+            });
+        }
     }
 
-    public void receiveCurrentUser(){
+
+    public void receiveCurrentUser() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         DocumentReference docRef = db.collection("user").document(uniqueId);
@@ -195,11 +199,10 @@ public class MainActivity extends AppCompatActivity{
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = getUserFromFirebase(documentSnapshot);
                     askNotificationPermission();
-                    if (currentUser.getNotifications() == null){
+                    if (currentUser.getNotifications() == null) {
                         currentUser.setNotifications(new ArrayList<>());
                     }
-                }
-                else{
+                } else {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
@@ -225,6 +228,7 @@ public class MainActivity extends AppCompatActivity{
 
     /**
      * This method gets the results from the QR scanner
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -244,8 +248,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
             });
-        }
-        else {
+        } else {
             finish();
         }
         receiveEvents();
@@ -266,11 +269,11 @@ public class MainActivity extends AppCompatActivity{
      */
     //https://www.youtube.com/watch?v=JeZJaafE5ik
     private void askNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)==
-                PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED) {
             MainActivity.currentUser.setNotificationsOn(true);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 requestPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
@@ -280,9 +283,10 @@ public class MainActivity extends AppCompatActivity{
      * This method sets users in app notification preferences to false
      */
     private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),isGranted -> {
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (!isGranted) {
-                    MainActivity.currentUser.setNotificationsOn(false);                }
+                    MainActivity.currentUser.setNotificationsOn(false);
+                }
             });
 
 
@@ -291,41 +295,44 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Receives events user is associated with and adapts them to the ListView
      */
-    private void receiveEvents(){
+    private void receiveEvents() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         eventArrayList.clear();
         db.collection("events").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()){
+                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list){
+                            for (DocumentSnapshot d : list) {
                                 Event event = d.toObject(Event.class);
 
-                                if((!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId))
-                                || (!event.getUsersInvited().isEmpty() && event.getUsersInvited().containsKey(uniqueId))
-                                || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))){
+                                if ((!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId))
+                                        || (!event.getUsersInvited().isEmpty() && event.getUsersInvited().containsKey(uniqueId))
+                                        || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))) {
 
-                                if(event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+                                    if (event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)) {
 
-                                    eventArrayList.add(event);
+                                        eventArrayList.add(event);
+                                    }
                                 }
+                                eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+                                eventListView.setAdapter(eventsArrayAdapter);
                             }
-                            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
-                            eventListView.setAdapter(eventsArrayAdapter);
                         }
                     }
+
                 });
 
     }
 
     /**
      * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
+     *
      * @param user The user which the method checks notifications
      */
     public void checkUserNotifications(User user) {
-       notificationHelper = new NotificationHelper(this);
+        notificationHelper = new NotificationHelper(this);
         db.collection("user").document(user.getUniqueId())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -355,6 +362,7 @@ public class MainActivity extends AppCompatActivity{
                 });
     }
 
+
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
         String userName = (documentSnapshot.get("name")).toString();
         String userEmail = (documentSnapshot.get("email")).toString();
@@ -362,12 +370,12 @@ public class MainActivity extends AppCompatActivity{
         String userId = (documentSnapshot.get("uniqueId")).toString();
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
-        Facility facility = (Facility)documentSnapshot.get("facility");
+        Facility facility = (Facility) documentSnapshot.get("facility");
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
         User user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, facility, notificationStatus);
 
         return user;
     }
-
-
 }
+
+

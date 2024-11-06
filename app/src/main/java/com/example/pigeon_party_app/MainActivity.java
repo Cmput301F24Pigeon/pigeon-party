@@ -42,7 +42,9 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This is the main activity which serves as the home screen of the app
+ */
 public class MainActivity extends AppCompatActivity{
 
     private ImageView facilityButton;
@@ -170,6 +172,9 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * This method initializes the QR scanner
+     */
     //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -178,6 +183,13 @@ public class MainActivity extends AppCompatActivity{
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.initiateScan();
     }
+
+    /**
+     * This method gets the results from the QR scanner
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -198,13 +210,20 @@ public class MainActivity extends AppCompatActivity{
             finish();
         }
     }
-    //uncomment once eventdetails can accept eventid
+
+    /**
+     * This method shows the event details fragment
+     */
     private void showEventDetailsFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
     }
+
+    /**
+     * This method asks user for permission to receive notification
+     */
     //https://www.youtube.com/watch?v=JeZJaafE5ik
     private void askNotificationPermission() {
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)==
@@ -216,6 +235,10 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+
+    /**
+     * This method sets users in app notification preferences to false
+     */
     private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),isGranted -> {
                 if (!isGranted) {
@@ -249,6 +272,11 @@ public class MainActivity extends AppCompatActivity{
                 });
 
     }
+
+    /**
+     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
+     * @param user The user which the method checks notifications
+     */
     public void checkUserNotifications(User user) {
        notificationHelper = new NotificationHelper(this);
         db.collection("user").document(user.getUniqueId())

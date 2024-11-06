@@ -23,11 +23,11 @@
         android:text="Waitlisted Participants" />
 
     <CheckBox
-        android:id="@+id/check_selected"
+        android:id="@+id/check_invited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Selected Participants" />
+        android:text="Invited Participants" />
 
     <CheckBox
         android:id="@+id/check_cancelled"

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to create and manage users
+ */
 public class User implements Serializable {
     //first testing with just name
     private Facility facility;
@@ -108,5 +111,9 @@ public class User implements Serializable {
 
     public void clearNotifications() {
         this.notifications.clear(); // Clear notifications if needed
+    }
+
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
     }
 }

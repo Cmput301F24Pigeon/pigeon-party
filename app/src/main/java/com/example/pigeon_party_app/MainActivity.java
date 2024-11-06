@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity{
     private ListView eventListView;
     private EventsArrayAdapter eventsArrayAdapter;
     private ArrayList<Event> eventArrayList;
-
+    private NotificationHelper notificationHelper;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
     public static Event currentEvent;
@@ -71,18 +71,21 @@ public class MainActivity extends AppCompatActivity{
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         receiveCurrentUser();
+        if (currentUser != null) {
+            NotificationHelper notificationHelper = new NotificationHelper(this);
+            checkUserNotifications(currentUser);
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        eventArrayList = new ArrayList<>();
-
-        eventListView = findViewById(R.id.event_list);
-        receiveEvents();
-
+        if (currentUser != null) {
+            eventArrayList = new ArrayList<>();
+            eventListView = findViewById(R.id.event_list);
+            receiveEvents();
+        }
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
             if (MainActivity.currentUser != null) {
@@ -151,6 +154,9 @@ public class MainActivity extends AppCompatActivity{
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = getUserFromFirebase(documentSnapshot);
                     askNotificationPermission();
+                    if (currentUser.getNotifications() == null){
+                        currentUser.setNotifications(new ArrayList<>());
+                    }
                 }
                 else{
                     getSupportFragmentManager()
@@ -241,23 +247,37 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
                 });
+
     }
     public void checkUserNotifications(User user) {
-        db.collection("users").document(user.getUniqueId())
+       notificationHelper = new NotificationHelper(this);
+        db.collection("user").document(user.getUniqueId())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+
                         if (notifications != null && !notifications.isEmpty()) {
-                            for (String notification : notifications) {
-                                Log.d("User Notification", notification);
-                            }
+                            String message = notifications.get(0);
+                            notificationHelper.notifyUser(user, message);
+
                             user.clearNotifications();
-                            db.collection("users").document(user.getUniqueId()).update("notifications", user.getNotifications());
+                            db.collection("user").document(user.getUniqueId())
+                                    .update("notifications", user.getNotifications())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating notifications", e);
+                                    });
                         }
+                    } else {
+                        Log.w("Firestore", "User document not found");
                     }
                 })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error retrieving notifications", e));
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error retrieving user document", e);
+                });
     }
 
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {

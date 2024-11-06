@@ -5,6 +5,8 @@ import android.util.Log;
 import android.widget.ImageView;
 
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -16,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * This class is used to create events
+ */
 public class Event implements Serializable {
     private NotificationHelper notificationHelper;
     private String eventId;
@@ -216,8 +220,9 @@ public class Event implements Serializable {
         }
 
     /**
-     * This method sends notifications to all of the users in the event list based on their status.
+     * This method uses the addNotificationToUser method to add a notification message to the users notification list
      * @param status The status of the user in the event list
+     * @param db The firestore database
      */
     public void notifyUserByStatus(FirebaseFirestore db, String status) {
         String message;
@@ -235,50 +240,66 @@ public class Event implements Serializable {
             default:
                 return;
         }
-
+        Log.w("Bad","a");
         db.collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
+                    Log.w("Bad","b");
                     if (documentSnapshot.exists()) {
                         Map<String, Map<String, Object>> usersToNotify = null;
-                        if ("selected".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
-                        } else if ("waitlisted".equals(status)) {
+                        Log.w("Bad","c");
+                        if ("waitlisted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
+                        } else if ("selected".equals(status)) {
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
                         }
 
                         if (usersToNotify != null) {
                             for (Map.Entry<String, Map<String, Object>> entry : usersToNotify.entrySet()) {
-                                User user = (User) entry.getValue().get("user");
-                                if (user != null && user.hasNotificationsOn()) {
-                                    addNotificationToUser(db, user, message);
+                                String userId = entry.getKey();
+                                if (userId!= null) {
+
+                                    addNotificationToUser(db, userId, message); // Add notification to user
                                 }
                             }
                         }
-                    }
+                        }
+
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("Firebase", "Error getting users for status: " + status, e);
+                    Log.w("Firebase", "Error getting event data", e);
                 });
     }
 
     /**
      * This is a method that adds a notification to the user document in firebase
      * @param db
-     * @param user
+     * @param userId
      * @param message
      */
-    public void addNotificationToUser(FirebaseFirestore db, User user, String message) {
-        db.collection("users").document(user.getUniqueId())
-                .update("notifications", FieldValue.arrayUnion(message))
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Notification added to user: " + user.getUniqueId());
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firebase", "Error adding notification to user: " + user.getUniqueId(), e);
-                });
+    public void addNotificationToUser(FirebaseFirestore db, String userId, String message) {
+        DocumentReference userRef = db.collection("user").document(userId);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    userRef.update("notifications", FieldValue.arrayUnion(message))
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firebase", "Notification added to user: " + userId);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w("Firebase", "Error adding notification to user: " + userId, e);
+                            });
+                } else {
+                    Log.w("Firebase", "User document does not exist: " + userId);
+                }
+            } else {
+                Log.w("Firebase", "Error fetching user document: ", task.getException());
+            }
+        });
     }
 }
 

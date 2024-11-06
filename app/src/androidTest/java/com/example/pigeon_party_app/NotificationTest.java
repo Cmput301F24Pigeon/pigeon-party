@@ -31,7 +31,7 @@ public class NotificationTest {
     private Facility testFacility;
 
     /**
-     * This method is performed before the tests to set up the device for UI testing
+     * This method is performed before the tests to set up the device and any necessary variables for UI testing
      */
     @Before
     public void setUp() {
@@ -62,7 +62,7 @@ public class NotificationTest {
         Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
         device.openNotification();
 
-        notificationHelper.notifyUser(testUser, testEvent, "This is a test notification");
+        notificationHelper.notifyUser(testUser,"This is a test notification");
 
         UiObject notificationText = device.findObject(new UiSelector().text("This is a test notification"));
         if (notificationText.waitForExists(4000)){

@@ -2,30 +2,17 @@ package com.example.pigeon_party_app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
@@ -34,6 +21,7 @@ import androidx.test.uiautomator.UiSelector;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.junit.After;
 import org.junit.Before;
 
 import org.junit.Rule;
@@ -49,19 +37,25 @@ public class SendNotificationsFragmentTest {
     private FirebaseFirestore db;
     private Facility testFacility;
     private User testUser;
+    private String testUserID;
     private Event testEvent;
     private UiDevice device;
-    private Context context;
+    Context context;
     private Map<String, Map<String, Object>> testUserMap;
 
+    /**
+     * Method which creates the necessary variables to carry out the test
+     */
     @Before
     public void setUp() {
+        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        testUserID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         context = ApplicationProvider.getApplicationContext();
         db = FirebaseFirestore.getInstance();
         testUserMap = new HashMap<>();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"8434f0de71be59b1",true,true,testFacility,false);
+        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false);
         testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())
@@ -75,6 +69,10 @@ public class SendNotificationsFragmentTest {
 
     }
 
+    /**
+     * Method to test that SendNotificationFragment works properly by sending notification to a test user
+     * @throws UiObjectNotFoundException
+     */
     @Test
     public void testSendsNotifications() throws UiObjectNotFoundException {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
@@ -86,18 +84,36 @@ public class SendNotificationsFragmentTest {
         });
         SystemClock.sleep(4000);
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
-        if (permissionDialog.waitForExists(10000)) {
+        if (permissionDialog.waitForExists(4000)) {
             permissionDialog.click();
         }
         onView(withId(R.id.check_selected)).perform(click());
         onView(withText("Confirm")).perform(click());
+        scenario.close();
+
+        ActivityScenario<MainActivity> relaunchScenario = ActivityScenario.launch(MainActivity.class);
+
         device.openNotification();
         UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have been selected for the event: testEventTitle"));
-        if (notificationText.waitForExists(8000)){
+        if (notificationText.waitForExists(4000)){
             assertTrue("Notification was received", notificationText.exists());
+            device.pressHome();
         }
         else{
             fail("Notification was not received");
+        }
+    }
+
+    /**
+     * Method to remove the event data that was added to the firebase for the test
+     */
+    @After
+    public void tearDown() {
+        if (testEvent != null) {
+            db.collection("events").document(testEvent.getEventId())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test event deleted"))
+                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test event", e));
         }
     }
 }

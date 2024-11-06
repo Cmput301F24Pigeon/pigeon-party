@@ -18,8 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A simple dialog fragment that allows an organizer to choose which participants to send a notification to for a certain event.
- * Use the {@link SendNotificationsFragment} factory method to
- * create an instance of this fragment.
  */
 public class SendNotificationsFragment extends DialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -43,6 +41,7 @@ public class SendNotificationsFragment extends DialogFragment {
             event = (Event) getArguments().getSerializable("event");
         }
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

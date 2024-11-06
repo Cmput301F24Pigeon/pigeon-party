@@ -102,6 +102,18 @@ public class Event implements Serializable {
         this.usersWaitlist = usersWaitlist;
     }
 
+    public void removeUserFromWaitlist(User user) {
+        if(usersWaitlist.get(user.getUniqueId()) != null){
+            usersWaitlist.remove(user.getUniqueId());
+        }
+    }
+
+    public void removeUserFromCancelledList(User user) {
+        if(usersCancelled.get(user.getUniqueId()) != null){
+            usersCancelled.remove(user.getUniqueId());
+        }
+    }
+
     /**
      * Adds a user to the usersWaitList map.
      *
@@ -171,6 +183,17 @@ public class Event implements Serializable {
             // Add more user-specific fields as needed
             return userDetails;
         }
+
+    /**
+     * Creates the hash map needed to update the cancelled list in firebase
+      * @param event
+     * @return
+     */
+    public Map<String, Object> updateFirebaseEventCancelledList(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("usersCancelled", event.getUsersCancelled());
+        return updates;
+    }
 
     /**
      * Creates the hash map needed to update the waitlist in firebase

@@ -1,8 +1,8 @@
 package com.example.pigeon_party_app;
 
+import android.content.DialogInterface;
 import android.app.NotificationManager;
 import android.content.Context;
-
 import static java.lang.reflect.Array.get;
 import android.Manifest;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PackageManagerCompat;
@@ -41,6 +44,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the main activity which serves as the home screen of the app
@@ -143,6 +147,41 @@ public class MainActivity extends AppCompatActivity{
 
         addEventButton = findViewById(R.id.button_add_event);
         addEventButton.setOnClickListener(v->startQRScanner());
+
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Remove yourself from this event?");
+                builder.setCancelable(true);
+                builder.setNegativeButton("Back", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    dialog.cancel();
+                });
+                builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    User currentUser = MainActivity.getCurrentUser();
+                    currentEvent = eventsArrayAdapter.getItem(position);
+                    currentEvent.removeUserFromWaitlist(currentUser);
+                    currentEvent.addUserToCancelled(currentUser);
+                    Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
+                    Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+                    db.collection("events").document(currentEvent.getEventId())
+                            .update(waitlistUpdates)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firestore", "Event's waitlist successfully updated");
+                            })
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                    db.collection("events").document(currentEvent.getEventId())
+                            .update(cancelledListUpdates)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firestore", "Event's cancelled list successfully updated");
+                            })
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                receiveEvents();
+            }
+        });
     }
 
     public void receiveCurrentUser(){
@@ -209,6 +248,7 @@ public class MainActivity extends AppCompatActivity{
         else {
             finish();
         }
+        receiveEvents();
     }
 
     /**
@@ -253,6 +293,7 @@ public class MainActivity extends AppCompatActivity{
      */
     private void receiveEvents(){
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        eventArrayList.clear();
         db.collection("events").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -261,7 +302,13 @@ public class MainActivity extends AppCompatActivity{
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list){
                                 Event event = d.toObject(Event.class);
+
+                                if((!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId))
+                                || (!event.getUsersInvited().isEmpty() && event.getUsersInvited().containsKey(uniqueId))
+                                || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))){
+
                                 if(event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+
                                     eventArrayList.add(event);
                                 }
                             }
@@ -315,7 +362,7 @@ public class MainActivity extends AppCompatActivity{
         String userId = (documentSnapshot.get("uniqueId")).toString();
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
-        Facility facility = (Facility)(documentSnapshot.get("facility"));
+        Facility facility = (Facility)documentSnapshot.get("facility");
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
         User user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, facility, notificationStatus);
 

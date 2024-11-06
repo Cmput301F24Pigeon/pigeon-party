@@ -228,8 +228,8 @@ public class Event implements Serializable {
         String message;
 
         switch (status) {
-            case "selected":
-                message = "Congratulations! You have been selected for the event: " + title;
+            case "invited":
+                message = "Congratulations! You have been invited to the event: " + title;
                 break;
             case "waitlisted":
                 message = "You are on the waitlist for the event: " + title;
@@ -240,17 +240,14 @@ public class Event implements Serializable {
             default:
                 return;
         }
-        Log.w("Bad","a");
         db.collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Log.w("Bad","b");
                     if (documentSnapshot.exists()) {
                         Map<String, Map<String, Object>> usersToNotify = null;
-                        Log.w("Bad","c");
                         if ("waitlisted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
-                        } else if ("selected".equals(status)) {
+                        } else if ("invited".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");

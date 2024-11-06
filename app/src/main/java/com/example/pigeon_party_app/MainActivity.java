@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        receiveCurrentUser();
+        receiveCurrentUser(uniqueId);
         if (currentUser != null) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
@@ -201,7 +201,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * This method allows us to get the information of the current user if it is in the firebase
+     * If not it prompts the login page
+     * @param uniqueId takes the uniqueId of the user
+     */
     public void receiveCurrentUser(String uniqueId){
 
         DocumentReference docRef = db.collection("user").document(uniqueId);

@@ -77,18 +77,17 @@ public class Validator {
     public static boolean isPhoneNumber(EditText field, String errorMessage) {
         String input = field.getText().toString().trim();
 
-        // https://stackoverflow.com/questions/14392270/how-do-i-check-if-a-string-contains-any-characters-from-a-given-set-of-character
-        if (!input.matches(".*[1234567890].*")) {
+        if (input.isEmpty())
+            return true;
+
+        if (input.length() != 10) {
             field.setError(errorMessage);
             field.requestFocus();
             return false;
         }
 
-        if (input.length() != 10 && !input.isEmpty()) {
-            field.setError(errorMessage);
-            field.requestFocus();
-            return false;
-        }
+        // https://stackoverflow.com/questions/14392270/how-do-i-check-if-a-string-contains-any-characters-from-a-given-set-of-character
+
 
         return true;
     }

@@ -77,7 +77,7 @@ public class CreateEntrantProfileTest {
 
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
-        testUserPhone = "";
+        testUserPhone = "1234567890";
 
         FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
                 CreateEntrantProfileFragment.class,
@@ -114,7 +114,7 @@ public class CreateEntrantProfileTest {
             testUserId = "test-user-id";
             testUserName = "test-user-name";
             testUserEmail = "test@email.com";
-            testUserPhone = "";
+            testUserPhone = "1234567890";
             testUserIsOrganizer = false;
             testUserIsEntrant = true;
             testUserFacility = null;

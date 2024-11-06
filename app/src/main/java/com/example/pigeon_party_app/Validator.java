@@ -78,7 +78,13 @@ public class Validator {
         String input = field.getText().toString().trim();
 
         // https://stackoverflow.com/questions/14392270/how-do-i-check-if-a-string-contains-any-characters-from-a-given-set-of-character
-        if (!input.matches(".*[1234567890].*") && input.length() != 10 && !input.isEmpty()) {
+        if (!input.matches(".*[1234567890].*")) {
+            field.setError(errorMessage);
+            field.requestFocus();
+            return false;
+        }
+
+        if (input.length() != 10 && !input.isEmpty()) {
             field.setError(errorMessage);
             field.requestFocus();
             return false;

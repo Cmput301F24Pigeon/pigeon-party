@@ -21,6 +21,8 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.is;
@@ -90,6 +92,10 @@ public class CreateEntrantProfileTest {
         db.collection("user").document("testDoc").set(new HashMap<String, Object>())
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
+
+        // Check that fragment closes and MainActivity is displayed
+        onView(withId(R.id.button_notifications)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_profile)).check(matches(isDisplayed()));
     }
 
     /**

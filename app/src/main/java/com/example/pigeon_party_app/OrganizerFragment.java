@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +20,10 @@ import android.widget.ImageView;
  * create an instance of this fragment.
  */
 public class OrganizerFragment extends Fragment {
+
+    private ListView organizerEventList;
+    private ArrayList<Event> organizerEventDataList;
+    private EventsArrayAdapter organizerEventArrayAdapter;
 
     /*if (user.isOrganizer == False){
         open facility profile page
@@ -72,6 +79,11 @@ public class OrganizerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer, container, false);
         ImageButton newEventButton = view.findViewById(R.id.button_add_organizer_event);
         ImageButton editFacilityButton = view.findViewById(R.id.button_facility_profile);
+
+        organizerEventList = view.findViewById(R.id.organizer_event_list);
+        organizerEventDataList = new ArrayList<>();
+        organizerEventArrayAdapter = new EventsArrayAdapter(getActivity(), organizerEventDataList);
+        organizerEventList.setAdapter(organizerEventArrayAdapter);
 
         newEventButton.setOnClickListener( v-> {
             requireActivity().getSupportFragmentManager()

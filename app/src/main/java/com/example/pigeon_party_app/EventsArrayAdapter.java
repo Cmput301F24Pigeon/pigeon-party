@@ -39,9 +39,31 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         TextView eventName = view.findViewById(R.id.eventName);
         TextView status = view.findViewById(R.id.status);
         //address.setText(event.getFacility.getAddress);
-        date.setText("Date/Time: " + event.getDateTime().toString());
-        eventName.setText(event.getTitle());
-        status.setText("Status: " + (CharSequence) event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()).get("status"));
+        if(event.getDateTime() != null){
+            date.setText("Date/Time: " + event.getDateTime().toString());
+        }
+        else{
+            date.setText("Date/Time: ");
+        }
+
+        if(event.getTitle() != null){
+            eventName.setText(event.getTitle());
+        }
+        else{
+            eventName.setText("");
+        }
+        if(event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()) != null){
+            status.setText("Status: " + (CharSequence) event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()).get("status"));
+        }
+        else if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
+            status.setText("Status: " + (CharSequence) event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()).get("status"));
+        }
+        else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null){
+            status.setText("Status: " + (CharSequence) event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()).get("status"));
+        }
+        else{
+            status.setText("Status: ");
+        }
 
         return view;
 

@@ -364,16 +364,28 @@ public class MainActivity extends AppCompatActivity {
 
 
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
+        User user = null;
         String userName = (documentSnapshot.get("name")).toString();
         String userEmail = (documentSnapshot.get("email")).toString();
         String userPhoneNumber = (documentSnapshot.get("phoneNumber")).toString();
         String userId = (documentSnapshot.get("uniqueId")).toString();
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
-        Facility facility = (Facility) documentSnapshot.get("facility");
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
-        User user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, facility, notificationStatus);
+        if ((documentSnapshot.get("facility")) != null) {
+            String facilityAddress = (documentSnapshot.get("facility.address")).toString();
+            String facilityName = (documentSnapshot.get("facility.name")).toString();
+            String facilityOwner = (documentSnapshot.get("facility.ownerId")).toString();
 
+            Facility userFacility = new Facility(facilityOwner, facilityAddress, facilityName);
+
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus);
+        }
+
+        if ((documentSnapshot.get("facility")) == null) {
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus);
+        }
+        
         return user;
     }
 }

@@ -1,6 +1,13 @@
 package com.example.pigeon_party_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
+
+import static java.lang.reflect.Array.get;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,11 +15,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,7 +42,9 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This is the main activity which serves as the home screen of the app
+ */
 public class MainActivity extends AppCompatActivity{
 
     private ImageView facilityButton;
@@ -39,7 +54,7 @@ public class MainActivity extends AppCompatActivity{
     private ListView eventListView;
     private EventsArrayAdapter eventsArrayAdapter;
     private ArrayList<Event> eventArrayList;
-
+    private NotificationHelper notificationHelper;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
     public static Event currentEvent;
@@ -51,30 +66,28 @@ public class MainActivity extends AppCompatActivity{
     public static Event getCurrentEvent() {
         return currentEvent;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-
-
         receiveCurrentUser();
-
+        if (currentUser != null) {
+            NotificationHelper notificationHelper = new NotificationHelper(this);
+            checkUserNotifications(currentUser);
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        eventArrayList = new ArrayList<>();
-
-        eventListView = findViewById(R.id.event_list);
-        receiveEvents();
-
+        if (currentUser != null) {
+            eventArrayList = new ArrayList<>();
+            eventListView = findViewById(R.id.event_list);
+            receiveEvents();
+        }
         facilityButton = findViewById(R.id.button_facility);
         facilityButton.setOnClickListener(v -> {
             if (MainActivity.currentUser != null) {
@@ -92,7 +105,6 @@ public class MainActivity extends AppCompatActivity{
                             .commit();
                 }
             } else {
-                // Handle the case where currentUser is null, e.g., show a toast or log an error
                 Log.e("MainActivity", "Current user is null. Cannot determine organizer status.");
             }
         });
@@ -143,6 +155,10 @@ public class MainActivity extends AppCompatActivity{
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     MainActivity.currentUser = getUserFromFirebase(documentSnapshot);
+                    askNotificationPermission();
+                    if (currentUser.getNotifications() == null){
+                        currentUser.setNotifications(new ArrayList<>());
+                    }
                 }
                 else{
                     getSupportFragmentManager()
@@ -156,6 +172,9 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * This method initializes the QR scanner
+     */
     //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
     private void startQRScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -164,6 +183,13 @@ public class MainActivity extends AppCompatActivity{
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.initiateScan();
     }
+
+    /**
+     * This method gets the results from the QR scanner
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -184,13 +210,41 @@ public class MainActivity extends AppCompatActivity{
             finish();
         }
     }
-    //uncomment once eventdetails can accept eventid
+
+    /**
+     * This method shows the event details fragment
+     */
     private void showEventDetailsFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new EventDetailsFragment())
                 .addToBackStack(null)
                 .commit();
     }
+
+    /**
+     * This method asks user for permission to receive notification
+     */
+    //https://www.youtube.com/watch?v=JeZJaafE5ik
+    private void askNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)==
+                PackageManager.PERMISSION_GRANTED){
+            MainActivity.currentUser.setNotificationsOn(true);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                requestPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    /**
+     * This method sets users in app notification preferences to false
+     */
+    private final ActivityResultLauncher<String> requestPermissionsLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),isGranted -> {
+                if (!isGranted) {
+                    MainActivity.currentUser.setNotificationsOn(false);                }
+            });
+
 
     //https://www.geeksforgeeks.org/how-to-create-dynamic-listview-in-android-using-firebase-firestore/
 
@@ -203,11 +257,11 @@ public class MainActivity extends AppCompatActivity{
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(!queryDocumentSnapshots.isEmpty()){
+                        if(queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()){
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list){
                                 Event event = d.toObject(Event.class);
-                                if(!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
+                                if(event.getUsersWaitlisted() != null && !event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId)){
                                     eventArrayList.add(event);
                                 }
                             }
@@ -215,6 +269,42 @@ public class MainActivity extends AppCompatActivity{
                             eventListView.setAdapter(eventsArrayAdapter);
                         }
                     }
+                });
+
+    }
+
+    /**
+     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
+     * @param user The user which the method checks notifications
+     */
+    public void checkUserNotifications(User user) {
+       notificationHelper = new NotificationHelper(this);
+        db.collection("user").document(user.getUniqueId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+
+                        if (notifications != null && !notifications.isEmpty()) {
+                            String message = notifications.get(0);
+                            notificationHelper.notifyUser(user, message);
+
+                            user.clearNotifications();
+                            db.collection("user").document(user.getUniqueId())
+                                    .update("notifications", user.getNotifications())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating notifications", e);
+                                    });
+                        }
+                    } else {
+                        Log.w("Firestore", "User document not found");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error retrieving user document", e);
                 });
     }
 

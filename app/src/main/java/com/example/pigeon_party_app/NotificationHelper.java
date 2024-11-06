@@ -6,6 +6,10 @@ import android.content.Context;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
+
 // https://stackoverflow.com/questions/48198954/creating-a-notification-with-notification-channel-gives-no-effect
 // Stack thread on creating a Notification class
 
@@ -22,7 +26,7 @@ public class NotificationHelper {
     }
 
     /**
-     * Allows the system to group and manage notifications based on user preferences/choices.
+     * This method allows the system to group and manage notifications based on user preferences/choices.
      */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -51,14 +55,13 @@ public class NotificationHelper {
         }
     }
     /**
-     * Allows notification to be sent to entrants based on their status
+     * This method allows notification to be sent to entrants
      *
-     * @param user
-     * @param event
-     * @param message
+     * @param user The user to send the notification to
+     * @param message The message to be put in the notification
      */
-    public void notifyUser(User user, Event event, String message) {
-        int notificationId = (user.getUniqueId() + event.getEventId()).hashCode(); //this way a new notification doesnt ovveride the previous
+    public void notifyUser(User user, String message) {
+        int notificationId = (user.getUniqueId() + message).hashCode(); //this way a new notification doesnt ovveride the previous
         if (user.hasNotificationsOn()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(android.R.drawable.ic_dialog_info)

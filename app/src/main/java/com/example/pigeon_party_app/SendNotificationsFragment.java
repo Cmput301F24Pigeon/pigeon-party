@@ -17,22 +17,19 @@ import android.widget.EditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * A simple dialog fragment that allows an organizer to choose which pparticipants to send a notification to for a certain event.
- * Use the {@link SendNotificationsFragment} factory method to
- * create an instance of this fragment.
+ * A simple dialog fragment that allows an organizer to choose which participants to send a notification to for a certain event.
  */
 public class SendNotificationsFragment extends DialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Event event;
     public SendNotificationsFragment() {
-        // Required empty public constructor
     }
 
 
     public static SendNotificationsFragment newInstance(Event event) {
         SendNotificationsFragment fragment = new SendNotificationsFragment();
         Bundle args = new Bundle();
-        args.putSerializable("event", event); // Ensure Event implements Parcelable
+        args.putSerializable("event", event);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,9 +38,10 @@ public class SendNotificationsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("event"); // Retrieve the Event object
+            event = (Event) getArguments().getSerializable("event");
         }
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -58,13 +56,13 @@ public class SendNotificationsFragment extends DialogFragment {
                     CheckBox selected = view.findViewById(R.id.check_selected);
                     CheckBox cancelled = view.findViewById(R.id.check_cancelled);
                     if (waitlisted.isChecked()) {
-                        event.notifyUserByStatus("waitlisted");
+                        event.notifyUserByStatus(db,"waitlisted");
                     }
                     if (selected.isChecked()) {
-                        event.notifyUserByStatus("selected");
+                        event.notifyUserByStatus(db,"selected");
                     }
                     if (cancelled.isChecked()) {
-                        event.notifyUserByStatus("cancelled");
+                        event.notifyUserByStatus(db,"cancelled");
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {

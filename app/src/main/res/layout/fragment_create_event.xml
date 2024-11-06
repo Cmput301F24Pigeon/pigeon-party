@@ -136,7 +136,6 @@
         android:id="@+id/button_date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="openDatePicker"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_event_date"
         app:layout_constraintEnd_toEndOf="parent"

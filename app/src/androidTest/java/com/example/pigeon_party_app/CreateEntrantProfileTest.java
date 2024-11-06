@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasFocus;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -74,14 +75,14 @@ public class CreateEntrantProfileTest {
     @Test
     public void testCreateUserButton() {
 
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "";
+
         FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-
-        testUserName = "test-user-name";
-        testUserEmail = "test@email.com";
-        testUserPhone = "";
 
         onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
         onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
@@ -129,9 +130,46 @@ public class CreateEntrantProfileTest {
     }
 
     /**
+     * Test to check empty (and therefore invalid) user input in name editText field
+     */
+    @Test
+    public void testEmptyUserName() {
+        testInput("", "test@email.com", "1234567890");
+        onView(withId(R.id.editText_create_user_name)).check(matches(hasFocus()));
+    }
+
+    /**
+     * Test to check empty (and therefore invalid) user input in email editText field
+     */
+    @Test
+    public void testEmptyEmail() {
+        testInput("Test User", "", "1234567890");
+        onView(withId(R.id.editText_create_user_email)).check(matches(hasFocus()));
+    }
+
+    /**
+     * Test to check invalid user input in email editText field
+     */
+    @Test
+    public void testInvalidEmail() {
+        testInput("Test User", "test@email", "1234567890");
+        onView(withId(R.id.editText_create_user_email)).check(matches(hasFocus()));
+    }
+
+    /**
+     * Test to check invalid user input in phoneNumber editText field
+     * Currently fails: Failed to retrieve user from Firestore
+     */
+    @Test
+    public void testInvalidPhone() {
+        testInput("Test User", "test@email.com", "1");
+        onView(withId(R.id.editText_create_user_phone)).check(matches(hasFocus()));
+    }
+
+    /**
      * A method to be performed after the test method to remove any data that was added to the firebase
      */
-    public void removeData() {
+    private void removeData() {
         if (testUserId != null) {
             db.collection("user").document(testUserId)
                     .delete()
@@ -175,5 +213,28 @@ public class CreateEntrantProfileTest {
                     }
                 });
 
+    }
+
+    /**
+     * Method to fill user input fields with given parameters and click the "Create" button
+     * Used as a form of data provider to test for focus set on fields with invalid inputs
+     * @param name String entered into the name editText field
+     * @param email String entered into the email editText field
+     * @param phoneNumber String entered into the phoneNumber editText field
+     */
+    private void testInput(String name, String email, String phoneNumber) {
+        testUserName = name;
+        testUserEmail = email;
+        testUserPhone = phoneNumber;
+
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.create_user_profile_button)).perform(click());
     }
 }

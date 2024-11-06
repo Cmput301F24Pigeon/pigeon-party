@@ -84,6 +84,12 @@ public class Validator {
             return false;
         }
 
+        if (input.length() != 10 && !input.isEmpty()) {
+            field.setError(errorMessage);
+            field.requestFocus();
+            return false;
+        }
+
         return true;
     }
 }

@@ -48,15 +48,15 @@ public class CreateEntrantProfileFragment extends Fragment {
             createEntrantPhone.setFocusableInTouchMode(true);
             createEntrantPhone.setFocusable(true);
 
-            boolean isValid = false;
-            if (Validator.isName(createEntrantName, "Your profile must include a name.")) {
-                isValid = true;
+            boolean isValid = true;
+            if (!Validator.isName(createEntrantName, "Your profile must include a name.")) {
+                isValid = false;
             }
-            if (Validator.isEmail(createEntrantEmail, "Your profile must have a valid email.")) {
-                isValid = true;
+            if (!Validator.isEmail(createEntrantEmail, "Your profile must have a valid email.")) {
+                isValid = false;
             }
-            if (Validator.isPhoneNumber(createEntrantPhone, "Your phone number must be 10 digits or empty.")) {
-                isValid = true;
+            if (!Validator.isPhoneNumber(createEntrantPhone, "Your phone number must be 10 digits or empty.")) {
+                isValid = false;
             }
             if (isValid) {
                 User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true);

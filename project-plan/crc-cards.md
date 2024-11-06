@@ -10,7 +10,7 @@
 | **Event**             |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Store details about a specific event <br> - Allow Entrants to view details and register <br> - Gives us a qr code for the event <br> - Stores list of entrants to send notifications | - Collaborates with User <br> - Collaborates with Facility <br> - Collaborates with NotificationHelper  |
+| - Store details about a specific event <br> - Allow Entrants to view details and register <br> - Gives us a qr code for the event <br> - Stores list of entrants to send notifications <br> - Runs a lottery to determine entrants in the event | - Collaborates with User <br> - Collaborates with Facility <br> - Collaborates with NotificationHelper  |
 
 
 | **Facility**          |                   | 
@@ -24,10 +24,15 @@
 | - Allows us to view the lists of our users   | - Collaborates with User <br>  |
 
 
-| **com.example.pigeon_party_app.EventArrayAdapter**|                   | 
+| **EventArrayAdapter**|                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Allows us to view the lists of our events  | - Collaborates with Events <br>  |
+| - Allows us to view the lists of our events  | - Collaborates with Events <br> - Collaborates with User  |
+
+| **NotificationHelper**|                   | 
+|-----------------------|-------------------|
+| **Responsibilities**  | **Collaborators** |
+| - crates and sends notifications  | - Collaborates with Events <br> - Collaborates with User  |
 
 | **ImagesArrayAdapter**|                   | 
 |-----------------------|-------------------|

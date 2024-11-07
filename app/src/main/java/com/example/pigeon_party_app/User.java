@@ -18,14 +18,20 @@ public class User implements Serializable {
     private boolean organizer;
     private boolean notificationStatus;
     private List<String> notifications;
+    private ArrayList<Event> entrantEventList;
+    private ArrayList<Event> organizerEventList;
+
     //private boolean isAdmin;
     // need to make an images for our profile
 
     public User() {
         notifications = new ArrayList<>();
+        organizerEventList = new ArrayList<>();
+        entrantEventList = new ArrayList<>();
+
     }
 
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -35,6 +41,8 @@ public class User implements Serializable {
         this.facility = facility;
         this.notificationStatus = notificationStatus;
         this.notifications = notifications != null ? notifications : new ArrayList<>();
+        this.entrantEventList = entrantEventList != null ? entrantEventList : new ArrayList<>();
+        this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
     }
 
     public String getName() {
@@ -116,4 +124,25 @@ public class User implements Serializable {
     public void setNotifications(List<String> notifications) {
         this.notifications = notifications;
     }
+
+    public ArrayList<Event> getEntrantEventList() {
+        return entrantEventList;
+    }
+
+    public ArrayList<Event> getOrganizerEventList() {
+        return organizerEventList;
+    }
+
+    public void addEntrantEventList(Event event){
+        this.entrantEventList.add(event);
+    }
+
+    public void addOrganizerEventList(Event event){
+        this.organizerEventList.add(event);
+    }
+
+    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
+        this.organizerEventList = organizerEventList;
+    }
 }
+

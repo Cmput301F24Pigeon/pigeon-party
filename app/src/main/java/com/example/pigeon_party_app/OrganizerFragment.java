@@ -5,11 +5,22 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +28,10 @@ import android.widget.ImageView;
  * create an instance of this fragment.
  */
 public class OrganizerFragment extends Fragment {
+    private ListView organizerListView;
+    private OrganizerArrayAdapter eventsArrayAdapter;
+    private ArrayList<Event> organizerArrayList;
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /*if (user.isOrganizer == False){
         open facility profile page
@@ -56,6 +71,8 @@ public class OrganizerFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
    /* @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,9 +114,16 @@ public class OrganizerFragment extends Fragment {
                     .commit();
         });
 
+        organizerArrayList = new ArrayList<>();
+        organizerArrayList = MainActivity.currentUser.getOrganizerEventList();
+        organizerListView = view.findViewById(R.id.organizer_event_list);
+        eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
+        organizerListView.setAdapter(eventsArrayAdapter);
 
 
         return view;
 
     }
+
+
 }

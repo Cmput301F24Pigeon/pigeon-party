@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -89,10 +91,23 @@ public class CreateEntrantProfileTest {
         onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
         onView(withId(R.id.create_user_profile_button)).perform(click());
 
-        // Test connection to FireBase
-        db.collection("user").document("testDoc").set(new HashMap<String, Object>())
-                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
-                .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
+        Task<?>[] checkDatabase = new Task[] {
+
+            // Test connection to FireBase
+            db.collection("user").document("testDoc").set(new HashMap<String, Object>())
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
+                    .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e))
+        };
+
+        Task<?>[] removeData = new Task[] {
+            db.collection("user").document("testDoc")
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user deleted"))
+                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test user", e))
+        };
+
+        Tasks.whenAllComplete(checkDatabase);
+        Tasks.whenAllComplete(removeData);
 
         // Check that fragment closes and MainActivity is displayed
         onView(withId(R.id.button_notifications)).check(matches(isDisplayed()));
@@ -123,9 +138,41 @@ public class CreateEntrantProfileTest {
             testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications);
             createdFragment.addUser(testUser);
 
-            verifyUserInFirestore(testUserId);
+            Task<DocumentSnapshot> checkDatabase = db.collection("user").document(testUserId).get(Source.SERVER)
+                            .addOnCompleteListener(task -> {
+
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("Firestore Test", "User found in Firestore!");
+                                assertTrue("User was successfully added to Firestore", document.exists());
+                                assertEquals("User name should match", testUserName, document.getString("name"));
+                                assertEquals("User email should match", testUserEmail, document.getString("email"));
+                                assertEquals("User phone should match", testUserPhone, document.getString("phone"));
+                                assertEquals("User Id should match", testUserId, document.getString("id"));
+                                assertEquals("User organizer status should match", testUserIsOrganizer, document.getBoolean("organizer"));
+                                assertEquals("User entrant status should match", testUserIsEntrant, document.getBoolean("entrant"));
+                                assertEquals("User facility should match", testUserFacility, document.get("organizer", Facility.class));
+                                assertEquals("User notification status should match", testUserHasNotifications, document.getBoolean("notificationStatus"));
+                            }
+
+                            if (!document.exists()) {
+                                fail("User was not found in Firestore");
+                            }
+                        }
+
+                        if (!task.isSuccessful()) {
+                            FirebaseFirestoreException e = (FirebaseFirestoreException) task.getException();
+                            Log.w("Firestore Test", "Error verifying user", e);
+                            fail("Failed to retrieve user from Firestore");
+                        }
+
+            });
+
+            Tasks.whenAll(checkDatabase);
 
             removeData();
+
         });
     }
 
@@ -171,10 +218,7 @@ public class CreateEntrantProfileTest {
      */
     private void removeData() {
         if (testUserId != null) {
-            db.collection("user").document(testUserId)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user deleted"))
-                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test user", e));
+
         }
     }
 

@@ -86,9 +86,6 @@ public class Validator {
             return false;
         }
 
-        // https://stackoverflow.com/questions/14392270/how-do-i-check-if-a-string-contains-any-characters-from-a-given-set-of-character
-
-
         return true;
     }
 }

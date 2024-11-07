@@ -53,6 +53,10 @@ public class CreateEventFragment extends Fragment {
 
     public CreateEventFragment() {}
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEventFragment the mock fragment being used for testing
+     */
     public static CreateEventFragment newInstance(User user) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();

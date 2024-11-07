@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         setUpAddEventButton();
     }
 
-
     public void receiveCurrentUser() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -121,15 +120,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method initializes the QR scanner
+     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
+     *
+     * @param user The user which the method checks notifications
      */
-    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
-    private void startQRScanner() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setPrompt("Scan the event QR code");
-        integrator.setOrientationLocked(false);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.initiateScan();
+    public void checkUserNotifications(User user) {
+        notificationHelper = new NotificationHelper(this);
+        db.collection("user").document(user.getUniqueId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+
+                    if (documentSnapshot.exists()) {
+                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+
+                        if (notifications != null && !notifications.isEmpty()) {
+                            String message = notifications.get(0);
+                            notificationHelper.notifyUser(user, message);
+
+                            user.clearNotifications();
+                            db.collection("user").document(user.getUniqueId())
+                                    .update("notifications", user.getNotifications())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating notifications", e);
+                                    });
+                        }
+
+                    } else {
+                        Log.w("Firestore", "User document not found");
+                    }
+                })
+
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error retrieving user document", e);
+                });
     }
 
     /**
@@ -162,6 +188,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         receiveEvents();
+    }
+
+    /**
+     * This method initializes the QR scanner
+     */
+    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
+    private void startQRScanner() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setPrompt("Scan the event QR code");
+        integrator.setOrientationLocked(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.initiateScan();
     }
 
     /**
@@ -237,46 +275,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
-
-    /**
-     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
-     *
-     * @param user The user which the method checks notifications
-     */
-    public void checkUserNotifications(User user) {
-        notificationHelper = new NotificationHelper(this);
-        db.collection("user").document(user.getUniqueId())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-
-                    if (documentSnapshot.exists()) {
-                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
-
-                        if (notifications != null && !notifications.isEmpty()) {
-                            String message = notifications.get(0);
-                            notificationHelper.notifyUser(user, message);
-
-                            user.clearNotifications();
-                            db.collection("user").document(user.getUniqueId())
-                                    .update("notifications", user.getNotifications())
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.w("Firestore", "Error updating notifications", e);
-                                    });
-                        }
-
-                    } else {
-                        Log.w("Firestore", "User document not found");
-                    }
-                })
-
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error retrieving user document", e);
-                });
-    }
-
 
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
         User user = null;

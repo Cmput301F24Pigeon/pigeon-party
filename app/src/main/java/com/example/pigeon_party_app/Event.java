@@ -207,40 +207,40 @@ public class Event implements Serializable {
         return updates;
     }
 
-        /**
-         * Samples/Draws a specific number of users among the waitlist to be invited to an event.
-         * @param drawAmount
-         */
-        public void runLottery (int drawAmount){
-            // If the amount to draw is more than the waitlist size, match the draw amount with
-            // the amount of people in the current waitlist.
-            if (usersWaitlist.size() < drawAmount) {
-                drawAmount = usersWaitlist.size();
-            }
+    /**
+     * Samples/Draws a specific number of users among the waitlist to be invited to an event.
+     * @param drawAmount
+     */
+    public void runLottery (int drawAmount){
+        // If the amount to draw is more than the waitlist size, match the draw amount with
+        // the amount of people in the current waitlist.
+        if (usersWaitlist.size() < drawAmount) {
+            drawAmount = usersWaitlist.size();
+        }
 
-            // Creates a list of user IDs (from waitlist)
-            List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
+        // Creates a list of user IDs (from waitlist)
+        List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
 
-            // Shuffles and picks a sample of users
-            // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
-            Collections.shuffle(waitlistUserIds);
-            List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
+        // Shuffles and picks a sample of users
+        // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
+        Collections.shuffle(waitlistUserIds);
+        List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
 
-            // Moves users from waitlist to the invited/joined list
-            for (String userId : selectedUsers) {
-                usersInvited.put(userId, usersWaitlist.get(userId));
-                usersWaitlist.remove(userId);
+        // Moves users from waitlist to the invited/joined list
+        for (String userId : selectedUsers) {
+            usersInvited.put(userId, usersWaitlist.get(userId));
+            usersWaitlist.remove(userId);
 
-                // Notify them afterwards...
-                Map<String, Object> userData = usersInvited.get(userId); // Adjust based on how your data is structured
-                User selectedUser = (User) userData.get("user"); // Cast to User type
+            // Notify them afterwards...
+            Map<String, Object> userData = usersInvited.get(userId); // Adjust based on how your data is structured
+            User selectedUser = (User) userData.get("user"); // Cast to User type
 
-                // Notify the user if they've been chosen
-                if (selectedUser != null && selectedUser.hasNotificationsOn()) {
-                    notificationHelper.notifyUserIfChosen(selectedUser, this);
-                }
+            // Notify the user if they've been chosen
+            if (selectedUser != null && selectedUser.hasNotificationsOn()) {
+                notificationHelper.notifyUserIfChosen(selectedUser, this);
             }
         }
+    }
 
     /**
      * This method uses the addNotificationToUser method to add a notification message to the users notification list

@@ -18,6 +18,9 @@ public class User implements Serializable {
     private boolean organizer;
     private boolean notificationStatus;
     private List<String> notifications;
+    private List<Event> entrantEventList;
+    private List<Event> organizerEventList;
+
     //private boolean isAdmin;
     // need to make an images for our profile
 
@@ -25,7 +28,7 @@ public class User implements Serializable {
         notifications = new ArrayList<>();
     }
 
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, List<Event> entrantEventList, List<Event> organizerEventList) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -35,6 +38,8 @@ public class User implements Serializable {
         this.facility = facility;
         this.notificationStatus = notificationStatus;
         this.notifications = notifications != null ? notifications : new ArrayList<>();
+        this.entrantEventList = entrantEventList;
+        this.organizerEventList = organizerEventList;
     }
 
     public String getName() {
@@ -116,4 +121,25 @@ public class User implements Serializable {
     public void setNotifications(List<String> notifications) {
         this.notifications = notifications;
     }
+
+    public List<Event> getEntrantEventList() {
+        return entrantEventList;
+    }
+
+    public List<Event> getOrganizerEventList() {
+        return organizerEventList;
+    }
+
+    public void addEntrantEventList(Event event){
+        this.entrantEventList.add(event);
+    }
+
+    public void addOrganizerEventList(Event event){
+        this.organizerEventList.add(event);
+    }
+
+    public void setOrganizerEventList(List<Event> organizerEventList) {
+        this.organizerEventList = organizerEventList;
+    }
 }
+

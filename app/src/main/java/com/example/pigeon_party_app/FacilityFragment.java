@@ -15,7 +15,9 @@ import android.widget.EditText;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -103,6 +105,9 @@ public class FacilityFragment extends Fragment {
      */
     public void createFacility(FirebaseFirestore db,  Facility facility) {
         current_user.setFacility(facility);
+        List<Event> organizerList = new ArrayList<>();
+        current_user.setOrganizerEventList(organizerList);
+
         Map<String, Object> updates = new HashMap<>();
         updates.put("facility", facility);
         updates.put("organizer", true);

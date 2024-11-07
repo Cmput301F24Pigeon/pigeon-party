@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class SendNotificationsFragmentTest {
         db = FirebaseFirestore.getInstance();
         testUserMap = new HashMap<>();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false);
+        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, new ArrayList<Event>(), new ArrayList<Event>());
         testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())

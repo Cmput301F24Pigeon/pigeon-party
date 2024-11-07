@@ -1,5 +1,11 @@
 package com.example.pigeon_party_app;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasFocus;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
 import android.util.Log;
 
 import static org.junit.Assert.assertEquals;
@@ -8,6 +14,7 @@ import static org.junit.Assert.fail;
 
 
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,6 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -37,7 +46,10 @@ public class FacilityTest {
     public void setUp() {
         db = FirebaseFirestore.getInstance();
         userId = "test-user-id";
-        testUser = new User("test-user-name","test@email.com",null,userId,true,true,testFacility,false);
+        testUser = new User("test-user-name","test@email.com",null,userId,true,true,testFacility,false,new ArrayList<Event>(), new ArrayList<Event>());
+        db.collection("user").document(userId).set(testUser)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user with facility added"))
+                .addOnFailureListener(e -> fail("Failed to add test user with facility"));
     }
 
     /**
@@ -45,12 +57,14 @@ public class FacilityTest {
      */
     @Test
     public void testCreateFacility() {
-
+        // add user to firebase without facility
+        db.collection("user").document(testUser.getUniqueId()).set(testUser)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user with facility added"))
+                .addOnFailureListener(e -> fail("Failed to add test user with facility"));
         FragmentScenario<FacilityFragment> scenario = FragmentScenario.launchInContainer(
                 FacilityFragment.class,
                 FacilityFragment.newInstance(testUser).getArguments()
         );
-
         scenario.onFragment(createdFragment -> {
             testFacilityName = "test-facility-name";
             testFacilityAddress= "test-facility-address";
@@ -70,6 +84,7 @@ public class FacilityTest {
         testFacilityAddress= "test-facility-address";
         Facility testFacility = new Facility(testUser.getUniqueId(),testFacilityAddress,testFacilityName);
         testUser.setFacility(testFacility);
+        // add user with facility to firebase
         db.collection("user").document(testUser.getUniqueId()).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user with facility added"))
                 .addOnFailureListener(e -> fail("Failed to add test user with facility"));
@@ -88,6 +103,39 @@ public class FacilityTest {
 
     }
 
+    /**
+     * This method tests input validation for facility name
+     */
+    @Test
+    public void testEmptyName(){
+        testFacilityName = "";
+        testFacilityAddress = "test-address";
+        FragmentScenario<FacilityFragment> scenario = FragmentScenario.launchInContainer(
+                FacilityFragment.class,
+                FacilityFragment.newInstance(testUser).getArguments()
+        );
+        onView(withId(R.id.add_facility_name)).perform(ViewActions.typeText(testFacilityName));
+        onView(withId(R.id.add_facility_address)).perform(ViewActions.typeText(testFacilityAddress));
+        onView(withId(R.id.button_confirm)).perform(click());
+        onView(withId(R.id.add_facility_name)).check(matches(hasFocus()));
+    }
+
+    /**
+     * This method tests the input validation for facility address
+     */
+    @Test
+    public void testEmptyAddress(){
+        testFacilityAddress = "";
+        testFacilityName = "test-address";
+        FragmentScenario<FacilityFragment> scenario = FragmentScenario.launchInContainer(
+                FacilityFragment.class,
+                FacilityFragment.newInstance(testUser).getArguments()
+        );
+        onView(withId(R.id.add_facility_address)).perform(ViewActions.typeText(testFacilityAddress));
+        onView(withId(R.id.add_facility_name)).perform(ViewActions.typeText(testFacilityName));
+        onView(withId(R.id.button_confirm)).perform(click());
+        onView(withId(R.id.add_facility_address)).check(matches(hasFocus()));
+    }
 
 
     /**
@@ -128,6 +176,5 @@ public class FacilityTest {
                     .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test user", e));
         }
     }
-
 
 }

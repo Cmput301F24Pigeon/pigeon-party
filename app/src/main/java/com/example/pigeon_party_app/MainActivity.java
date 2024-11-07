@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -76,9 +77,15 @@ public class MainActivity extends AppCompatActivity {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
 
+
             eventArrayList = new ArrayList<>();
+            eventArrayList = MainActivity.currentUser.getEntrantEventList();
             eventListView = findViewById(R.id.event_list);
-            receiveEvents();
+            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+            eventListView.setAdapter(eventsArrayAdapter);
+
+            //receiveEvents();
+
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -93,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         setUpAddEventButton();
     }
 
+    /**
+     * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
+     */
     public void receiveCurrentUser() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -180,11 +190,16 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
                         showEventDetailsFragment();
                     }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Invalid QR Code: Event not found", Toast.LENGTH_SHORT).show();
+
+                    }
                 }
 
             });
         } else {
-            finish();
+            Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
+
         }
 
         receiveEvents();
@@ -276,6 +291,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method gets a user from Firebase
+     * @param documentSnapshot the data from the user document in Firebase
+     * @return a User object
+     */
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
         User user = null;
         String userName = (documentSnapshot.get("name")).toString();

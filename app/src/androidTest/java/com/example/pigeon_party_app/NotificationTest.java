@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Date;
 //https://stackoverflow.com/questions/33495294/testing-notifications-in-android
 /**
@@ -62,7 +64,7 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true);
+        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, new ArrayList<Event>(), new ArrayList<Event>());
         Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
 
         device.openNotification();
@@ -96,7 +98,7 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true);
+        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true,new ArrayList<Event>(), new ArrayList<Event>());
         Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
         testUser.setNotificationsOn(false);
         device.openNotification();

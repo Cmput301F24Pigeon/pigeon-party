@@ -53,6 +53,10 @@ public class CreateEventFragment extends Fragment {
 
     public CreateEventFragment() {}
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEventFragment the mock fragment being used for testing
+     */
     public static CreateEventFragment newInstance(User user) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
@@ -243,7 +247,7 @@ public class CreateEventFragment extends Fragment {
         db.collection("user").document(current_user.getUniqueId())
                 .update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's oranizer list", e));
     }
 
 

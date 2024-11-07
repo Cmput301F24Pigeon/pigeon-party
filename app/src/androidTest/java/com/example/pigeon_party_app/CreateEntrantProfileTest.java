@@ -34,6 +34,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @LargeTest
@@ -135,7 +136,7 @@ public class CreateEntrantProfileTest {
             testUserFacility = null;
             testUserHasNotifications = true;
 
-            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications,  null, null);
+            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(),new ArrayList<Event>());
             createdFragment.addUser(testUser);
 
             Task<DocumentSnapshot> checkDatabase = db.collection("user").document(testUserId).get(Source.SERVER)

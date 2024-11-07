@@ -41,8 +41,6 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
         date.setText(event.getDateTime().toString());
         eventName.setText(event.getTitle());
 
-        date.setText(event.getStatus());
-
         return view;
 
 

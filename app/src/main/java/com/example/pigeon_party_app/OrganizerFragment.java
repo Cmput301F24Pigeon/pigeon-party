@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class OrganizerFragment extends Fragment {
     private ListView organizerListView;
-    private OrganizerArrayAdapter eventsArrayAdapter;
+    private OrganizerArrayAdapter organizerArrayAdapter;
     private ArrayList<Event> organizerArrayList;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -117,8 +117,8 @@ public class OrganizerFragment extends Fragment {
         organizerArrayList = new ArrayList<>();
         organizerArrayList = MainActivity.currentUser.getOrganizerEventList();
         organizerListView = view.findViewById(R.id.organizer_event_list);
-        eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
-        organizerListView.setAdapter(eventsArrayAdapter);
+        organizerArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
+        organizerListView.setAdapter(organizerArrayAdapter);
 
 
         return view;

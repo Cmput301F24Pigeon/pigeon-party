@@ -76,9 +76,15 @@ public class MainActivity extends AppCompatActivity {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
 
+
             eventArrayList = new ArrayList<>();
+            eventArrayList = MainActivity.currentUser.getEntrantEventList();
             eventListView = findViewById(R.id.event_list);
-            receiveEvents();
+            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+            eventListView.setAdapter(eventsArrayAdapter);
+
+            //receiveEvents();
+
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

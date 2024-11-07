@@ -287,6 +287,9 @@ public class MainActivity extends AppCompatActivity {
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
+        List<Event> entrantList = (List<Event>) documentSnapshot.get("entrantList");
+        List<Event> organizerList = (List<Event>) documentSnapshot.get("organizerList");
+
 
         if ((documentSnapshot.get("facility")) != null) {
             String facilityAddress = (documentSnapshot.get("facility.address")).toString();
@@ -295,11 +298,11 @@ public class MainActivity extends AppCompatActivity {
 
             Facility userFacility = new Facility(facilityOwner, facilityAddress, facilityName);
 
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus);
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus, entrantList, organizerList);
         }
 
         if ((documentSnapshot.get("facility")) == null) {
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus);
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus, entrantList, null);
         }
         
         return user;

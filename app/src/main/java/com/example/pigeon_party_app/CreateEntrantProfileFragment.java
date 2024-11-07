@@ -20,7 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import org.checkerframework.common.aliasing.qual.Unique;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,7 +61,8 @@ public class CreateEntrantProfileFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false);
+                List<Event> entrantList = new ArrayList<Event>();
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false, entrantList, null);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);
@@ -88,6 +91,9 @@ public class CreateEntrantProfileFragment extends Fragment {
         Users.put("facility", user.getFacility());
         Users.put("notificationStatus", user.hasNotificationsOn());
         Users.put("notifications", user.getNotifications());
+        Users.put("entrantEventList", user.getEntrantEventList());
+        Users.put("organizerEventList", user.getOrganizerEventList());
+
         MainActivity.db.collection("user").document(uniqueId)
                 .set(Users)
                 .addOnSuccessListener(aVoid -> {

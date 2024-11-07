@@ -251,14 +251,17 @@ public class Event implements Serializable {
         String message;
 
         switch (status) {
-            case "invited":
-                message = "Congratulations! You have been invited to the event: " + title;
+            case "accepted":
+                message = "Congratulations! You have joined the event: " + title;
                 break;
             case "waitlisted":
                 message = "You are on the waitlist for the event: " + title;
                 break;
             case "cancelled":
                 message = "Sorry, you have not been selected for the event: " + title;
+                break;
+            case "invited":
+                message = "Congratulations! You have been invited to the event: " + title;
                 break;
             default:
                 return;
@@ -270,10 +273,12 @@ public class Event implements Serializable {
                         Map<String, Map<String, Object>> usersToNotify = null;
                         if ("waitlisted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
-                        } else if ("invited".equals(status)) {
+                        } else if ("accepted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
+                        } else if ("invited".equals(status)){
+                            usersToNotify = getUsersInvited();
                         }
 
                         if (usersToNotify != null) {

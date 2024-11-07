@@ -24,6 +24,8 @@ import java.util.Map;
  * Fragment which prompts the user for initial facility creation in order to create events
  */
 public class FacilityFragment extends Fragment {
+    private User current_user = MainActivity.getCurrentUser();
+
     public FacilityFragment() {}
 
     public static FacilityFragment newInstance(User user) {
@@ -42,8 +44,6 @@ public class FacilityFragment extends Fragment {
             current_user = (User) getArguments().getSerializable("current_user");
         }
     }
-
-    private User current_user = MainActivity.getCurrentUser();
 
    /* public static FacilityFragment newInstance(String param1, String param2) {
         FacilityFragment fragment = new FacilityFragment();

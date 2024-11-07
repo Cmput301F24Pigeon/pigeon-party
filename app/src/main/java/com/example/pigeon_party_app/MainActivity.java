@@ -1,9 +1,6 @@
 package com.example.pigeon_party_app;
 
 import android.content.DialogInterface;
-import android.app.NotificationManager;
-import android.content.Context;
-import static java.lang.reflect.Array.get;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,19 +13,15 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PackageManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -82,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
+
+            eventArrayList = new ArrayList<>();
+            eventListView = findViewById(R.id.event_list);
+            receiveEvents();
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -89,102 +86,11 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        if (currentUser != null) {
-            eventArrayList = new ArrayList<>();
-            eventListView = findViewById(R.id.event_list);
-            receiveEvents();
-        }
-        facilityButton = findViewById(R.id.button_facility);
-        facilityButton.setOnClickListener(v -> {
-            if (MainActivity.currentUser != null) {
-                if (MainActivity.currentUser.isOrganizer()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new OrganizerFragment())
-                            .addToBackStack(null)
-                            .commit();
-                } else {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new FacilityFragment())
-                            .addToBackStack(null)
-                            .commit();
-                }
-            } else {
-                Log.e("MainActivity", "Current user is null. Cannot determine organizer status.");
-            }
-        });
 
-        profileButton = findViewById(R.id.button_profile);
-        profileButton.setOnClickListener(v -> {
-            User currentUser = MainActivity.getCurrentUser();
-            if (currentUser.isEntrant()) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-
-        notificationButton = findViewById(R.id.button_notifications);
-        notificationButton.setOnClickListener(v -> {
-            currentUser = getCurrentUser();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-        // TEST NOTIFICATION
-        // Create an Event where the entrant is chosen
-        //Event event = new Event("Swimming Lessons", true);
-
-        // Create NotificationHelper instance
-        //NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
-
-        // Trigger notification for the current user if chosen
-        // notificationHelper.notifyUserIfChosen(currentUser, event);
-
-        addEventButton = findViewById(R.id.button_add_event);
-        addEventButton.setOnClickListener(v -> startQRScanner());
-        if (currentUser != null) {
-            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("Remove yourself from this event?");
-                    builder.setCancelable(true);
-                    builder.setNegativeButton("Back", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        dialog.cancel();
-                    });
-                    builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        User currentUser = MainActivity.getCurrentUser();
-                        currentEvent = eventsArrayAdapter.getItem(position);
-                        currentEvent.removeUserFromWaitlist(currentUser);
-                        currentEvent.addUserToCancelled(currentUser);
-                        Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
-                        Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
-                        db.collection("events").document(currentEvent.getEventId())
-                                .update(waitlistUpdates)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("Firestore", "Event's waitlist successfully updated");
-                                })
-                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                        db.collection("events").document(currentEvent.getEventId())
-                                .update(cancelledListUpdates)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("Firestore", "Event's cancelled list successfully updated");
-                                })
-                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                    receiveEvents();
-                }
-            });
-        }
+        setUpProfileButton();
+        setUpNotificationButton();
+        setUpFacilityButton();
+        setUpAddEventButton();
     }
 
 
@@ -236,10 +142,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if (result != null && result.getContents() != null) {
             String qrContent = result.getContents();
             DocumentReference docRef = db.collection("events").document(qrContent);
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
@@ -247,10 +155,12 @@ public class MainActivity extends AppCompatActivity {
                         showEventDetailsFragment();
                     }
                 }
+
             });
         } else {
             finish();
         }
+
         receiveEvents();
     }
 
@@ -300,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         eventArrayList.clear();
         db.collection("events").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
@@ -311,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                                 || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))) {
                                     eventArrayList.add(event);
                                 }
+
                                 eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
                                 eventListView.setAdapter(eventsArrayAdapter);
                             }
@@ -331,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         db.collection("user").document(user.getUniqueId())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
+
                     if (documentSnapshot.exists()) {
                         List<String> notifications = (List<String>) documentSnapshot.get("notifications");
 
@@ -348,10 +261,12 @@ public class MainActivity extends AppCompatActivity {
                                         Log.w("Firestore", "Error updating notifications", e);
                                     });
                         }
+
                     } else {
                         Log.w("Firestore", "User document not found");
                     }
                 })
+
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error retrieving user document", e);
                 });
@@ -367,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
+
         if ((documentSnapshot.get("facility")) != null) {
             String facilityAddress = (documentSnapshot.get("facility.address")).toString();
             String facilityName = (documentSnapshot.get("facility.name")).toString();
@@ -383,6 +299,115 @@ public class MainActivity extends AppCompatActivity {
         
         return user;
     }
+
+    /**
+     * This method sets up the facility button
+     */
+    private void setUpFacilityButton() {
+        facilityButton = findViewById(R.id.button_facility);
+        facilityButton.setOnClickListener(v -> {
+            if (MainActivity.currentUser != null) {
+                if (MainActivity.currentUser.isOrganizer()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new OrganizerFragment())
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new FacilityFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            } else {
+                Log.e("MainActivity", "Current user is null. Cannot determine organizer status.");
+            }
+        });
+    }
+
+    /**
+     * This method sets up the profile button
+     */
+    private void setUpProfileButton() {
+        profileButton = findViewById(R.id.button_profile);
+        profileButton.setOnClickListener(v -> {
+            User currentUser = MainActivity.getCurrentUser();
+
+            if (currentUser.isEntrant()) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+        });
+    }
+
+    /**
+     * This method sets up the notification button
+     */
+    private void setUpNotificationButton() {
+        notificationButton = findViewById(R.id.button_notifications);
+        notificationButton.setOnClickListener(v -> {
+            currentUser = getCurrentUser();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
+                    .addToBackStack(null)
+                    .commit();
+        });
+    }
+
+    /**
+     * This method sets up the add event button
+     */
+    private void setUpAddEventButton() {
+        addEventButton = findViewById(R.id.button_add_event);
+        addEventButton.setOnClickListener(v -> startQRScanner());
+
+        if (currentUser != null) {
+            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                    builder.setTitle("Remove yourself from this event?");
+                    builder.setCancelable(true);
+                    builder.setNegativeButton("Back", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+
+                    builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        User currentUser = MainActivity.getCurrentUser();
+                        currentEvent = eventsArrayAdapter.getItem(position);
+                        currentEvent.removeUserFromWaitlist(currentUser);
+                        currentEvent.addUserToCancelled(currentUser);
+                        Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
+                        Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+
+                        db.collection("events").document(currentEvent.getEventId())
+                                .update(waitlistUpdates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Event's waitlist successfully updated");
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+
+                        db.collection("events").document(currentEvent.getEventId())
+                                .update(cancelledListUpdates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Event's cancelled list successfully updated");
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    receiveEvents();
+                }
+            });
+        }
+    }
 }
-
-

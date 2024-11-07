@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -189,11 +190,16 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
                         showEventDetailsFragment();
                     }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Invalid QR Code: Event not found", Toast.LENGTH_SHORT).show();
+
+                    }
                 }
 
             });
         } else {
-            finish();
+            Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
+
         }
 
         receiveEvents();

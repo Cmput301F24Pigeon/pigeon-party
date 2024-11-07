@@ -120,6 +120,19 @@ public class OrganizerFragment extends Fragment {
         eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
         organizerListView.setAdapter(eventsArrayAdapter);
 
+        // Set item click listener to open entrant list
+        organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
+            Event selectedEvent = organizerArrayList.get(position);
+
+            // Pass selected event ID to EntrantListFragment
+            EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(selectedEvent.getEventId());
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, entrantListFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
 

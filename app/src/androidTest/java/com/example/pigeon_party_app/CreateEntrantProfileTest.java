@@ -135,7 +135,7 @@ public class CreateEntrantProfileTest {
             testUserFacility = null;
             testUserHasNotifications = true;
 
-            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications);
+            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications,  null, null);
             createdFragment.addUser(testUser);
 
             Task<DocumentSnapshot> checkDatabase = db.collection("user").document(testUserId).get(Source.SERVER)

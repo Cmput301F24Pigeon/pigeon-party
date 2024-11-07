@@ -31,6 +31,19 @@ public class User implements Serializable {
 
     }
 
+    /**
+     * Contructor method for the User class, creates a User object
+     * @param name the user's name
+     * @param email the user's email
+     * @param phoneNumber the user's phone number
+     * @param uniqueId the user's id, used to identify them in Firebase
+     * @param isOrganizer a boolean representing if the user is an organizer
+     * @param isEntrant a boolean representing if the user is an entrant
+     * @param facility a facility object associated with the user
+     * @param notificationStatus a boolean representing if the user has notifications turned on
+     * @param entrantEventList
+     * @param organizerEventList
+     */
     public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList) {
         this.name = name;
         this.email = email;
@@ -45,72 +58,141 @@ public class User implements Serializable {
         this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
     }
 
+    /**
+     * Getter for getting the user's name
+     * @return name, the user's name as a String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for setting the user's name
+     * @param name the String representing the user's name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for getting the user's email
+     * @return email, the user's email as a String
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Setter for setting the user's email
+     * @param email the String representing the user's email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Getter for getting the user's phone number
+     * @return phoneNumber, the user's phone number as a String if provided, or an empty string
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * Setter for setting the user's phoneNumber
+     * @param phoneNumber the String representing the user's phone number
+     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * Getter for getting the user's Id
+     * @return uniqueId, the user's Id as a String
+     */
     public String getUniqueId() {
         return uniqueId;
     }
 
+    /**
+     * Setter for setting the user's Id
+     * @param uniqueId the String representing the user's uniqueId
+     */
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 
+    /**
+     * Getter for getting the user's entrant status
+     * @return entrant, a boolean representing whether or not the user is an entrant
+     */
     public boolean isEntrant() {
         return entrant;
     }
 
-    public void setEntrant(boolean Entrant) {
-        entrant = Entrant;
+    /**
+     * Setter for setting the user's entrant status
+     * @param entrant a boolean representing if the user in an entrant
+     */
+    public void setEntrant(boolean entrant) {
+        this.entrant = entrant;
     }
 
+    /**
+     * Getter for getting the user's organizer status
+     * @return organizer, a boolean representing whether or not the user is an organizer
+     */
     public boolean isOrganizer() {
         return organizer;
     }
 
+    /**
+     * Setter for setting the user's organizer status
+     * @param Organizer a boolean representing if the user in an organizer
+     */
     public void setOrganizer(boolean Organizer) {
-        organizer = Organizer;
+        this.organizer = Organizer;
     }
 
-    public void setFacility(Facility facility) {
-        this.facility = facility;
-    }
-
+    /**
+     * Getter for getting the user's facility
+     * @return facility, the facility associated with the user if they are an organizer or null if they are an entrant
+     */
     public Facility getFacility() {
         return facility;
     }
 
-    public void setNotificationsOn(boolean notificationStatus) {
-        this.notificationStatus = notificationStatus;
+    /**
+     * Setter for setting the user's facility
+     * @param facility a Facility object to be associated with the user
+     */
+    public void setFacility(Facility facility) {
+        this.facility = facility;
     }
 
+    /**
+     * Getter for getting the user's notification setting
+     * @return notificationStatus, a boolean representing whether or not the user has notifications turned on
+     */
     public boolean hasNotificationsOn() {
         return notificationStatus;
     }
 
+    /**
+     * Setter for setting the user's notification settings
+     * @param notificationStatus a boolean representing if the user has notifications turned on
+     */
+    public void setNotificationsOn(boolean notificationStatus) {
+        this.notificationStatus = notificationStatus;
+    }
+
+
     public List<String> getNotifications() {
         return notifications;
+    }
+
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
     }
 
     public void addNotification(String notification) {
@@ -121,10 +203,6 @@ public class User implements Serializable {
         this.notifications.clear(); // Clear notifications if needed
     }
 
-    public void setNotifications(List<String> notifications) {
-        this.notifications = notifications;
-    }
-
     public ArrayList<Event> getEntrantEventList() {
         return entrantEventList;
     }
@@ -133,16 +211,16 @@ public class User implements Serializable {
         return organizerEventList;
     }
 
+    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
+        this.organizerEventList = organizerEventList;
+    }
+
     public void addEntrantEventList(Event event){
         this.entrantEventList.add(event);
     }
 
     public void addOrganizerEventList(Event event){
         this.organizerEventList.add(event);
-    }
-
-    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
-        this.organizerEventList = organizerEventList;
     }
 }
 

@@ -276,6 +276,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method gets a user from Firebase
+     * @param documentSnapshot the data from the user document in Firebase
+     * @return a User object
+     */
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
         User user = null;
         String userName = (documentSnapshot.get("name")).toString();

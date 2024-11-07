@@ -91,18 +91,6 @@ public class MainActivity extends AppCompatActivity {
         setUpNotificationButton();
         setUpFacilityButton();
         setUpAddEventButton();
-
-
-        // TEST NOTIFICATION
-        // Create an Event where the entrant is chosen
-        //Event event = new Event("Swimming Lessons", true);
-
-        // Create NotificationHelper instance
-        //NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
-
-        // Trigger notification for the current user if chosen
-        // notificationHelper.notifyUserIfChosen(currentUser, event);
-
     }
 
 

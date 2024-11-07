@@ -61,8 +61,8 @@ public class CreateEntrantProfileFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                List<Event> entrantList = new ArrayList<Event>();
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false, entrantList, null);
+                ArrayList<Event> emptyList = new ArrayList<>();
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false, emptyList, emptyList);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);

@@ -115,6 +115,7 @@ public class OrganizerFragment extends Fragment {
         });
 
         organizerArrayList = new ArrayList<>();
+        organizerArrayList = MainActivity.currentUser.getOrganizerEventList();
         organizerListView = view.findViewById(R.id.organizer_event_list);
         eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
         organizerListView.setAdapter(eventsArrayAdapter);

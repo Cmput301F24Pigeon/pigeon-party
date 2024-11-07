@@ -287,8 +287,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
-        List<Event> entrantList = (List<Event>) documentSnapshot.get("entrantList");
-        List<Event> organizerList = (List<Event>) documentSnapshot.get("organizerList");
+        ArrayList<Event> entrantList = (ArrayList<Event>) documentSnapshot.get("entrantList");
+        ArrayList<Event> organizerList = (ArrayList<Event>) documentSnapshot.get("organizerList");
 
 
         if ((documentSnapshot.get("facility")) != null) {
@@ -302,7 +302,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if ((documentSnapshot.get("facility")) == null) {
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus, entrantList, null);
+            organizerList = new ArrayList<>();
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus, entrantList, organizerList);
         }
         
         return user;

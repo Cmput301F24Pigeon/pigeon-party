@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         setUpAddEventButton();
     }
 
+    /**
+     * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
+     */
     public void receiveCurrentUser() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 

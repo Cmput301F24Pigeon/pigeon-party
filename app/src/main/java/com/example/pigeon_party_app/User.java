@@ -195,6 +195,10 @@ public class User implements Serializable {
         this.notifications = notifications;
     }
 
+    /**
+     * adding notifications to the list of notifications
+     * @param notification a string representing the notification
+     */
     public void addNotification(String notification) {
         this.notifications.add(notification);
     }
@@ -202,6 +206,7 @@ public class User implements Serializable {
     public void clearNotifications() {
         this.notifications.clear(); // Clear notifications if needed
     }
+
 
     public ArrayList<Event> getEntrantEventList() {
         return entrantEventList;
@@ -215,10 +220,17 @@ public class User implements Serializable {
         this.organizerEventList = organizerEventList;
     }
 
+    /**
+     * adding and event to our entrant event list
+     * @param event an event we are adding to our `list
+     */
     public void addEntrantEventList(Event event){
         this.entrantEventList.add(event);
     }
-
+    /**
+     * adding and event to our organizer event list
+     * @param event an event we are adding to our `list
+     */
     public void addOrganizerEventList(Event event){
         this.organizerEventList.add(event);
     }

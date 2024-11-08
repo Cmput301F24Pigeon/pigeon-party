@@ -1,3 +1,4 @@
+
 package com.example.pigeon_party_app;
 
 import android.os.Bundle;
@@ -74,32 +75,25 @@ public class EventDetailsFragment extends Fragment {
                     if(event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
                         event.removeUserFromCancelledList(MainActivity.currentUser);
                         Map<String, Object> cancelledListUpdates = event.updateFirebaseEventCancelledList(event);
-                        db.collection("events").document(event.getEventId())
-                                .update(cancelledListUpdates)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("Firestore", "Event's cancelled list successfully updated");
-                                })
-                                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+                        updateFirebase(cancelledListUpdates, "cancelled list");
                     }
                     event.addUserToWaitlist(current_user);
 
                     Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
-                    db.collection("events").document(event.getEventId())
-                            .update(updates)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "Event's waitlist successfully updated");
-                            })
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                    MainActivity.currentUser.addEntrantEventList(event);
-                    updates.put("organizerEventList", current_user.getEntrantEventList());
-                    db.collection("user").document(current_user.getUniqueId())
-                            .update(updates)
-                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's entrant list", e));
+                    updateFirebase(updates, "waitlist");
                 }
-                //getFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+    }
+
+    public void updateFirebase(Map<String, Object> updates, String list){
+        String msg = String.format("Event's %s successfully updated", list);
+        db.collection("events").document(event.getEventId())
+                .update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", msg);
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
     }
 }

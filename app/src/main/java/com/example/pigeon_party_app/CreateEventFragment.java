@@ -131,9 +131,9 @@ public class CreateEventFragment extends Fragment {
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
 
-                addEvent(db,event);
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
+                    addEvent(db,event);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container

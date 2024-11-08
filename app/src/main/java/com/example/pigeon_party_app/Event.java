@@ -36,6 +36,8 @@ public class Event implements Serializable {
     private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
     private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
     private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+    private Map<String, Map<String, Object>> usersSentInvite = new HashMap<>();
+
 
     public Event(){
 
@@ -58,6 +60,27 @@ public class Event implements Serializable {
         this.usersWaitlist = usersWaitlist;
         this.usersInvited = usersInvited;
         this.usersCancelled = usersCancelled;
+        this.organizer = organizer;
+    }
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
+            details, Facility facility, boolean requiresLocation, Map<
+            String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, Map<
+            String, Map<String, Object>> usersSentInvite, User
+                         organizer) {
+
+        this.eventId = eventId;
+        this.title = title;
+        this.dateTime = dateTime;
+        this.waitlistCapacity = waitlistCapacity;
+        this.imageUrl = null;
+        //this.imageUrl = imageUrl;
+        this.details = details;
+        this.facility = facility;
+        this.requiresLocation = requiresLocation;
+        this.usersWaitlist = usersWaitlist;
+        this.usersInvited = usersInvited;
+        this.usersCancelled = usersCancelled;
+        this.usersSentInvite = usersSentInvite;
         this.organizer = organizer;
     }
 
@@ -130,6 +153,7 @@ public class Event implements Serializable {
      */
     public void addUserToInvited(User user) {
         usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
+
     }
 
     /**
@@ -139,6 +163,14 @@ public class Event implements Serializable {
      */
     public void addUserToCancelled(User user) {
         usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
+    }
+    /**
+     * Adds a user to the usersSentInvite map.
+     *
+     * @param user
+     */
+    public void addUserToSentInvite(User user) {
+        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Sent Invite"));
     }
 
 
@@ -167,6 +199,15 @@ public class Event implements Serializable {
      */
     public Map<String, Map<String, Object>> getUsersCancelled() {
         return usersCancelled;
+    }
+
+    /**
+     * Retrieves the list of users who have cancelled their participation in the event.
+     *
+     * @return A map where each key is a user's unique ID and each value is a map of user details.
+     */
+    public Map<String, Map<String, Object>> getUsersSentInvite() {
+        return usersSentInvite;
     }
 
     /**
@@ -204,6 +245,27 @@ public class Event implements Serializable {
     public Map<String, Object> updateFirebaseEventWaitlist(Event event) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("usersWaitlisted", event.getUsersWaitlisted());
+        return updates;
+    }
+
+    /**
+     * Method to create hashmap needed to update the invited list in firebase
+     * @param event
+     * @return
+     */
+    public Map<String, Object> updateFirebaseEventInvitedList(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("usersInvited", event.getUsersInvited());
+        return updates;
+    }
+    /**
+     * Method to create hashmap needed to update the invited list in firebase
+     * @param event
+     * @return
+     */
+    public Map<String, Object> updateFirebaseEventInviteSentList(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("usersInvited", event.getUsersInvited());
         return updates;
     }
 
@@ -255,7 +317,7 @@ public class Event implements Serializable {
                 message = "Congratulations! You have joined the event: " + title;
                 break;
             case "waitlisted":
-                message = "You are on the waitlist for the event: " + title;
+                message = "You are currently on the waitlist for the event: " + title;
                 break;
             case "cancelled":
                 message = "Sorry, you have not been selected for the event: " + title;
@@ -278,7 +340,7 @@ public class Event implements Serializable {
                         } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
                         } else if ("invited".equals(status)){
-                            usersToNotify = getUsersInvited();
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersSentInvite");
                         }
 
                         if (usersToNotify != null) {

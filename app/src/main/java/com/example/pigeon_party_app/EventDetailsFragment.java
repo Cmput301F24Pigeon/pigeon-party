@@ -100,6 +100,8 @@ public class EventDetailsFragment extends Fragment {
                             }
 
                             event.addUserToWaitlist(MainActivity.currentUser);
+                            current_user.addEntrantEventList(event);
+                            MainActivity.addEventToList(event);
                             Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
                             updateFirebase(updates, "waitlist");
 

@@ -97,7 +97,6 @@ public class EventDetailsFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
         updates.put("entrantEventList", current_user.getEntrantEventList());
-
         db.collection("user").document(current_user.getUniqueId())
                 .update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))

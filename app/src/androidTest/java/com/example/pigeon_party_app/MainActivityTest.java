@@ -6,10 +6,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import android.util.Log;
 
 import androidx.test.core.app.ActivityScenario;
@@ -18,7 +14,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,8 +33,6 @@ public class MainActivityTest {
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
     private User testUser;
-    private ArrayList<Event> testUserEntrantEventList;
-    private ArrayList<Event> testUserOrganizerEventList;
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -76,8 +69,7 @@ public class MainActivityTest {
         testUserIsEntrant = true;
         testUserFacility = null;
         testUserHasNotifications = true;
-        testUserOrganizerEventList = null;
-        testUserEntrantEventList = null;
+
 
         testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
         db.collection("user").document(testUserId).set(testUser)

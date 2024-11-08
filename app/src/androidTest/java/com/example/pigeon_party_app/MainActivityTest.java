@@ -7,8 +7,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 
 import android.util.Log;
 
@@ -85,6 +87,7 @@ public class MainActivityTest {
 
 
 
+
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
         User firebaseUser = MainActivity.currentUser;
                 assertEquals("User name should match", testUserName, firebaseUser.getName());
@@ -97,6 +100,7 @@ public class MainActivityTest {
                 assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
                 assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
                 assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
+
 
 
 

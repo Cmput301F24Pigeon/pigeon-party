@@ -246,6 +246,7 @@ public class User implements Serializable {
     public void addOrganizerEventList(Event event){
         this.organizerEventList.add(event);
     }
+
     /**
      * remove the event to our organizer event list
      * @param pos the int value of an event we are adding to our `list

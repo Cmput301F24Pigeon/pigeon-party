@@ -1,13 +1,21 @@
 package com.example.pigeon_party_app;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
 import android.util.Log;
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class MainActivityTest {
@@ -21,6 +29,10 @@ public class MainActivityTest {
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
     private User testUser;
+
+    @Rule
+    public ActivityScenarioRule<MainActivity> scenario = new
+            ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     /**
      * Method to be performed before the test to ensure the necessary attributes are created first
@@ -48,5 +60,27 @@ public class MainActivityTest {
 
     }
 
+    @Test
+    public void testSetUpAddFacilityButtonAsEntrant() {
+        onView(withId(R.id.button_facility)).perform(click());
+        onView(withId(R.id.add_facility_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_facility_address)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testSetUpAddFacilityButtonAsOrganizer() {
+        onView(withId(R.id.button_facility)).perform(click());
+        onView(withId(R.id.organizer_event_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_add_organizer_event)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testSetUpProfileButton() {
+        onView(withId(R.id.button_profile)).perform(click());
+        onView(withId(R.id.textView_entrant_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.textView_entrant_email)).check(matches(isDisplayed()));
+    }
+
+    // Will also do tests for setUpAddEventButton, setUpNotificationButton
 
 }

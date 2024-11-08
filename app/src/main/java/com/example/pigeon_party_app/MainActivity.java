@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     private void askNotificationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED) {
-            MainActivity.currentUser.setNotificationsOn(true);
+                currentUser.setNotificationsOn(true);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 requestPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -250,6 +250,10 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (!isGranted) {
                     MainActivity.currentUser.setNotificationsOn(false);
+                }
+                else {
+                    MainActivity.currentUser.setNotificationsOn(true);
+
                 }
             });
 

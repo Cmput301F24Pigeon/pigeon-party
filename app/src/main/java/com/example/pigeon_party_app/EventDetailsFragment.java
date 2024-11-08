@@ -76,7 +76,6 @@ public class EventDetailsFragment extends Fragment {
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void signUpButton(){
-
         DocumentReference eventRef = FirebaseFirestore.getInstance()
                 .collection("events")
                 .document(event.getEventId());
@@ -106,7 +105,6 @@ public class EventDetailsFragment extends Fragment {
                             getActivity().getSupportFragmentManager().popBackStack();
                         }
                     });
-
                 }
             } else {
                 System.err.println("Error getting waitlist size: " + task.getException());

@@ -208,6 +208,17 @@ public class Event implements Serializable {
     }
 
     /**
+     * Method to create hashmap needed to update the invited list in firebase
+     * @param event
+     * @return
+     */
+    public Map<String, Object> updateFirebaseEventInvitedList(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("usersInvited", event.getUsersInvited());
+        return updates;
+    }
+
+    /**
      * Samples/Draws a specific number of users among the waitlist to be invited to an event.
      * @param drawAmount
      */

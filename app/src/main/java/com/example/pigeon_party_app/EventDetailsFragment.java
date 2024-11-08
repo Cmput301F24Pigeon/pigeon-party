@@ -79,7 +79,7 @@ public class EventDetailsFragment extends Fragment {
                     }
                     event.addUserToWaitlist(current_user);
                     MainActivity.currentUser.addEntrantEventList(event);
-
+                    MainActivity.addEventToList(event);
                     Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
                     updateFirebase(updates, "waitlist");
                 }

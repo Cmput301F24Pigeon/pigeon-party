@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView notificationButton;
     private ImageButton addEventButton;
     private ListView eventListView;
-    private EventsArrayAdapter eventsArrayAdapter;
-    private ArrayList<Event> eventArrayList;
+    private static EventsArrayAdapter eventsArrayAdapter;
+    private static ArrayList<Event> eventArrayList;
     private NotificationHelper notificationHelper;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        receiveCurrentUser(uniqueId);
+        currentUser = receiveCurrentUser(uniqueId);
         if (currentUser != null) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
@@ -105,9 +105,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
      */
-
-    public void receiveCurrentUser(String uniqueId) {
-
+    public User receiveCurrentUser(String uniqueId) {
 
         DocumentReference docRef = db.collection("user").document(uniqueId);
 
@@ -205,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        receiveEvents();
+        //receiveEvents();
     }
 
     /**
@@ -516,6 +514,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("firebase", "Error updating document", e);
                     }
                 });
+    }
+
+    public static void addEventToList(Event event){
+        eventArrayList.add(event);
+        eventsArrayAdapter.notifyDataSetChanged();
     }
 
 }

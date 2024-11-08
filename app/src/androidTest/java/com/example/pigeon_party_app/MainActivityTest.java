@@ -6,6 +6,10 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.util.Log;
 
 import androidx.test.core.app.ActivityScenario;
@@ -33,6 +37,8 @@ public class MainActivityTest {
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
     private User testUser;
+    private ArrayList<Event> testUserEntrantEventList;
+    private ArrayList<Event> testUserOrganizerEventList;
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -69,7 +75,8 @@ public class MainActivityTest {
         testUserIsEntrant = true;
         testUserFacility = null;
         testUserHasNotifications = true;
-
+        testUserOrganizerEventList = new ArrayList<>();
+        testUserEntrantEventList = new ArrayList<>();
 
         testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserEntrantEventList, testUserOrganizerEventList);
         db.collection("user").document(testUserId).set(testUser)
@@ -78,12 +85,8 @@ public class MainActivityTest {
 
 
 
-
-        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
-            scenario.onActivity(activity -> {
-                scenario.recreate();
-                activity.receiveCurrentUser(testUserId);
-                User firebaseUser = MainActivity.currentUser;
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        User firebaseUser = MainActivity.currentUser;
                 assertEquals("User name should match", testUserName, firebaseUser.getName());
                 assertEquals("User email should match", testUserEmail, firebaseUser.getEmail());
                 assertEquals("User phone should match", testUserPhone, firebaseUser.getPhoneNumber());
@@ -95,9 +98,7 @@ public class MainActivityTest {
                 assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
                 assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
 
-            });
 
-        }
 
 
     }

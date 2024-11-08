@@ -2,7 +2,9 @@ package com.example.pigeon_party_app;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is used to create and manage users
@@ -143,6 +145,18 @@ public class User implements Serializable {
 
     public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
         this.organizerEventList = organizerEventList;
+    }
+
+    /**
+     * Converts User Object to Map for Firebase
+     * @return userMap
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", this.name);
+        userMap.put("email", this.email);
+        // Add other fields as needed
+        return userMap;
     }
 }
 

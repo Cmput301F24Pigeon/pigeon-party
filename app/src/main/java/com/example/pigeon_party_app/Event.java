@@ -33,9 +33,9 @@ public class Event implements Serializable {
     private Facility facility; // facility object
     private User organizer;
     private boolean requiresLocation;// later add event image
-    private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
-    private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
-    private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+    private Map<String, User> usersWaitlist = new HashMap<>();
+    private Map<String, User> usersInvited = new HashMap<>();
+    private Map<String, User> usersCancelled = new HashMap<>();
 
     public Event(){
 
@@ -43,7 +43,7 @@ public class Event implements Serializable {
 
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
             details, Facility facility, boolean requiresLocation, Map<
-            String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User
+            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, User
                          organizer) {
 
         this.eventId = eventId;
@@ -74,6 +74,7 @@ public class Event implements Serializable {
         return waitlistCapacity;
     }
 
+
     public String getStatus() {
         return status;
     }
@@ -98,8 +99,41 @@ public class Event implements Serializable {
         return eventId;
     }
 
-    public void setUsersWaitlisted(Map<String, Map<String, Object>> usersWaitlist) {
+    public void setDetails(String details){
+        this.details = details;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setWaitlistCapacity(int waitlistCapacity)
+    {
+        this.waitlistCapacity = waitlistCapacity;
+    }
+
+    public void setFacility(Facility facility){
+        this.facility = facility;
+    }
+
+    public void setUsersWaitlisted(Map <String, User> usersWaitlist) {
         this.usersWaitlist = usersWaitlist;
+    }
+
+    public void setUsersCancelled(Map <String, User> usersWaitlist) {
+        this.usersWaitlist = usersCancelled;
+    }
+
+    public void setUsersInvited(Map <String, User> usersWaitlist) {
+        this.usersWaitlist = usersInvited;
     }
 
     public void removeUserFromWaitlist(User user) {
@@ -120,7 +154,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToWaitlist(User user) {
-        usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
+        usersWaitlist.put(user.getUniqueId(), user);
     }
 
     /**
@@ -129,7 +163,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToInvited(User user) {
-        usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
+        usersInvited.put(user.getUniqueId(), user);
     }
 
     /**
@@ -138,7 +172,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToCancelled(User user) {
-        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
+        usersCancelled.put(user.getUniqueId(), user);
     }
 
 
@@ -147,7 +181,7 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersWaitlisted() {
+    public Map<String, User> getUsersWaitlisted() {
         return usersWaitlist;
     }
 
@@ -156,7 +190,7 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersInvited() {
+    public Map<String, User> getUsersInvited() {
         return usersInvited;
     }
 
@@ -165,24 +199,24 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersCancelled() {
+    public Map<String, User> getUsersCancelled() {
         return usersCancelled;
     }
 
-    /**
-     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
-     *
-     * @param user
-     * @param status
-     * @return
-     */
-    public Map<String, Object> createUserDetails(User user, String status) {
-            Map<String, Object> userDetails = new HashMap<>();
-            userDetails.put("name", user.getName());
-            userDetails.put("status", status);
-            // Add more user-specific fields as needed
-            return userDetails;
-        }
+//    /**
+//     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
+//     *
+//     * @param user
+//     * @param status
+//     * @return
+//     */
+//    public Map<String, User> createUserDetails(User user, String status) {
+//            Map<String, User> userDetails = new HashMap<>();
+//            userDetails.put("name", user.getName());
+//           // userDetails.put("status", status);
+//            // Add more user-specific fields as needed
+//            return userDetails;
+//        }
 
     /**
      * Creates the hash map needed to update the cancelled list in firebase
@@ -191,7 +225,12 @@ public class Event implements Serializable {
      */
     public Map<String, Object> updateFirebaseEventCancelledList(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("usersCancelled", event.getUsersCancelled());
+        Map<String, Map<String, Object>> serializedUsersCancelled = new HashMap<>();
+
+        for (Map.Entry<String, User> entry : event.getUsersCancelled().entrySet()) {
+            serializedUsersCancelled.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
+        }
+        updates.put("usersCancelled", serializedUsersCancelled);
         return updates;
     }
 
@@ -232,8 +271,7 @@ public class Event implements Serializable {
                 usersWaitlist.remove(userId);
 
                 // Notify them afterwards...
-                Map<String, Object> userData = usersInvited.get(userId); // Adjust based on how your data is structured
-                User selectedUser = (User) userData.get("user"); // Cast to User type
+                User selectedUser = usersInvited.get(userId);
 
                 // Notify the user if they've been chosen
                 if (selectedUser != null && selectedUser.hasNotificationsOn()) {
@@ -242,6 +280,7 @@ public class Event implements Serializable {
             }
         }
 
+    // ************    ******    ******    ******    ******    ******    ******    CHANGE
     /**
      * This method uses the addNotificationToUser method to add a notification message to the users notification list
      * @param status The status of the user in the event list

@@ -53,13 +53,13 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
             eventName.setText("");
         }
         if(event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: " + (CharSequence) event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()).get("status"));
+            status.setText("Status (Waitlisted): " + (CharSequence) event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()));
         }
         else if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: " + (CharSequence) event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()).get("status"));
+            status.setText("Status (Cancelled): " + (CharSequence) event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()));
         }
         else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: " + (CharSequence) event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()).get("status"));
+            status.setText("Status (Invited): " + (CharSequence) event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()));
         }
         else{
             status.setText("Status: ");

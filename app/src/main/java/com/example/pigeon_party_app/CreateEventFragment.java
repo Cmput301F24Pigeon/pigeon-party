@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -119,9 +121,9 @@ public class CreateEventFragment extends Fragment {
                 Date eventDateTime = selectedDateTime.getTime();
 
                 //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
-                Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
-                Map<String, Map<String, Object>> usersInvited = new HashMap<>();
-                Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+                Map<String, User> usersWaitlist = new HashMap<>();
+                Map<String, User> usersInvited = new HashMap<>();
+                Map<String, User> usersCancelled = new HashMap<>();
                 Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
@@ -230,18 +232,14 @@ public class CreateEventFragment extends Fragment {
     public void addEvent(@NonNull FirebaseFirestore db, Event event){
         db.collection("events").document(event.getEventId())
                 .set(event)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("FireStore", "Event successfully added");
-                })
-                .addOnFailureListener(e ->{
-                    Log.w("FireStore", "Error adding event", e);
-                });
-        Map<String, Object> updates = new HashMap<>();
+                .addOnSuccessListener(aVoid -> {Log.d("FireStore", "Event successfully added");})
+                .addOnFailureListener(e ->{Log.w("FireStore", "Error adding event", e);});
 
+        Map<String, Object> updates = new HashMap<>();
         current_user.addOrganizerEventList(event);
         updates.put("organizerEventList", current_user.getOrganizerEventList());
         db.collection("user").document(current_user.getUniqueId())
-                .update(updates)
+                .update("organizerEventList", FieldValue.arrayUnion(event))
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
     }

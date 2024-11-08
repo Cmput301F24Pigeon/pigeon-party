@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,16 +76,6 @@ public class OrganizerFragment extends Fragment {
     }
 
 
-
-   /* @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,6 +112,7 @@ public class OrganizerFragment extends Fragment {
         organizerListView = view.findViewById(R.id.organizer_event_list);
         eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
         organizerListView.setAdapter(eventsArrayAdapter);
+        loadEventsFromFirebase();
 
         // Set item click listener to open entrant list
         organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -138,5 +132,64 @@ public class OrganizerFragment extends Fragment {
 
     }
 
+    private void loadEventsFromFirebase() {
+        if (MainActivity.currentUser == null) {
+            Log.e("OrganizerFragment", "Error: currentUser is null");
+            return;
+        }
+
+        Log.d("OrganizerFragment", "Loading events for user: " + MainActivity.currentUser.getUniqueId());
+
+        // Fetch user document from Firestore
+        db.collection("user").document(MainActivity.currentUser.getUniqueId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<Map<String, Object>> eventMaps = (List<Map<String, Object>>) documentSnapshot.get("organizerEventList");
+
+                        if (eventMaps != null) {
+                            organizerArrayList.clear(); // Clear existing data
+
+                            // Track the number of successfully fetched events
+                            int totalEvents = eventMaps.size();
+                            final int[] loadedEventsCount = {0};
+
+                            for (Map<String, Object> eventMap : eventMaps) {
+                                String eventId = (String) eventMap.get("eventId");
+
+                                // Fetch each event by ID
+                                db.collection("events").document(eventId)
+                                        .get()
+                                        .addOnSuccessListener(eventSnapshot -> {
+                                            if (eventSnapshot.exists()) {
+                                                Event event = eventSnapshot.toObject(Event.class);
+                                                if (event != null) {
+                                                    organizerArrayList.add(event);
+                                                }
+                                            } else {
+                                                Log.w("OrganizerFragment", "Event document does not exist for ID: " + eventId);
+                                            }
+
+                                            // Increment loaded events count
+                                            loadedEventsCount[0]++;
+
+                                            // Check if all events have been loaded
+                                            if (loadedEventsCount[0] == totalEvents) {
+                                                // Notify the adapter once all events are loaded
+                                                eventsArrayAdapter.notifyDataSetChanged();
+                                                Log.d("OrganizerFragment", "All events loaded and adapter notified.");
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> Log.e("OrganizerFragment", "Error fetching event", e));
+                            }
+                        } else {
+                            Log.w("OrganizerFragment", "No events found for user.");
+                        }
+                    } else {
+                        Log.w("OrganizerFragment", "User document not found.");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("OrganizerFragment", "Error loading user data", e));
+    }
 
 }

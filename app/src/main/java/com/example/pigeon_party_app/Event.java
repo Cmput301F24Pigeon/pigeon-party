@@ -74,7 +74,6 @@ public class Event implements Serializable {
         return waitlistCapacity;
     }
 
-
     public String getStatus() {
         return status;
     }
@@ -203,21 +202,6 @@ public class Event implements Serializable {
         return usersCancelled;
     }
 
-//    /**
-//     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
-//     *
-//     * @param user
-//     * @param status
-//     * @return
-//     */
-//    public Map<String, User> createUserDetails(User user, String status) {
-//            Map<String, User> userDetails = new HashMap<>();
-//            userDetails.put("name", user.getName());
-//           // userDetails.put("status", status);
-//            // Add more user-specific fields as needed
-//            return userDetails;
-//        }
-
     /**
      * Creates the hash map needed to update the cancelled list in firebase
       * @param event
@@ -236,17 +220,21 @@ public class Event implements Serializable {
 
     /**
      * Creates the hash map needed to update the waitlist in firebase
-     *
      * @param event
      * @return
      */
     public Map<String, Object> updateFirebaseEventWaitlist(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("usersWaitlisted", event.getUsersWaitlisted());
+        Map<String, Map<String, Object>> serializedUsersWaitlisted = new HashMap<>();
+
+        for (Map.Entry<String, User> entry : event.getUsersWaitlisted().entrySet()) {
+            serializedUsersWaitlisted.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
+        }
+        updates.put("usersWaitlisted", serializedUsersWaitlisted);
         return updates;
     }
 
-        /**
+    /**
          * Samples/Draws a specific number of users among the waitlist to be invited to an event.
          * @param drawAmount
          */
@@ -359,6 +347,41 @@ public class Event implements Serializable {
                 Log.w("Firebase", "Error fetching user document: ", task.getException());
             }
         });
+    }
+
+    /**
+     * Converts Event instance to a Map for Firestore.
+     *
+     * @return a Map<String, Object> representation of the Event.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("eventId", eventId);
+        eventMap.put("title", title);
+        eventMap.put("dateTime", dateTime);
+        eventMap.put("waitlistCapacity", waitlistCapacity);
+        eventMap.put("status", status);
+        eventMap.put("details", details);
+        eventMap.put("facility", facility != null ? facility.toMap() : null);  // Use facility's toMap method
+        eventMap.put("requiresLocation", requiresLocation);
+
+        // Converting nested User maps to Firestore-compatible Maps
+        eventMap.put("usersWaitlist", convertUserMap(usersWaitlist));
+        eventMap.put("usersInvited", convertUserMap(usersInvited));
+        eventMap.put("usersCancelled", convertUserMap(usersCancelled));
+
+        return eventMap;
+    }
+
+    /**
+     * Helper method to convert Map<String, User> to Map<String, Map<String, Object>> for Firestore.
+     */
+    private Map<String, Map<String, Object>> convertUserMap(Map<String, User> userMap) {
+        Map<String, Map<String, Object>> convertedMap = new HashMap<>();
+        for (Map.Entry<String, User> entry : userMap.entrySet()) {
+            convertedMap.put(entry.getKey(), entry.getValue().toMap());
+        }
+        return convertedMap;
     }
 }
 

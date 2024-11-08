@@ -135,11 +135,11 @@ public class User implements Serializable {
         return organizerEventList;
     }
 
-    public void addEntrantEventList(Event event){
+    public void addEntrantEventList(Event event) {
         this.entrantEventList.add(event);
     }
 
-    public void addOrganizerEventList(Event event){
+    public void addOrganizerEventList(Event event) {
         this.organizerEventList.add(event);
     }
 
@@ -148,15 +148,40 @@ public class User implements Serializable {
     }
 
     /**
-     * Converts User Object to Map for Firebase
+     * Converts User object to a Map for Firebase
+     *
      * @return userMap
      */
     public Map<String, Object> toMap() {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", this.name);
         userMap.put("email", this.email);
-        // Add other fields as needed
+        userMap.put("phoneNumber", this.phoneNumber);
+        userMap.put("uniqueId", this.uniqueId);
+        userMap.put("entrant", this.entrant);
+        userMap.put("organizer", this.organizer);
+        userMap.put("notificationStatus", this.notificationStatus);
+        userMap.put("notifications", this.notifications);
+
+        // Convert Event lists to a format Firebase can handle if needed
+        List<Map<String, Object>> serializedEntrantEventList = new ArrayList<>();
+        for (Event event : this.entrantEventList) {
+            serializedEntrantEventList.add(event.toMap());
+        }
+        userMap.put("entrantEventList", serializedEntrantEventList);
+
+        List<Map<String, Object>> serializedOrganizerEventList = new ArrayList<>();
+        for (Event event : this.organizerEventList) {
+            serializedOrganizerEventList.add(event.toMap());
+        }
+        userMap.put("organizerEventList", serializedOrganizerEventList);
+
+        // Handle facility serialization if needed
+        if (facility != null) {
+            userMap.put("facility", facility.toMap()); // Assuming Facility has a similar toMap() method
+        }
+
         return userMap;
     }
-}
 
+}

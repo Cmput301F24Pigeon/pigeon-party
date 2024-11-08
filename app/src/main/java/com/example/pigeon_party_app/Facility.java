@@ -2,6 +2,9 @@ package com.example.pigeon_party_app;
 
 import android.widget.ImageView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The facility class represents the facility which an organizer hosts their events
  */
@@ -66,5 +69,18 @@ public class Facility {
      */
     public String getOwnerId() {
         return ownerId;
+    }
+
+    /**
+     * Converts Facility instance to a Map for Firestore.
+     *
+     * @return a Map<String, Object> representation of the Facility.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> facilityMap = new HashMap<>();
+        facilityMap.put("address", address);
+        facilityMap.put("name", name);
+        facilityMap.put("ownerId", ownerId);
+        return facilityMap;
     }
 }

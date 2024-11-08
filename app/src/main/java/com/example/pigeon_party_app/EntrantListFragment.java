@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -50,10 +51,17 @@ public class EntrantListFragment extends Fragment {
         // Load entrants for the event from Firestore
         loadEntrants();
 
-//        Button backButton = view.findViewById(R.id.button_back);
-//        backButton.setOnClickListener(v -> {
-//            requireActivity().getSupportFragmentManager().popBackStack();
-//        });
+        ImageButton backButton = view.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> {
+            // Check if the fragment manager has items in the back stack
+            if (getActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                // Pop the current fragment to return to the previous one
+                getActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                // If no fragments in the back stack, finish the activity or handle appropriately
+                getActivity().finish();
+            }
+        });
 
         return view;
     }

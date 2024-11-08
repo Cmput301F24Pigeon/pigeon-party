@@ -175,7 +175,7 @@ public class OrganizerFragment extends Fragment {
 
                                             // Check if all events have been loaded
                                             if (loadedEventsCount[0] == totalEvents) {
-                                                // Notify the adapter once all events are loaded
+                                                // Notify the adapter once all events are loaded without problems
                                                 eventsArrayAdapter.notifyDataSetChanged();
                                                 Log.d("OrganizerFragment", "All events loaded and adapter notified.");
                                             }

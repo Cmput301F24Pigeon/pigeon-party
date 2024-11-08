@@ -127,11 +127,11 @@ public class Event implements Serializable {
         this.usersWaitlist = usersWaitlist;
     }
 
-    public void setUsersCancelled(Map <String, User> usersWaitlist) {
+    public void setUsersCancelled(Map <String, User> usersCancelled) {
         this.usersWaitlist = usersCancelled;
     }
 
-    public void setUsersInvited(Map <String, User> usersWaitlist) {
+    public void setUsersInvited(Map <String, User> usersInvited) {
         this.usersWaitlist = usersInvited;
     }
 
@@ -181,7 +181,8 @@ public class Event implements Serializable {
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
     public Map<String, User> getUsersWaitlisted() {
-        return usersWaitlist;
+        return usersWaitlist != null ? usersWaitlist : new HashMap<>();
+
     }
 
     /**
@@ -190,7 +191,7 @@ public class Event implements Serializable {
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
     public Map<String, User> getUsersInvited() {
-        return usersInvited;
+        return usersInvited != null ? usersInvited : new HashMap<>();
     }
 
     /**
@@ -199,7 +200,7 @@ public class Event implements Serializable {
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
     public Map<String, User> getUsersCancelled() {
-        return usersCancelled;
+        return usersCancelled != null ? usersCancelled : new HashMap<>();
     }
 
     /**
@@ -230,7 +231,7 @@ public class Event implements Serializable {
         for (Map.Entry<String, User> entry : event.getUsersWaitlisted().entrySet()) {
             serializedUsersWaitlisted.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
         }
-        updates.put("usersWaitlisted", serializedUsersWaitlisted);
+        updates.put("usersWaitlist", serializedUsersWaitlisted);
         return updates;
     }
 
@@ -312,7 +313,7 @@ public class Event implements Serializable {
                     if (documentSnapshot.exists()) {
                         Map<String, Map<String, Object>> usersToNotify = null;
                         if ("waitlisted".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlist");
                         } else if ("invited".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {

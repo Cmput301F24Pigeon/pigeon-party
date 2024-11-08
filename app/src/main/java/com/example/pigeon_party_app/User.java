@@ -47,6 +47,9 @@ public class User implements Serializable {
         this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
     }
 
+    public User(String userId, Map<String, Object> userMap) {
+    }
+
     public String getName() {
         return name;
     }
@@ -182,6 +185,17 @@ public class User implements Serializable {
         }
 
         return userMap;
+    }
+
+    /**
+     * Helper method to convert a list of events to a Map (to store in Firestore).
+     */
+    private List<Map<String, Object>> convertEventListToMap(List<Event> eventList) {
+        List<Map<String, Object>> eventMapList = new ArrayList<>();
+        for (Event event : eventList) {
+            eventMapList.add(event.toMap());
+        }
+        return eventMapList;
     }
 
 }

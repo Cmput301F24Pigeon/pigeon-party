@@ -38,6 +38,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This is the main activity which serves as the home screen of the app
@@ -119,6 +120,48 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    // Add this function in your MainActivity
+    private void testEventFunctionality() {
+        if (currentUser == null || currentEvent == null) {
+            Log.w("MainActivity", "Cannot test functionality - currentUser or currentEvent is null.");
+            return;
+        }
+
+        // Generate a random user ID for testing
+        String randomUserID = UUID.randomUUID().toString();
+        Log.d("Test", "Generated random user ID for testing: " + randomUserID);
+
+        // Add current user to each map in currentEvent using random user ID
+        currentEvent.getUsersWaitlisted().put(randomUserID, currentUser);
+        currentEvent.getUsersCancelled().put(randomUserID, currentUser);
+        currentEvent.getUsersInvited().put(randomUserID, currentUser);
+
+        // Log the changes to verify
+        Log.d("Test", "Waitlisted users: " + currentEvent.getUsersWaitlisted());
+        Log.d("Test", "Cancelled users: " + currentEvent.getUsersCancelled());
+        Log.d("Test", "Invited users: " + currentEvent.getUsersInvited());
+
+        // Update the event in Firestore to save the changes
+        Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
+        Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+        Map<String, Object> invitedListUpdates = currentEvent.updateFirebaseEventInvitedList(currentEvent);
+
+        db.collection("events").document(currentEvent.getEventId())
+                .update(waitlistUpdates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's waitlist successfully updated for test user"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist for test user", e));
+
+        db.collection("events").document(currentEvent.getEventId())
+                .update(cancelledListUpdates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's cancelled list successfully updated for test user"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's cancelled list for test user", e));
+
+        db.collection("events").document(currentEvent.getEventId())
+                .update(invitedListUpdates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's invited list successfully updated for test user"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's invited list for test user", e));
     }
 
     /**

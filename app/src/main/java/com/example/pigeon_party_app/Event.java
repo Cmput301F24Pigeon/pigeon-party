@@ -130,6 +130,7 @@ public class Event implements Serializable {
      */
     public void addUserToInvited(User user) {
         usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
+
     }
 
     /**
@@ -266,7 +267,7 @@ public class Event implements Serializable {
                 message = "Congratulations! You have joined the event: " + title;
                 break;
             case "waitlisted":
-                message = "You are on the waitlist for the event: " + title;
+                message = "You are currently on the waitlist for the event: " + title;
                 break;
             case "cancelled":
                 message = "Sorry, you have not been selected for the event: " + title;

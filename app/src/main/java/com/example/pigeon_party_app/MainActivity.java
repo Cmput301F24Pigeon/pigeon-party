@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } else {
             Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
-
+            return;
         }
 
         receiveEvents();

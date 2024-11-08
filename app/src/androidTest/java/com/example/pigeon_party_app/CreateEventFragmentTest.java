@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -38,7 +39,7 @@ public class CreateEventFragmentTest {
     public void setUp() {
         db = FirebaseFirestore.getInstance();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false);
+        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,new ArrayList<Event>(), new ArrayList<Event>());
     }
 
     /**

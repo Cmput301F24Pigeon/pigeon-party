@@ -30,7 +30,7 @@ public class EventDetailsFragment extends Fragment {
     private Event event = MainActivity.getCurrentEvent();
     private User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public EventDetailsFragment(){
     }
@@ -78,6 +78,7 @@ public class EventDetailsFragment extends Fragment {
                         updateFirebase(cancelledListUpdates, "cancelled list");
                     }
                     event.addUserToWaitlist(current_user);
+
                     Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
                     updateFirebase(updates, "waitlist");
                 }

@@ -15,15 +15,23 @@ import android.widget.EditText;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Fragment which prompts the user for initial facility creation in order to create events
  */
 public class FacilityFragment extends Fragment {
+    private User current_user = MainActivity.getCurrentUser();
+
     public FacilityFragment() {}
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return FacilityFragment the mock fragment being used for testing
+     */
     public static FacilityFragment newInstance(User user) {
         FacilityFragment fragment = new FacilityFragment();
         Bundle args = new Bundle();
@@ -40,8 +48,6 @@ public class FacilityFragment extends Fragment {
             current_user = (User) getArguments().getSerializable("current_user");
         }
     }
-
-    private User current_user = MainActivity.getCurrentUser();
 
    /* public static FacilityFragment newInstance(String param1, String param2) {
         FacilityFragment fragment = new FacilityFragment();
@@ -103,6 +109,9 @@ public class FacilityFragment extends Fragment {
      */
     public void createFacility(FirebaseFirestore db,  Facility facility) {
         current_user.setFacility(facility);
+        ArrayList<Event> organizerList = new ArrayList<>();
+        current_user.setOrganizerEventList(organizerList);
+
         Map<String, Object> updates = new HashMap<>();
         updates.put("facility", facility);
         updates.put("organizer", true);

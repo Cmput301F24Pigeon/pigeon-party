@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    MainActivity.currentUser = getUserFromFirebase(documentSnapshot);
+                    MainActivity.currentUser = documentSnapshot.toObject(User.class);
                     askNotificationPermission();
                     if (currentUser.getNotifications() == null) {
                         currentUser.setNotifications(new ArrayList<>());

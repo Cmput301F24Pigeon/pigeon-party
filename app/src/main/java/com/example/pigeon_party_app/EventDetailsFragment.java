@@ -78,6 +78,7 @@ public class EventDetailsFragment extends Fragment {
                         updateFirebase(cancelledListUpdates, "cancelled list");
                     }
                     event.addUserToWaitlist(current_user);
+                    MainActivity.currentUser.addEntrantEventList(event);
 
                     Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
                     updateFirebase(updates, "waitlist");
@@ -95,5 +96,12 @@ public class EventDetailsFragment extends Fragment {
                     Log.d("Firestore", msg);
                 })
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+        updates.put("entrantEventList", current_user.getEntrantEventList());
+        db.collection("user").document(current_user.getUniqueId())
+                .update(updates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's entrant list", e));
     }
+
+
 }

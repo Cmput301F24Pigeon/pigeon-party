@@ -97,10 +97,9 @@ public class MainActivityTest {
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
 
 
-
-
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-        User firebaseUser = MainActivity.currentUser;
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            scenario.onActivity(activity -> {
+                User firebaseUser = activity.receiveCurrentUser(testUserId);
                 assertEquals("User name should match", testUserName, firebaseUser.getName());
                 assertEquals("User email should match", testUserEmail, firebaseUser.getEmail());
                 assertEquals("User phone should match", testUserPhone, firebaseUser.getPhoneNumber());
@@ -111,7 +110,8 @@ public class MainActivityTest {
                 assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
                 assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
                 assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
-
+            });
+        }
 
 
 

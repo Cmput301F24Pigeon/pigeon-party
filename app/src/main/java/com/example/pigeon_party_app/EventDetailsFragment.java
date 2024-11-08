@@ -30,8 +30,8 @@ public class EventDetailsFragment extends Fragment {
     //private TextView eventLocation;
     private TextView eventDetails;
     private TextView eventCapacity;
-    private Event event = MainActivity.getCurrentEvent();
-    private User current_user = MainActivity.getCurrentUser();
+    Event event = MainActivity.getCurrentEvent();
+    User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -116,6 +116,11 @@ public class EventDetailsFragment extends Fragment {
         });
     }
 
+    /**
+     * Adds the user to the corresponding event's waitlist in firebase
+     * @param updates
+     * @param list
+     */
     public void updateFirebase(Map<String, Object> updates, String list){
         String msg = String.format("Event's %s successfully updated", list);
         db.collection("events").document(event.getEventId())

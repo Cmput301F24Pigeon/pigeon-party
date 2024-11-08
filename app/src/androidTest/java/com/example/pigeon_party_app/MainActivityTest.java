@@ -9,6 +9,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.junit.Assert.assertEquals;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+
 import android.util.Log;
 
 import androidx.fragment.app.testing.FragmentScenario;
@@ -46,6 +50,8 @@ public class MainActivityTest {
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
     private User testUser;
+    private ArrayList<Event> testUserEntrantEventList;
+    private ArrayList<Event> testUserOrganizerEventList;
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -73,7 +79,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testRecieveCurrentUser(){
+    public void testRecieveCurrentUser() {
         testUserId = "test-user-id";
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
@@ -82,31 +88,35 @@ public class MainActivityTest {
         testUserIsEntrant = true;
         testUserFacility = null;
         testUserHasNotifications = true;
+        testUserOrganizerEventList = new ArrayList<>();
+        testUserEntrantEventList = new ArrayList<>();
 
-
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserEntrantEventList, testUserOrganizerEventList);
         db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
 
-        MainActivity instance = new MainActivity();
 
-        instance.receiveCurrentUser(testUserId);
 
-        assertEquals("User name should match", testUserName, instance.currentUser.getName());
-        assertEquals("User email should match", testUserEmail,  instance.currentUser.getEmail());
-        assertEquals("User phone should match", testUserPhone,  instance.currentUser.getName());
-        assertEquals("User Id should match", testUserId, instance.currentUser.getUniqueId());
-        assertEquals("User organizer status should match", testUserIsOrganizer, instance.currentUser.isOrganizer());
-        assertEquals("User entrant status should match", testUserIsEntrant,  instance.currentUser.isEntrant());
-        assertEquals("User facility should match", testUserFacility, instance.currentUser.getFacility());
-        assertEquals("User notification status should match", testUserHasNotifications, instance.currentUser.hasNotificationsOn());
-        //assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
-        //assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        User firebaseUser = MainActivity.currentUser;
+                assertEquals("User name should match", testUserName, firebaseUser.getName());
+                assertEquals("User email should match", testUserEmail, firebaseUser.getEmail());
+                assertEquals("User phone should match", testUserPhone, firebaseUser.getPhoneNumber());
+                assertEquals("User Id should match", testUserId, firebaseUser.getUniqueId());
+                assertEquals("User organizer status should match", testUserIsOrganizer, firebaseUser.isOrganizer());
+                assertEquals("User entrant status should match", testUserIsEntrant, firebaseUser.isEntrant());
+                assertEquals("User facility should match", testUserFacility, firebaseUser.getFacility());
+                assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
+                assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
+                assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
+
+
+
 
 
     }
-
     @Test
     public void testSetUpAddFacilityButtonAsEntrant() throws UiObjectNotFoundException {
         testUserName = "test-user-name";

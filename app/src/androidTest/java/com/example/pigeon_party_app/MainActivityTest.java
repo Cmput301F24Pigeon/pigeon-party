@@ -7,12 +7,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.junit.Assert.assertEquals;
+
 import android.util.Log;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiObject;
@@ -26,6 +29,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 
@@ -66,10 +72,40 @@ public class MainActivityTest {
         }
     }
 
-//    @Test
-//    public Void testRecieveCurrentUser(){
-//
-//    }
+    @Test
+    public void testRecieveCurrentUser(){
+        testUserId = "test-user-id";
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "1234567890";
+        testUserIsOrganizer = false;
+        testUserIsEntrant = true;
+        testUserFacility = null;
+        testUserHasNotifications = true;
+
+
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
+        db.collection("user").document(testUserId).set(testUser)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
+                .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
+
+        MainActivity instance = new MainActivity();
+
+        instance.receiveCurrentUser(testUserId);
+
+        assertEquals("User name should match", testUserName, instance.currentUser.getName());
+        assertEquals("User email should match", testUserEmail,  instance.currentUser.getEmail());
+        assertEquals("User phone should match", testUserPhone,  instance.currentUser.getName());
+        assertEquals("User Id should match", testUserId, instance.currentUser.getUniqueId());
+        assertEquals("User organizer status should match", testUserIsOrganizer, instance.currentUser.isOrganizer());
+        assertEquals("User entrant status should match", testUserIsEntrant,  instance.currentUser.isEntrant());
+        assertEquals("User facility should match", testUserFacility, instance.currentUser.getFacility());
+        assertEquals("User notification status should match", testUserHasNotifications, instance.currentUser.hasNotificationsOn());
+        //assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
+        //assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
+
+
+    }
 
     @Test
     public void testSetUpAddFacilityButtonAsEntrant() throws UiObjectNotFoundException {

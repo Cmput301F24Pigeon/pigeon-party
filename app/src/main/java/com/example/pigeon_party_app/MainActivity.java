@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.fragment_container, new CreateEntrantProfileFragment())
                             .addToBackStack(null)
-                            .commit();
+                            .commitAllowingStateLoss();
                 }
             }
         });

@@ -18,6 +18,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MainActivityTest {
     private FirebaseFirestore db;
     private String testUserId;
@@ -56,7 +59,20 @@ public class MainActivityTest {
     }
 
     @Test
-    public Void testRecieveCurrentUser(){
+    public void testRecieveCurrentUser(){
+        testUserId = "test-user-id";
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "1234567890";
+        testUserIsOrganizer = false;
+        testUserIsEntrant = true;
+        testUserFacility = null;
+        testUserHasNotifications = true;
+
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(),new ArrayList<Event>());
+        db.collection("user").document("testDoc").set(testUser)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
+                .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
 
     }
 

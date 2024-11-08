@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        receiveCurrentUser(uniqueId);
+        receiveCurrentUser();
         if (currentUser != null) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
      */
-    public static void receiveCurrentUser(String uniqueId) {
+    public void receiveCurrentUser() {
+        String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         DocumentReference docRef = db.collection("user").document(uniqueId);
 
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        //receiveEvents();
+        receiveEvents();
     }
 
     /**

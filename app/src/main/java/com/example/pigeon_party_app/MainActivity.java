@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Receives events user is associated with and adapts them to the ListView
+     * was used before but not needed
      */
     private void receiveEvents() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -290,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method gets a user from Firebase
+     * This method gets a user from Firebase was needed before but not needed anymore
      * @param documentSnapshot the data from the user document in Firebase
      * @return a User object
      */

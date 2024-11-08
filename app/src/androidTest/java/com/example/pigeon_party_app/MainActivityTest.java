@@ -60,7 +60,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testRecieveCurrentUser(){
+    public void testRecieveCurrentUser() {
         testUserId = "test-user-id";
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
@@ -71,29 +71,36 @@ public class MainActivityTest {
         testUserHasNotifications = true;
 
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserEntrantEventList, testUserOrganizerEventList);
         db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
 
-        MainActivity instance = new MainActivity();
 
-        instance.receiveCurrentUser(testUserId);
 
-        assertEquals("User name should match", testUserName, instance.currentUser.getName());
-        assertEquals("User email should match", testUserEmail,  instance.currentUser.getEmail());
-        assertEquals("User phone should match", testUserPhone,  instance.currentUser.getName());
-        assertEquals("User Id should match", testUserId, instance.currentUser.getUniqueId());
-        assertEquals("User organizer status should match", testUserIsOrganizer, instance.currentUser.isOrganizer());
-        assertEquals("User entrant status should match", testUserIsEntrant,  instance.currentUser.isEntrant());
-        assertEquals("User facility should match", testUserFacility, instance.currentUser.getFacility());
-        assertEquals("User notification status should match", testUserHasNotifications, instance.currentUser.hasNotificationsOn());
-        assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
-        assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
+
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            scenario.onActivity(activity -> {
+                scenario.recreate();
+                activity.receiveCurrentUser(testUserId);
+                User firebaseUser = MainActivity.currentUser;
+                assertEquals("User name should match", testUserName, firebaseUser.getName());
+                assertEquals("User email should match", testUserEmail, firebaseUser.getEmail());
+                assertEquals("User phone should match", testUserPhone, firebaseUser.getPhoneNumber());
+                assertEquals("User Id should match", testUserId, firebaseUser.getUniqueId());
+                assertEquals("User organizer status should match", testUserIsOrganizer, firebaseUser.isOrganizer());
+                assertEquals("User entrant status should match", testUserIsEntrant, firebaseUser.isEntrant());
+                assertEquals("User facility should match", testUserFacility, firebaseUser.getFacility());
+                assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
+                assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
+                assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
+
+            });
+
+        }
 
 
     }
-
     @Test
     public void testSetUpAddFacilityButtonAsEntrant() {
         onView(withId(R.id.button_facility)).perform(click());

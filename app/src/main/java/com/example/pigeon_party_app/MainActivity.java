@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -458,6 +460,11 @@ public class MainActivity extends AppCompatActivity {
                         builder.setPositiveButton("OK", (dialog, which) -> {
                             currentEvent.removeUserFromWaitlist(currentUser);
                             currentEvent.addUserToCancelled(currentUser);
+                            currentUser.removeEntrantEventList(position);
+                            updateEntrantEventList(currentUser);
+                            eventArrayList.remove(position);
+                            eventsArrayAdapter.notifyDataSetChanged();
+
 
                             Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
                             Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
@@ -477,10 +484,36 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
                     }
 
-                    receiveEvents();
+                    //receiveEvents();
                 }
 
             });
         }
     }
+
+    /**
+     * This function updates the user's eventlist in Firebase
+     * @param user The user who has his entrant eventlist updated
+     */
+    public void updateEntrantEventList(User user) {
+        String userId = user.getUniqueId();
+
+        // Update syntax from Firebase docs: https://firebase.google.com/docs/firestore/manage-data/add-data#java_10
+        DocumentReference userRef = db.collection("user").document(userId);
+
+        userRef.update("entrantEventList", user.getEntrantEventList())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error updating document", e);
+                    }
+                });
+    }
+
 }

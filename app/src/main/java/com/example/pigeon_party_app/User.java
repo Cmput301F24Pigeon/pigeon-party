@@ -2,7 +2,9 @@ package com.example.pigeon_party_app;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is used to create and manage users
@@ -221,18 +223,38 @@ public class User implements Serializable {
     }
 
     /**
-     * adding and event to our entrant event list
+     * adding the event to our entrant event list
      * @param event an event we are adding to our `list
      */
     public void addEntrantEventList(Event event){
         this.entrantEventList.add(event);
     }
+
     /**
-     * adding and event to our organizer event list
+     * remove the event to our entrant event list
+     * @param pos an event we are adding to our `list
+     */
+    public void removeEntrantEventList(int pos){
+        this.entrantEventList.remove(pos);
+    }
+
+
+    /**
+     * adding the event to our organizer event list
      * @param event an event we are adding to our `list
      */
     public void addOrganizerEventList(Event event){
         this.organizerEventList.add(event);
     }
+    /**
+     * remove the event to our organizer event list
+     * @param pos the int value of an event we are adding to our `list
+     */
+    public void removeOrganizerEventList(int pos){
+        this.organizerEventList.remove(pos);
+    }
+
+
+
 }
 

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.activity.EdgeToEdge;
@@ -76,9 +77,15 @@ public class MainActivity extends AppCompatActivity {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
 
+
             eventArrayList = new ArrayList<>();
+            eventArrayList = MainActivity.currentUser.getEntrantEventList();
             eventListView = findViewById(R.id.event_list);
-            receiveEvents();
+            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+            eventListView.setAdapter(eventsArrayAdapter);
+
+            //receiveEvents();
+
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -93,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
         setUpAddEventButton();
     }
 
-
+    /**
+     * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
+     */
     public void receiveCurrentUser() {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -121,15 +130,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method initializes the QR scanner
+     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
+     *
+     * @param user The user which the method checks notifications
      */
-    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
-    private void startQRScanner() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setPrompt("Scan the event QR code");
-        integrator.setOrientationLocked(false);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.initiateScan();
+    public void checkUserNotifications(User user) {
+        notificationHelper = new NotificationHelper(this);
+        db.collection("user").document(user.getUniqueId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+
+                    if (documentSnapshot.exists()) {
+                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
+
+                        if (notifications != null && !notifications.isEmpty()) {
+                            String message = notifications.get(0);
+                            notificationHelper.notifyUser(user, message);
+
+                            user.clearNotifications();
+                            db.collection("user").document(user.getUniqueId())
+                                    .update("notifications", user.getNotifications())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating notifications", e);
+                                    });
+                        }
+
+                    } else {
+                        Log.w("Firestore", "User document not found");
+                    }
+                })
+
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error retrieving user document", e);
+                });
     }
 
     /**
@@ -154,14 +190,31 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
                         showEventDetailsFragment();
                     }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Invalid QR Code: Event not found", Toast.LENGTH_SHORT).show();
+
+                    }
                 }
 
             });
         } else {
-            finish();
+            Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
+
         }
 
         receiveEvents();
+    }
+
+    /**
+     * This method initializes the QR scanner
+     */
+    //https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
+    private void startQRScanner() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setPrompt("Scan the event QR code");
+        integrator.setOrientationLocked(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.initiateScan();
     }
 
     /**
@@ -234,45 +287,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method checks if a user has any notifications in firebase, if they do then the notifications will be shown to the user and cleared from the database
-     *
-     * @param user The user which the method checks notifications
+     * This method gets a user from Firebase
+     * @param documentSnapshot the data from the user document in Firebase
+     * @return a User object
      */
-    public void checkUserNotifications(User user) {
-        notificationHelper = new NotificationHelper(this);
-        db.collection("user").document(user.getUniqueId())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-
-                    if (documentSnapshot.exists()) {
-                        List<String> notifications = (List<String>) documentSnapshot.get("notifications");
-
-                        if (notifications != null && !notifications.isEmpty()) {
-                            String message = notifications.get(0);
-                            notificationHelper.notifyUser(user, message);
-
-                            user.clearNotifications();
-                            db.collection("user").document(user.getUniqueId())
-                                    .update("notifications", user.getNotifications())
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d("Firestore", "Notifications cleared for user " + user.getUniqueId());
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.w("Firestore", "Error updating notifications", e);
-                                    });
-                        }
-
-                    } else {
-                        Log.w("Firestore", "User document not found");
-                    }
-                })
-
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error retrieving user document", e);
-                });
-    }
-
-
     private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
         User user = null;
         String userName = (documentSnapshot.get("name")).toString();
@@ -282,6 +300,9 @@ public class MainActivity extends AppCompatActivity {
         boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
         boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
         boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
+        ArrayList<Event> entrantList = (ArrayList<Event>) documentSnapshot.get("entrantList");
+        ArrayList<Event> organizerList = (ArrayList<Event>) documentSnapshot.get("organizerList");
+
 
         if ((documentSnapshot.get("facility")) != null) {
             String facilityAddress = (documentSnapshot.get("facility.address")).toString();
@@ -290,11 +311,12 @@ public class MainActivity extends AppCompatActivity {
 
             Facility userFacility = new Facility(facilityOwner, facilityAddress, facilityName);
 
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus);
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus, entrantList, organizerList);
         }
 
         if ((documentSnapshot.get("facility")) == null) {
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus);
+            organizerList = new ArrayList<>();
+            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus, entrantList, organizerList);
         }
         
         return user;

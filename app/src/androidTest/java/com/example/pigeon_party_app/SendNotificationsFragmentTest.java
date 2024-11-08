@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class SendNotificationsFragmentTest {
         db = FirebaseFirestore.getInstance();
         testUserMap = new HashMap<>();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false);
+        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, new ArrayList<Event>(), new ArrayList<Event>());
         testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())
@@ -88,14 +89,14 @@ public class SendNotificationsFragmentTest {
         if (permissionDialog.waitForExists(4000)) {
             permissionDialog.click();
         }
-        onView(withId(R.id.check_invited)).perform(click());
+        onView(withId(R.id.check_accepted)).perform(click());
         onView(withText("Confirm")).perform(click());
         scenario.close();
 
         ActivityScenario<MainActivity> relaunchScenario = ActivityScenario.launch(MainActivity.class);
 
         device.openNotification();
-        UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have been invited to the event: testEventTitle"));
+        UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have joined the event: testEventTitle"));
         if (notificationText.waitForExists(4000)){
             assertTrue("Notification was received", notificationText.exists());
         }

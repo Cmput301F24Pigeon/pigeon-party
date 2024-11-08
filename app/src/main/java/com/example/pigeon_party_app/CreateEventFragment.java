@@ -53,6 +53,10 @@ public class CreateEventFragment extends Fragment {
 
     public CreateEventFragment() {}
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEventFragment the mock fragment being used for testing
+     */
     public static CreateEventFragment newInstance(User user) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
@@ -128,7 +132,6 @@ public class CreateEventFragment extends Fragment {
                 generateQRCode(eventId);
 
                 addEvent(db,event);
-
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
                     getActivity().getSupportFragmentManager()
@@ -237,6 +240,14 @@ public class CreateEventFragment extends Fragment {
                 .addOnFailureListener(e ->{
                     Log.w("FireStore", "Error adding event", e);
                 });
+        Map<String, Object> updates = new HashMap<>();
+
+        current_user.addOrganizerEventList(event);
+        updates.put("organizerEventList", current_user.getOrganizerEventList());
+        db.collection("user").document(current_user.getUniqueId())
+                .update(updates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's oranizer list", e));
     }
 
 

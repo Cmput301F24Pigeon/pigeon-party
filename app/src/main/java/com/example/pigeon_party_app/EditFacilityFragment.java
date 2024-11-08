@@ -30,6 +30,10 @@ public class EditFacilityFragment extends Fragment {
     public EditFacilityFragment() {
     }
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return EditFacilityFragment the mock fragment being used for testing
+     */
     public static EditFacilityFragment newInstance(User user) {
         EditFacilityFragment fragment = new EditFacilityFragment();
         Bundle args = new Bundle();

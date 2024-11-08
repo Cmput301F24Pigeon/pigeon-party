@@ -6,6 +6,10 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.util.Log;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -13,6 +17,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,6 +37,8 @@ public class MainActivityTest {
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
     private User testUser;
+    private ArrayList<Event> testUserEntrantEventList;
+    private ArrayList<Event> testUserOrganizerEventList;
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -68,11 +75,28 @@ public class MainActivityTest {
         testUserIsEntrant = true;
         testUserFacility = null;
         testUserHasNotifications = true;
+        testUserOrganizerEventList = null;
+        testUserEntrantEventList = null;
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(),new ArrayList<Event>());
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
         db.collection("user").document("testDoc").set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
+
+        MainActivity.receiveCurrentUser(testUserId);
+
+        Log.d("Firestore Test", "User found in Firestore!");
+        assertEquals("User name should match", testUserName, MainActivity.currentUser.getName());
+        assertEquals("User email should match", testUserEmail,  MainActivity.currentUser.getEmail());
+        assertEquals("User phone should match", testUserPhone,  MainActivity.currentUser.getName());
+        assertEquals("User Id should match", testUserId, MainActivity.currentUser.getUniqueId());
+        assertEquals("User organizer status should match", testUserIsOrganizer, MainActivity.currentUser.isOrganizer());
+        assertEquals("User entrant status should match", testUserIsEntrant,  MainActivity.currentUser.isEntrant());
+        assertEquals("User facility should match", testUserFacility, MainActivity.currentUser.getFacility());
+        assertEquals("User notification status should match", testUserHasNotifications, MainActivity.currentUser.hasNotificationsOn());
+        assertEquals("User has entrant array list", testUserEntrantEventList, MainActivity.currentUser.getEntrantEventList());
+        assertEquals("User has organizer array list", testUserOrganizerEventList, MainActivity.currentUser.getOrganizerEventList());
+
 
     }
 

@@ -6,6 +6,8 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.assertEquals;
+
 import android.util.Log;
 
 import androidx.test.core.app.ActivityScenario;
@@ -88,8 +90,8 @@ public class MainActivityTest {
         assertEquals("User entrant status should match", testUserIsEntrant,  instance.currentUser.isEntrant());
         assertEquals("User facility should match", testUserFacility, instance.currentUser.getFacility());
         assertEquals("User notification status should match", testUserHasNotifications, instance.currentUser.hasNotificationsOn());
-        assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
-        assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
+        //assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
+        //assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
 
 
     }

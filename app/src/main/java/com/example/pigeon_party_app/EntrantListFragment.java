@@ -2,6 +2,7 @@ package com.example.pigeon_party_app;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,6 +118,22 @@ public class EntrantListFragment extends Fragment {
                     });
         });
 
+        // Initialize the send notifications button
+        Button sendNotificationsButton = view.findViewById(R.id.send_notifications_button);
+        sendNotificationsButton.setOnClickListener(v -> {
+
+            // Send notifications based on user status
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(eventId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        if (event != null) {
+                            sendNotifications(db, event);
+                        }
+
+                    });
+        });
+
         return view;
     }
 
@@ -140,5 +157,25 @@ public class EntrantListFragment extends Fragment {
                         entrantArrayAdapter.notifyDataSetChanged();
                     }
                 });
+    }
+
+    /**
+     * This method sends notifications to users based on their status in the event.
+     * @param db The firestore database
+     * @param event The event being used
+     */
+    private void sendNotifications(FirebaseFirestore db, Event event) {
+        if (event == null) {
+            Log.e("EntrantListFragment", "Event object is null");
+            return;
+        }
+
+        // Loop through different user status categories (waitlisted, invited, cancelled)
+        event.notifyUserByStatus(db, "waitlisted");
+        event.notifyUserByStatus(db, "invited");
+        event.notifyUserByStatus(db, "cancelled");
+
+        // You can optionally show a toast message after notifications are sent
+        Toast.makeText(getContext(), "Notifications sent!", Toast.LENGTH_SHORT).show();
     }
 }

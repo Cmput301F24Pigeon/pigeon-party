@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     Event currentEvent = eventsArrayAdapter.getItem(position);
                     String userId = currentUser.getUniqueId();
 
-                    if (currentEvent.getUsersInvited().get(userId) != null) {
+                    if (currentEvent.getUsersSentInvite().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Do you want to accept the invitation?");
                         builder.setCancelable(true);
@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
 
                     } else {
-                        // For second half of project, this will be used for user story which allows entrant to stay on waiting list in case spot opens
+                        // For second half of project, we can add to this for user story which allows entrant to stay on waiting list in case spot opens
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Remove yourself from this event?");
                         builder.setCancelable(true);

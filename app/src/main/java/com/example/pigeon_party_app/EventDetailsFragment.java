@@ -1,16 +1,19 @@
 
 package com.example.pigeon_party_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.Format;
@@ -56,6 +59,14 @@ public class EventDetailsFragment extends Fragment {
         eventCapacity.setText("Waitlist capacity: " + String.valueOf(event.getWaitlistCapacity()));
 
         signUpButton();
+        ImageButton backButton = view.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            getActivity().finish();
+        });
+
         return view;
     }
 
@@ -65,25 +76,38 @@ public class EventDetailsFragment extends Fragment {
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void signUpButton(){
-        if (event.getWaitlistCapacity() == 0){
-            signUpButton.setText("Waitlist is Full");
-        }
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (event.getWaitlistCapacity() != 0){
-                    if(event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
-                        event.removeUserFromCancelledList(MainActivity.currentUser);
-                        Map<String, Object> cancelledListUpdates = event.updateFirebaseEventCancelledList(event);
-                        updateFirebase(cancelledListUpdates, "cancelled list");
-                    }
-                    event.addUserToWaitlist(current_user);
-                    MainActivity.currentUser.addEntrantEventList(event);
+        DocumentReference eventRef = FirebaseFirestore.getInstance()
+                .collection("events")
+                .document(event.getEventId());
 
-                    Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
-                    updateFirebase(updates, "waitlist");
+        eventRef.collection("usersWaitlisted").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int currentSize = task.getResult().size(); // Get the number of users in the waitlist
+                int waitlistCapacity = event.getWaitlistCapacity();
+
+                if (waitlistCapacity > 0 && currentSize >= waitlistCapacity) {
+                    signUpButton.setText("Waitlist is Full");
+                    signUpButton.setEnabled(false);
+                } else {
+                    signUpButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null) {
+                                event.removeUserFromCancelledList(MainActivity.currentUser);
+                                Map<String, Object> cancelledListUpdates = event.updateFirebaseEventCancelledList(event);
+                                updateFirebase(cancelledListUpdates, "cancelled list");
+                            }
+
+                            event.addUserToWaitlist(MainActivity.currentUser);
+                            Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
+                            updateFirebase(updates, "waitlist");
+
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    });
                 }
-                getActivity().getSupportFragmentManager().popBackStack();
+            } else {
+                System.err.println("Error getting waitlist size: " + task.getException());
             }
         });
     }

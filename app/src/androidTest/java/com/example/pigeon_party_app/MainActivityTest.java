@@ -84,7 +84,7 @@ public class MainActivityTest {
         testUserHasNotifications = true;
 
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(), new ArrayList<Event>());
         db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
@@ -109,6 +109,8 @@ public class MainActivityTest {
 
     @Test
     public void testSetUpAddFacilityButtonAsEntrant() throws UiObjectNotFoundException {
+        // Note: this test will pass if the code that creates the notification permission dialogue is commented out in main.
+        // I can't find an automated way to click on either "Allow" or "Don't allow", so can't get past the pop-up
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
         testUserPhone = "1234567890";
@@ -116,13 +118,14 @@ public class MainActivityTest {
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-
         onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
         onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
         onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
         onView(withId(R.id.create_user_profile_button)).perform(click());
+
+        // Test stops here because of pop up
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
+        UiObject permissionDialog = device.findObject(new UiSelector().textContains("Don't"));
         if (permissionDialog.waitForExists(2000)) {
             permissionDialog.click();
         }
@@ -133,16 +136,58 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testSetUpAddFacilityButtonAsOrganizer() {
-        // need to create entrant in firebase
+    public void testSetUpAddFacilityButtonAsOrganizer() throws UiObjectNotFoundException {
+        // Note: this test will pass if the code that creates the notification permission dialogue is commented out in main.
+        // I can't find an automated way to click on either "Allow" or "Don't allow", so can't get past the pop-up
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "1234567890";
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.create_user_profile_button)).perform(click());
+
+        // Test stops here because of pop up
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiObject permissionDialog = device.findObject(new UiSelector().textContains("Don't"));
+        if (permissionDialog.waitForExists(2000)) {
+            permissionDialog.click();
+        }
+
+        MainActivity.getCurrentUser().setOrganizer(true);
         onView(withId(R.id.button_facility)).perform(click());
+
         onView(withId(R.id.organizer_event_list)).check(matches(isDisplayed()));
         onView(withId(R.id.button_add_organizer_event)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testSetUpProfileButton() {
-        // need to create organizer in firebase
+    public void testSetUpProfileButton() throws UiObjectNotFoundException {
+        // Note: this test will pass if the code that creates the notification permission dialogue is commented out in main.
+        // I can't find an automated way to click on either "Allow" or "Don't allow", so can't get past the pop-up in this test
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "1234567890";
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.create_user_profile_button)).perform(click());
+
+        // Test stops here because of pop up
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiObject permissionDialog = device.findObject(new UiSelector().textContains("Don't"));
+        if (permissionDialog.waitForExists(2000)) {
+            permissionDialog.click();
+        }
+
         onView(withId(R.id.button_profile)).perform(click());
         onView(withId(R.id.textView_entrant_name)).check(matches(isDisplayed()));
         onView(withId(R.id.textView_entrant_email)).check(matches(isDisplayed()));
@@ -150,9 +195,29 @@ public class MainActivityTest {
 
 
     @Test
-    public void testSetUpNotificationButton() {
-        // This Fragment is probably going to be removed
-        // need entrant
+    public void testSetUpNotificationButton() throws UiObjectNotFoundException {
+        // This Fragment is probably going to be removed, it and any tests are just along for the ride right now
+        // Note: this test will pass if the code that creates the notification permission dialogue is commented out in main.
+        // I can't find an automated way to click on either "Allow" or "Don't allow", so can't get past the pop-up in this test
+        testUserName = "test-user-name";
+        testUserEmail = "test@email.com";
+        testUserPhone = "1234567890";
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.create_user_profile_button)).perform(click());
+
+        // Test stops here because of pop up
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiObject permissionDialog = device.findObject(new UiSelector().textContains("Don't"));
+        if (permissionDialog.waitForExists(2000)) {
+            permissionDialog.click();
+        }
+
         onView(withId(R.id.button_notifications)).perform(click());
         onView(withId(R.id.notification_switch)).check(matches(isDisplayed()));
     }

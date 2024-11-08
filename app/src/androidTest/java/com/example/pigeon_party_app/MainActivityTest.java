@@ -8,6 +8,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.util.Log;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -69,10 +70,27 @@ public class MainActivityTest {
         testUserFacility = null;
         testUserHasNotifications = true;
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(),new ArrayList<Event>());
-        db.collection("user").document("testDoc").set(testUser)
+
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserOrganizerEventList, new ArrayList<Event>());
+        db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
+
+        MainActivity instance = new MainActivity();
+
+        instance.receiveCurrentUser(testUserId);
+
+        assertEquals("User name should match", testUserName, instance.currentUser.getName());
+        assertEquals("User email should match", testUserEmail,  instance.currentUser.getEmail());
+        assertEquals("User phone should match", testUserPhone,  instance.currentUser.getName());
+        assertEquals("User Id should match", testUserId, instance.currentUser.getUniqueId());
+        assertEquals("User organizer status should match", testUserIsOrganizer, instance.currentUser.isOrganizer());
+        assertEquals("User entrant status should match", testUserIsEntrant,  instance.currentUser.isEntrant());
+        assertEquals("User facility should match", testUserFacility, instance.currentUser.getFacility());
+        assertEquals("User notification status should match", testUserHasNotifications, instance.currentUser.hasNotificationsOn());
+        assertEquals("User has entrant array list", testUserEntrantEventList, instance.currentUser.getEntrantEventList());
+        assertEquals("User has organizer array list", testUserOrganizerEventList, instance.currentUser.getOrganizerEventList());
+
 
     }
 

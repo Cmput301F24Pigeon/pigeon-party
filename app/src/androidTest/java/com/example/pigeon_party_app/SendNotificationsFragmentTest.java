@@ -57,7 +57,7 @@ public class SendNotificationsFragmentTest {
         testUserMap = new HashMap<>();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
         testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, new ArrayList<Event>(), new ArrayList<Event>());
-        testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUser);
+        testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUserMap, testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())
                 .set(testEvent)
@@ -75,7 +75,7 @@ public class SendNotificationsFragmentTest {
      * @throws UiObjectNotFoundException
      */
     @Test
-    public void testSendsNotifications() throws UiObjectNotFoundException {
+    public void testSendsAcceptedNotifications() throws UiObjectNotFoundException {
         device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 

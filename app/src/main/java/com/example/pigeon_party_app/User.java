@@ -60,6 +60,9 @@ public class User implements Serializable {
         this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
     }
 
+    public User(String userId, Map<String, Object> userMap) {
+    }
+
     /**
      * Getter for getting the user's name
      * @return name, the user's name as a String
@@ -193,10 +196,6 @@ public class User implements Serializable {
         return notifications;
     }
 
-    public void setNotifications(List<String> notifications) {
-        this.notifications = notifications;
-    }
-
     /**
      * adding notifications to the list of notifications
      * @param notification a string representing the notification
@@ -209,6 +208,9 @@ public class User implements Serializable {
         this.notifications.clear(); // Clear notifications if needed
     }
 
+    public void setNotifications(List<String> notifications) {
+        this.notifications = notifications;
+    }
 
     public ArrayList<Event> getEntrantEventList() {
         return entrantEventList;
@@ -216,10 +218,6 @@ public class User implements Serializable {
 
     public ArrayList<Event> getOrganizerEventList() {
         return organizerEventList;
-    }
-
-    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
-        this.organizerEventList = organizerEventList;
     }
 
     /**
@@ -257,5 +255,54 @@ public class User implements Serializable {
 
 
 
-}
 
+
+    /**
+     * Converts User object to a Map for Firebase
+     *
+     * @return userMap
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", this.name);
+        userMap.put("email", this.email);
+        userMap.put("phoneNumber", this.phoneNumber);
+        userMap.put("uniqueId", this.uniqueId);
+        userMap.put("entrant", this.entrant);
+        userMap.put("organizer", this.organizer);
+        userMap.put("notificationStatus", this.notificationStatus);
+        userMap.put("notifications", this.notifications);
+
+        // Convert Event lists to a format Firebase can handle if needed
+        List<Map<String, Object>> serializedEntrantEventList = new ArrayList<>();
+        for (Event event : this.entrantEventList) {
+            serializedEntrantEventList.add(event.toMap());
+        }
+        userMap.put("entrantEventList", serializedEntrantEventList);
+
+        List<Map<String, Object>> serializedOrganizerEventList = new ArrayList<>();
+        for (Event event : this.organizerEventList) {
+            serializedOrganizerEventList.add(event.toMap());
+        }
+        userMap.put("organizerEventList", serializedOrganizerEventList);
+
+        // Handle facility serialization if needed
+        if (facility != null) {
+            userMap.put("facility", facility.toMap()); // Assuming Facility has a similar toMap() method
+        }
+
+        return userMap;
+    }
+
+    /**
+     * Helper method to convert a list of events to a Map (to store in Firestore).
+     */
+    private List<Map<String, Object>> convertEventListToMap(List<Event> eventList) {
+        List<Map<String, Object>> eventMapList = new ArrayList<>();
+        for (Event event : eventList) {
+            eventMapList.add(event.toMap());
+        }
+        return eventMapList;
+    }
+
+}

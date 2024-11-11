@@ -5,26 +5,18 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/eventTitle"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Name/ID"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Event Title" />
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/eventDetails"
+        android:id="@+id/entrantStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Event Details" />
-
-    <TextView
-        android:id="@+id/eventDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#757575"
-        android:text="Event Date" />
+        android:text="Status"
+        android:textSize="16sp" />
 
 </LinearLayout>

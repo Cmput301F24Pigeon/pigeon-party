@@ -10,7 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
@@ -34,12 +37,20 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView date = view.findViewById(R.id.date);
-        TextView eventName = view.findViewById(R.id.eventName);
-        TextView waitlist = view.findViewById(R.id.waitlist);
-        //address.setText(event.getFacility.getAddress);
-        date.setText(event.getDateTime().toString());
-        eventName.setText(event.getTitle());
+        // Initialize TextViews
+        TextView eventTitle = view.findViewById(R.id.eventTitle);
+        TextView eventDetails = view.findViewById(R.id.eventDetails);
+        TextView eventDate = view.findViewById(R.id.eventDate);
+
+        // Set event title and details
+        eventTitle.setText(event.getTitle());
+        eventDetails.setText(event.getDetails());
+
+        // Format the date
+        Date date = event.getDateTime(); // or event.getDateTime().toDate() if using Firebase Timestamp
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault());
+        String formattedDate = dateFormat.format(date);
+        eventDate.setText(formattedDate);
 
         return view;
 

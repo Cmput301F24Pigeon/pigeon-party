@@ -51,9 +51,9 @@ public class EventDetailsFragmentTest {
         testFacility =  new Facility("test-user-id", "test-address","test-name");
         testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,new ArrayList<Event>(), new ArrayList<Event>());
         Date testDate = new Date();
-        Map<String, Map<String, Object>> testUsersWaitlist = new HashMap<>();
-        Map<String, Map<String, Object>> testUsersInvited = new HashMap<>();
-        Map<String, Map<String, Object>> testUsersCancelled = new HashMap<>();
+        Map<String, User> testUsersWaitlist = new HashMap<>();
+        Map<String, User> testUsersInvited = new HashMap<>();
+        Map<String, User> testUsersCancelled = new HashMap<>();
         testEvent = new Event("test-event-id", "test-title", testDate, 10, "test-details", testFacility, false, testUsersWaitlist, testUsersInvited, testUsersCancelled, testUser);
 
         db.collection("events").document(testEvent.getEventId())

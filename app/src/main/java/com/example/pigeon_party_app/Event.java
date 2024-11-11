@@ -33,11 +33,10 @@ public class Event implements Serializable {
     private Facility facility; // facility object
     private User organizer;
     private boolean requiresLocation;// later add event image
-    private Map<String, Map<String, Object>> usersWaitlist = new HashMap<>();
-    private Map<String, Map<String, Object>> usersInvited = new HashMap<>();
-    private Map<String, Map<String, Object>> usersCancelled = new HashMap<>();
+    private Map<String, User> usersWaitlist = new HashMap<>();
+    private Map<String, User> usersInvited = new HashMap<>();
+    private Map<String, User> usersCancelled = new HashMap<>();
     private Map<String, Map<String, Object>> usersSentInvite = new HashMap<>();
-
 
     public Event(){
 
@@ -45,7 +44,7 @@ public class Event implements Serializable {
 
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
             details, Facility facility, boolean requiresLocation, Map<
-            String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, User
+            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, User
                          organizer) {
 
         this.eventId = eventId;
@@ -64,7 +63,7 @@ public class Event implements Serializable {
     }
     public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
             details, Facility facility, boolean requiresLocation, Map<
-            String, Map<String, Object>> usersWaitlist, Map<String, Map<String, Object>> usersInvited, Map<String, Map<String, Object>> usersCancelled, Map<
+            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, Map<
             String, Map<String, Object>> usersSentInvite, User
                          organizer) {
 
@@ -121,8 +120,41 @@ public class Event implements Serializable {
         return eventId;
     }
 
-    public void setUsersWaitlisted(Map<String, Map<String, Object>> usersWaitlist) {
+    public void setDetails(String details){
+        this.details = details;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setWaitlistCapacity(int waitlistCapacity)
+    {
+        this.waitlistCapacity = waitlistCapacity;
+    }
+
+    public void setFacility(Facility facility){
+        this.facility = facility;
+    }
+
+    public void setUsersWaitlisted(Map <String, User> usersWaitlist) {
         this.usersWaitlist = usersWaitlist;
+    }
+
+    public void setUsersCancelled(Map <String, User> usersCancelled) {
+        this.usersWaitlist = usersCancelled;
+    }
+
+    public void setUsersInvited(Map <String, User> usersInvited) {
+        this.usersWaitlist = usersInvited;
     }
 
     public void removeUserFromWaitlist(User user) {
@@ -143,7 +175,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToWaitlist(User user) {
-        usersWaitlist.put(user.getUniqueId(), createUserDetails(user, "Waitlisted"));
+        usersWaitlist.put(user.getUniqueId(), user);
     }
 
     /**
@@ -152,8 +184,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToInvited(User user) {
-        usersInvited.put(user.getUniqueId(), createUserDetails(user, "Invited"));
-
+        usersInvited.put(user.getUniqueId(), user);
     }
 
     /**
@@ -162,7 +193,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToCancelled(User user) {
-        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Cancelled"));
+        usersCancelled.put(user.getUniqueId(), user);
     }
     /**
      * Adds a user to the usersSentInvite map.
@@ -170,7 +201,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToSentInvite(User user) {
-        usersCancelled.put(user.getUniqueId(), createUserDetails(user, "Sent Invite"));
+        usersCancelled.put(user.getUniqueId(), user);
     }
 
 
@@ -179,8 +210,9 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersWaitlisted() {
-        return usersWaitlist;
+    public Map<String, User> getUsersWaitlisted() {
+        return usersWaitlist != null ? usersWaitlist : new HashMap<>();
+
     }
 
     /**
@@ -188,8 +220,8 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersInvited() {
-        return usersInvited;
+    public Map<String, User> getUsersInvited() {
+        return usersInvited != null ? usersInvited : new HashMap<>();
     }
 
     /**
@@ -197,8 +229,8 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersCancelled() {
-        return usersCancelled;
+    public Map<String, User> getUsersCancelled() {
+        return usersCancelled != null ? usersCancelled : new HashMap<>();
     }
 
     /**
@@ -232,7 +264,12 @@ public class Event implements Serializable {
      */
     public Map<String, Object> updateFirebaseEventCancelledList(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("usersCancelled", event.getUsersCancelled());
+        Map<String, Map<String, Object>> serializedUsersCancelled = new HashMap<>();
+
+        for (Map.Entry<String, User> entry : event.getUsersCancelled().entrySet()) {
+            serializedUsersCancelled.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
+        }
+        updates.put("usersCancelled", serializedUsersCancelled);
         return updates;
     }
 
@@ -244,58 +281,57 @@ public class Event implements Serializable {
      */
     public Map<String, Object> updateFirebaseEventWaitlist(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("usersWaitlisted", event.getUsersWaitlisted());
+        Map<String, Map<String, Object>> serializedUsersWaitlisted = new HashMap<>();
+
+        for (Map.Entry<String, User> entry : event.getUsersWaitlisted().entrySet()) {
+            serializedUsersWaitlisted.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
+        }
+        updates.put("usersWaitlist", serializedUsersWaitlisted);
         return updates;
     }
 
     /**
-     * Method to create hashmap needed to update the invited list in firebase
+     * Creates the hash map needed to update the invited list in firebase
      * @param event
      * @return
      */
     public Map<String, Object> updateFirebaseEventInvitedList(Event event) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("usersInvited", event.getUsersInvited());
-        return updates;
-    }
-    /**
-     * Method to create hashmap needed to update the invited list in firebase
-     * @param event
-     * @return
-     */
-    public Map<String, Object> updateFirebaseEventInviteSentList(Event event) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("usersInvited", event.getUsersInvited());
-        return updates;
-    }
+        Map<String, Map<String, Object>> serializedUsersInvited = new HashMap<>();
 
-    /**
-     * Samples/Draws a specific number of users among the waitlist to be invited to an event.
-     * @param drawAmount
-     */
-    public void runLottery (int drawAmount){
-        // If the amount to draw is more than the waitlist size, match the draw amount with
-        // the amount of people in the current waitlist.
-        if (usersWaitlist.size() < drawAmount) {
-            drawAmount = usersWaitlist.size();
+        for (Map.Entry<String, User> entry : event.getUsersInvited().entrySet()) {
+            serializedUsersInvited.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
         }
+        updates.put("usersInvited", serializedUsersInvited);
+        return updates;
+    }
 
-        // Creates a list of user IDs (from waitlist)
-        List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
+        /**
+         * Samples/Draws a specific number of users among the waitlist to be invited to an event.
+         * @param drawAmount
+         */
+        public void runLottery (int drawAmount){
+            // If the amount to draw is more than the waitlist size, match the draw amount with
+            // the amount of people in the current waitlist.
+            if (usersWaitlist.size() < drawAmount) {
+                drawAmount = usersWaitlist.size();
+            }
 
-        // Shuffles and picks a sample of users
-        // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
-        Collections.shuffle(waitlistUserIds);
-        List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
+            // Creates a list of user IDs (from waitlist)
+            List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
 
-        // Moves users from waitlist to the invited/joined list
-        for (String userId : selectedUsers) {
-            usersInvited.put(userId, usersWaitlist.get(userId));
-            usersWaitlist.remove(userId);
+            // Shuffles and picks a sample of users
+            // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
+            Collections.shuffle(waitlistUserIds);
+            List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
 
-            // Notify them afterwards...
-            Map<String, Object> userData = usersInvited.get(userId); // Adjust based on how your data is structured
-            User selectedUser = (User) userData.get("user"); // Cast to User type
+            // Moves users from waitlist to the invited/joined list
+            for (String userId : selectedUsers) {
+                usersInvited.put(userId, usersWaitlist.get(userId));
+                usersWaitlist.remove(userId);
+
+                // Notify them afterwards...
+                User selectedUser = usersInvited.get(userId);
 
             // Notify the user if they've been chosen
             if (selectedUser != null && selectedUser.hasNotificationsOn()) {
@@ -388,6 +424,43 @@ public class Event implements Serializable {
             }
         });
     }
+
+    /**
+     * Converts Event instance to a Map for Firestore.
+     *
+     * @return a Map<String, Object> representation of the Event.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("eventId", eventId);
+        eventMap.put("title", title);
+        eventMap.put("dateTime", dateTime);
+        eventMap.put("waitlistCapacity", waitlistCapacity);
+        eventMap.put("status", status);
+        eventMap.put("details", details);
+        eventMap.put("facility", facility != null ? facility.toMap() : null);  // Use facility's toMap method
+        eventMap.put("requiresLocation", requiresLocation);
+
+        // Converting nested User maps to Firestore-compatible Maps
+        eventMap.put("usersWaitlist", convertUserMap(usersWaitlist));
+        eventMap.put("usersInvited", convertUserMap(usersInvited));
+        eventMap.put("usersCancelled", convertUserMap(usersCancelled));
+
+        return eventMap;
+    }
+
+    /**
+     * Helper method to convert Map<String, User> to Map<String, Map<String, Object>> for Firestore.
+     */
+    private Map<String, Map<String, Object>> convertUserMap(Map<String, User> userMap) {
+        Map<String, Map<String, Object>> convertedMap = new HashMap<>();
+        for (Map.Entry<String, User> entry : userMap.entrySet()) {
+            convertedMap.put(entry.getKey(), entry.getValue().toMap());
+        }
+        return convertedMap;
+    }
+
+
 }
 
 

@@ -23,7 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
  * This class is a fragment that allows the user to view their notifications and to turn their notifications on or off
- * This fragment is no longer needed, it's just along for the ride for now in case that changes
+ * This fragment is no longer needed and has a bug, it's just along for the ride for now in case that changes
  */
 
 public class ViewNotificationsFragment extends Fragment {

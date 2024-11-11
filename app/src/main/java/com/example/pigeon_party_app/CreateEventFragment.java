@@ -55,6 +55,10 @@ public class CreateEventFragment extends Fragment {
 
     public CreateEventFragment() {}
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEventFragment the mock fragment being used for testing
+     */
     public static CreateEventFragment newInstance(User user) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
@@ -129,9 +133,9 @@ public class CreateEventFragment extends Fragment {
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);
 
-                addEvent(db,event);
                 createEventButton.setText("Finish");
                 createEventButton.setOnClickListener(v2->{
+                    addEvent(db,event);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
@@ -241,7 +245,7 @@ public class CreateEventFragment extends Fragment {
         db.collection("user").document(current_user.getUniqueId())
                 .update("organizerEventList", FieldValue.arrayUnion(event))
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's oranizer list", e));
     }
 
 

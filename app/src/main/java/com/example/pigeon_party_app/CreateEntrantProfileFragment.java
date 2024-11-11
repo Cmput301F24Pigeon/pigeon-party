@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * this class is a fragment that allows app users to create a  profile with their information
+ * This class is a fragment that allows app users to create a profile with their information
  */
 
 public class CreateEntrantProfileFragment extends Fragment {
@@ -62,7 +62,7 @@ public class CreateEntrantProfileFragment extends Fragment {
             }
             if (isValid) {
                 ArrayList<Event> emptyList = new ArrayList<>();
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, false, emptyList, emptyList);
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, emptyList, emptyList);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);
@@ -74,6 +74,10 @@ public class CreateEntrantProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Method adds a user object to firebase
+     * @param user the user being added
+     */
     public void addUser(User user) {
         //Used https://www.youtube.com/watch?v=-w8Faojl4HI to determine unique ID
         String uniqueId = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -106,7 +110,7 @@ public class CreateEntrantProfileFragment extends Fragment {
     }
 
     /**
-     * newInstance method creates a mock fragment to for testing
+     * newInstance method creates a mock fragment for testing
      * @return CreateEntrantProfileFragment the mock fragment being used for testing
      */
     public static CreateEntrantProfileFragment newInstance() {

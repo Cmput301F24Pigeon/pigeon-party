@@ -10,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class EventsArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
@@ -40,7 +42,9 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         TextView status = view.findViewById(R.id.status);
         //address.setText(event.getFacility.getAddress);
         if(event.getDateTime() != null){
-            date.setText("Date/Time: " + event.getDateTime().toString());
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+            String formattedDate = formatter.format(event.getDateTime());
+            date.setText("Date/Time: " + formattedDate);;
         }
         else{
             date.setText("Date/Time: ");

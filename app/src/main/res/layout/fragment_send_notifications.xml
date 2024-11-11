@@ -28,6 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Invited Participants" />
+    <CheckBox
+        android:id="@+id/check_accepted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Accepted Participants" />
 
     <CheckBox
         android:id="@+id/check_cancelled"

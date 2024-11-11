@@ -36,6 +36,7 @@ public class Event implements Serializable {
     private Map<String, User> usersWaitlist = new HashMap<>();
     private Map<String, User> usersInvited = new HashMap<>();
     private Map<String, User> usersCancelled = new HashMap<>();
+    private Map<String, Map<String, Object>> usersSentInvite = new HashMap<>();
 
     public Event(){
 
@@ -58,6 +59,27 @@ public class Event implements Serializable {
         this.usersWaitlist = usersWaitlist;
         this.usersInvited = usersInvited;
         this.usersCancelled = usersCancelled;
+        this.organizer = organizer;
+    }
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
+            details, Facility facility, boolean requiresLocation, Map<
+            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, Map<
+            String, Map<String, Object>> usersSentInvite, User
+                         organizer) {
+
+        this.eventId = eventId;
+        this.title = title;
+        this.dateTime = dateTime;
+        this.waitlistCapacity = waitlistCapacity;
+        this.imageUrl = null;
+        //this.imageUrl = imageUrl;
+        this.details = details;
+        this.facility = facility;
+        this.requiresLocation = requiresLocation;
+        this.usersWaitlist = usersWaitlist;
+        this.usersInvited = usersInvited;
+        this.usersCancelled = usersCancelled;
+        this.usersSentInvite = usersSentInvite;
         this.organizer = organizer;
     }
 
@@ -173,6 +195,14 @@ public class Event implements Serializable {
     public void addUserToCancelled(User user) {
         usersCancelled.put(user.getUniqueId(), user);
     }
+    /**
+     * Adds a user to the usersSentInvite map.
+     *
+     * @param user
+     */
+    public void addUserToSentInvite(User user) {
+        usersCancelled.put(user.getUniqueId(), user);
+    }
 
 
     /**
@@ -204,6 +234,30 @@ public class Event implements Serializable {
     }
 
     /**
+     * Retrieves the list of users who have cancelled their participation in the event.
+     *
+     * @return A map where each key is a user's unique ID and each value is a map of user details.
+     */
+    public Map<String, Map<String, Object>> getUsersSentInvite() {
+        return usersSentInvite;
+    }
+
+    /**
+     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
+     *
+     * @param user
+     * @param status
+     * @return
+     */
+    public Map<String, Object> createUserDetails(User user, String status) {
+            Map<String, Object> userDetails = new HashMap<>();
+            userDetails.put("name", user.getName());
+            userDetails.put("status", status);
+            // Add more user-specific fields as needed
+            return userDetails;
+        }
+
+    /**
      * Creates the hash map needed to update the cancelled list in firebase
       * @param event
      * @return
@@ -221,6 +275,7 @@ public class Event implements Serializable {
 
     /**
      * Creates the hash map needed to update the waitlist in firebase
+     *
      * @param event
      * @return
      */
@@ -251,7 +306,7 @@ public class Event implements Serializable {
         return updates;
     }
 
-    /**
+        /**
          * Samples/Draws a specific number of users among the waitlist to be invited to an event.
          * @param drawAmount
          */
@@ -278,14 +333,13 @@ public class Event implements Serializable {
                 // Notify them afterwards...
                 User selectedUser = usersInvited.get(userId);
 
-                // Notify the user if they've been chosen
-                if (selectedUser != null && selectedUser.hasNotificationsOn()) {
-                    notificationHelper.notifyUserIfChosen(selectedUser, this);
-                }
+            // Notify the user if they've been chosen
+            if (selectedUser != null && selectedUser.hasNotificationsOn()) {
+                notificationHelper.notifyUserIfChosen(selectedUser, this);
             }
         }
+    }
 
-    // ************    ******    ******    ******    ******    ******    ******    CHANGE
     /**
      * This method uses the addNotificationToUser method to add a notification message to the users notification list
      * @param status The status of the user in the event list
@@ -295,14 +349,17 @@ public class Event implements Serializable {
         String message;
 
         switch (status) {
-            case "invited":
-                message = "Congratulations! You have been invited to the event: " + title;
+            case "accepted":
+                message = "Congratulations! You have joined the event: " + title;
                 break;
             case "waitlisted":
-                message = "You are on the waitlist for the event: " + title;
+                message = "You are currently on the waitlist for the event: " + title;
                 break;
             case "cancelled":
                 message = "Sorry, you have not been selected for the event: " + title;
+                break;
+            case "invited":
+                message = "Congratulations! You have been invited to the event: " + title;
                 break;
             default:
                 return;
@@ -313,11 +370,13 @@ public class Event implements Serializable {
                     if (documentSnapshot.exists()) {
                         Map<String, Map<String, Object>> usersToNotify = null;
                         if ("waitlisted".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlist");
-                        } else if ("invited".equals(status)) {
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
+                        } else if ("accepted".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {
                             usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
+                        } else if ("invited".equals(status)){
+                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersSentInvite");
                         }
 
                         if (usersToNotify != null) {

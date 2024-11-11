@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class OrganizerFragment extends Fragment {
     private ListView organizerListView;
-    private OrganizerArrayAdapter eventsArrayAdapter;
+    private OrganizerArrayAdapter organizerArrayAdapter;
     private ArrayList<Event> organizerArrayList;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -76,6 +76,16 @@ public class OrganizerFragment extends Fragment {
     }
 
 
+
+   /* @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,8 +120,10 @@ public class OrganizerFragment extends Fragment {
         organizerArrayList = new ArrayList<>();
         organizerArrayList = MainActivity.currentUser.getOrganizerEventList();
         organizerListView = view.findViewById(R.id.organizer_event_list);
-        eventsArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
-        organizerListView.setAdapter(eventsArrayAdapter);
+        organizerArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
+        organizerListView.setAdapter(organizerArrayAdapter);
+        organizerArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
+        organizerListView.setAdapter(organizerArrayAdapter);
         loadEventsFromFirebase();
 
         // Set item click listener to open entrant list

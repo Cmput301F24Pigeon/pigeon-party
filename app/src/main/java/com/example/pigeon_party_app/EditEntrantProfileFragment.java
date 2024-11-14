@@ -90,6 +90,15 @@ public class EditEntrantProfileFragment extends Fragment {
             }
         });
 
+        ImageButton backButton = view.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment(entrant))
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return view;
     }
 

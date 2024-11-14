@@ -117,4 +117,15 @@ public class EditEntrantProfileFragment extends Fragment {
                     }
                 });
     }
+
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEntrantProfileFragment the mock fragment being used for testing
+     */
+    public static EditEntrantProfileFragment newInstance() {
+        EditEntrantProfileFragment fragment = new EditEntrantProfileFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 }

@@ -42,7 +42,11 @@ public class ViewEntrantProfileFragment extends Fragment {
         edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new EditEntrantProfileFragment(entrant).show(getChildFragmentManager(), EditEntrantProfileFragment.TAG);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new EditEntrantProfileFragment(entrant))
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

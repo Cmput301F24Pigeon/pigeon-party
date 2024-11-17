@@ -220,6 +220,10 @@ public class User implements Serializable {
         return organizerEventList;
     }
 
+        public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
+        this.organizerEventList = organizerEventList;
+    }
+
     /**
      * adding the event to our entrant event list
      * @param event an event we are adding to our `list

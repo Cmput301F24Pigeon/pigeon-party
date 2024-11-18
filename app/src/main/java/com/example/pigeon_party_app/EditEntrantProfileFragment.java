@@ -1,5 +1,6 @@
 package com.example.pigeon_party_app;
 
+import static com.example.pigeon_party_app.MainActivity.db;
 import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
@@ -11,11 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,11 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class is a dialogue fragment that allows the user to change their profile information
- * This class is part of US 01.02.02 which is for the final milestone and is not complete
+ * This class is a fragment that allows the user to change their profile information
  */
 
-public class EditEntrantProfileFragment extends DialogFragment {
+public class EditEntrantProfileFragment extends Fragment {
 
     public User entrant;
 
@@ -42,10 +45,8 @@ public class EditEntrantProfileFragment extends DialogFragment {
         this.entrant = entrant;
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_edit_entrant_profile, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_edit_entrant_profile, null);
 
         EditText editEntrantName = view.findViewById(R.id.editText_edit_user_name);
         EditText editEntrantEmail = view.findViewById(R.id.editText_edit_user_email);
@@ -55,13 +56,22 @@ public class EditEntrantProfileFragment extends DialogFragment {
         editEntrantEmail.setText(entrant.getEmail());
         editEntrantPhoneNumber.setText(entrant.getPhoneNumber());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        return builder
-                .setView(view)
-                .setTitle("Edit Profile")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Update", (dialog, which) -> {
+        Button edit_button = view.findViewById(R.id.update_user_profile_button);
+        edit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                boolean isValid = true;
+                if (!Validator.isName(editEntrantName, "Your profile must include a name.")) {
+                    isValid = false;
+                }
+                if (!Validator.isEmail(editEntrantEmail, "Your profile must have a valid email.")) {
+                    isValid = false;
+                }
+                if (!Validator.isPhoneNumber(editEntrantPhoneNumber, "Your phone number must be 10 digits or empty.")) {
+                    isValid = false;
+                }
+                if (isValid) {
                     String entrantName = editEntrantName.getText().toString();
                     String entrantEmail = editEntrantEmail.getText().toString();
                     String entrantPhoneNumber = editEntrantPhoneNumber.getText().toString();
@@ -69,10 +79,27 @@ public class EditEntrantProfileFragment extends DialogFragment {
                     entrant.setName(entrantName);
                     entrant.setEmail(entrantEmail);
                     entrant.setPhoneNumber(entrantPhoneNumber);
-
                     updateUserProfile(entrant);
-                })
-                .create();
+
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new ViewEntrantProfileFragment(entrant))
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+        });
+
+        ImageButton backButton = view.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment(entrant))
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        return view;
     }
 
     /**
@@ -83,7 +110,7 @@ public class EditEntrantProfileFragment extends DialogFragment {
         String entrantId = entrant.getUniqueId();
 
         // Update syntax from Firebase docs: https://firebase.google.com/docs/firestore/manage-data/add-data#java_10
-        DocumentReference entrantRef = MainActivity.db.collection("user").document(entrantId);
+        DocumentReference entrantRef = db.collection("user").document(entrantId);
 
         entrantRef.update("name", entrant.getName(), "email", entrant.getEmail(), "phoneNumber", entrant.getPhoneNumber())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -98,5 +125,16 @@ public class EditEntrantProfileFragment extends DialogFragment {
                         Log.w(TAG, "Error updating document", e);
                     }
                 });
+    }
+
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return CreateEntrantProfileFragment the mock fragment being used for testing
+     */
+    public static EditEntrantProfileFragment newInstance() {
+        EditEntrantProfileFragment fragment = new EditEntrantProfileFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

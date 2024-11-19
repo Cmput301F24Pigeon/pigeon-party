@@ -19,6 +19,7 @@ public class User implements Serializable {
     private boolean entrant;
     private boolean organizer;
     private boolean notificationStatus;
+    private String colour;
     private List<String> notifications;
     private ArrayList<Event> entrantEventList;
     private ArrayList<Event> organizerEventList;
@@ -43,10 +44,11 @@ public class User implements Serializable {
      * @param isEntrant a boolean representing if the user is an entrant
      * @param facility a facility object associated with the user
      * @param notificationStatus a boolean representing if the user has notifications turned on
+     * @param colour a string representing the background colour for a user's avatar
      * @param entrantEventList
      * @param organizerEventList
      */
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -55,6 +57,7 @@ public class User implements Serializable {
         this.entrant = isEntrant;
         this.facility = facility;
         this.notificationStatus = notificationStatus;
+        this.colour = colour;
         this.notifications = notifications != null ? notifications : new ArrayList<>();
         this.entrantEventList = entrantEventList != null ? entrantEventList : new ArrayList<>();
         this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
@@ -191,6 +194,14 @@ public class User implements Serializable {
         this.notificationStatus = notificationStatus;
     }
 
+    /**
+     * Getter for user's avatar background colour
+     * @return
+     */
+    public String getColour() {
+        return colour;
+    }
+
 
     public List<String> getNotifications() {
         return notifications;
@@ -276,6 +287,7 @@ public class User implements Serializable {
         userMap.put("organizer", this.organizer);
         userMap.put("notificationStatus", this.notificationStatus);
         userMap.put("notifications", this.notifications);
+        userMap.put("colour", this.colour);
 
         // Convert Event lists to a format Firebase can handle if needed
         List<Map<String, Object>> serializedEntrantEventList = new ArrayList<>();

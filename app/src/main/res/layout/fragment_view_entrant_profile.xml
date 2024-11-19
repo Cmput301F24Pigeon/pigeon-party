@@ -42,15 +42,14 @@
             app:srcCompat="@drawable/ic_back_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <com.example.pigeon_party_app.AvatarView
         android:id="@+id/entrant_profile_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/textView_entrant_name"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        app:layout_constraintBottom_toTopOf="@+id/textView_entrant_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_section"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/top_section" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"
@@ -65,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/top_section" />
 
     <TextView
         android:id="@+id/textView_entrant_name"

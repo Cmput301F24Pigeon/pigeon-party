@@ -33,17 +33,29 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <com.example.pigeon_party_app.AvatarView
         android:id="@+id/entrant_profile_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         app:layout_constraintBottom_toTopOf="@+id/editText_create_user_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_section"
         app:layout_constraintVertical_bias="0.803"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"/>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/entrant_profile_image"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/editText_create_user_name"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.491"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/top_section"-->
+<!--        app:layout_constraintVertical_bias="0.803"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
 
     <EditText
         android:id="@+id/editText_create_user_name"

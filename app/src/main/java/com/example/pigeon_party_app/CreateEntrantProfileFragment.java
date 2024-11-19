@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * This class is a fragment that allows app users to create a profile with their information
@@ -37,6 +41,7 @@ public class CreateEntrantProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_entrant_profile, container, false);
+        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
         EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
         EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
         EditText createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);
@@ -62,7 +67,8 @@ public class CreateEntrantProfileFragment extends Fragment {
             }
             if (isValid) {
                 ArrayList<Event> emptyList = new ArrayList<>();
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, emptyList, emptyList);
+                String colour = pickColour();
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);
@@ -94,6 +100,7 @@ public class CreateEntrantProfileFragment extends Fragment {
         Users.put("organizer", user.isOrganizer());
         Users.put("facility", user.getFacility());
         Users.put("notificationStatus", user.hasNotificationsOn());
+        Users.put("colour", user.getColour());
         Users.put("notifications", user.getNotifications());
         Users.put("entrantEventList", user.getEntrantEventList());
         Users.put("organizerEventList", user.getOrganizerEventList());
@@ -118,5 +125,12 @@ public class CreateEntrantProfileFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public String pickColour() {
+        String[] colours = {"#30BFA0", "#BF3064", "#8928A1",  "#5228A1", "#4B2DB5", "#2D7CB5", "#2DB55D"};
+        Random rand = new Random();
+        int i = rand.nextInt(colours.length + 1);
+        return colours[i];
     }
 }

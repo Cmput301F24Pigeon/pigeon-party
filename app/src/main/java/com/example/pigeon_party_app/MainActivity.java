@@ -1,5 +1,6 @@
 package com.example.pigeon_party_app;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.Manifest;
 import android.content.Intent;
@@ -47,7 +48,7 @@ import java.util.UUID;
  * This is the main activity which serves as the home screen of the app
  */
 public class MainActivity extends AppCompatActivity {
-
+    private ActivityResultLauncher<Intent> qrScannerLauncher;
     private ImageView facilityButton;
     private ImageView profileButton;
     private ImageView notificationButton;
@@ -70,11 +71,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         notificationHelper = new NotificationHelper(this);
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        qrScannerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), result.getResultCode(), result.getData());
+                if (intentResult != null && intentResult.getContents() != null) {
+                    String qrContent = intentResult.getContents();
+                    handleQrCode(qrContent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         currentUser = receiveCurrentUser(uniqueId);
         if (currentUser != null) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
@@ -171,42 +183,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method gets the results from the QR scanner
      *
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param qrContent the string which a qr code returns
      */
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if (result != null && result.getContents() != null) {
-            String qrContent = result.getContents();
-            DocumentReference docRef = db.collection("events").document(qrContent);
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        MainActivity.currentEvent = (documentSnapshot.toObject(Event.class));
-                        showEventDetailsFragment();
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "Invalid QR Code: Event not found", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-
-            });
-        } else {
-            Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //receiveEvents();
+    private void handleQrCode(String qrContent) {
+        DocumentReference docRef = db.collection("events").document(qrContent);
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                currentEvent = documentSnapshot.toObject(Event.class);
+                showEventDetailsFragment();
+            } else {
+                Toast.makeText(getApplicationContext(), "Invalid QR Code: Event not found", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
     /**
      * This method initializes the QR scanner
      */
@@ -216,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         integrator.setPrompt("Scan the event QR code");
         integrator.setOrientationLocked(false);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.initiateScan();
+        qrScannerLauncher.launch(integrator.createScanIntent());
     }
 
     /**

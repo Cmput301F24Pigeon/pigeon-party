@@ -128,7 +128,9 @@ public class EntrantListFragment extends Fragment {
                     .addOnSuccessListener(documentSnapshot -> {
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
-                            sendNotifications(db, event);
+                            // sendNotifications(db, event);
+                            SendNotificationsFragment sendNotificationsFragment = SendNotificationsFragment.newInstance(event);
+                            sendNotificationsFragment.show(getParentFragmentManager(), "sendNotificationsDialog");
                         }
 
                     });

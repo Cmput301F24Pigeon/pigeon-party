@@ -6,8 +6,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -52,6 +57,17 @@ public class CreateEventFragment extends Fragment {
     private View qrBackground;
     private TextView eventCreatedMessage;
     private EditText dateText;
+    private ImageButton uploadImage;
+    private Uri imageUri;
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMediaLauncher =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), result -> {
+                if (result != null) {
+                    imageUri = result;
+                } else {
+                    Log.e("PickMedia", "No image selected");
+                }
+            });
 
     public CreateEventFragment() {}
 
@@ -95,10 +111,16 @@ public class CreateEventFragment extends Fragment {
         EditText eventDetails = view.findViewById(R.id.edit_event_details);
         EditText waitlistCap = view.findViewById(R.id.edit_waitlist_cap);
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
+        uploadImage = view.findViewById(R.id.button_upload_poster);
         qrCode = view.findViewById(R.id.eventQrcode);
         qrBackground= view.findViewById(R.id.background_view);
         eventCreatedMessage = view.findViewById(R.id.text_event_created);
 
+        uploadImage.setOnClickListener(v ->{
+            pickMediaLauncher.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
         dateButton.setOnClickListener(v -> showDateTimePicker());
 
 
@@ -123,12 +145,13 @@ public class CreateEventFragment extends Fragment {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
-
+                String imageUrl = imageUri != null ? imageUri.toString() : "";
                 //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
                 Map<String, User> usersWaitlist = new HashMap<>();
                 Map<String, User> usersInvited = new HashMap<>();
                 Map<String, User> usersCancelled = new HashMap<>();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, current_user);
+                Map<String, User> usersSentInvite = new HashMap<>();
+                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),imageUrl,eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, usersSentInvite, current_user);
                 qrBackground.setVisibility(View.VISIBLE);
                 eventCreatedMessage.setVisibility(View.VISIBLE);
                 generateQRCode(eventId);

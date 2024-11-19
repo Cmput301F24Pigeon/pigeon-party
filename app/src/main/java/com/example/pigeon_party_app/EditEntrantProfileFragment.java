@@ -1,13 +1,8 @@
 package com.example.pigeon_party_app;
 
 import static com.example.pigeon_party_app.MainActivity.db;
-import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class is a fragment that allows the user to change their profile information
@@ -131,8 +122,8 @@ public class EditEntrantProfileFragment extends Fragment {
      * newInstance method creates a mock fragment for testing
      * @return CreateEntrantProfileFragment the mock fragment being used for testing
      */
-    public static EditEntrantProfileFragment newInstance() {
-        EditEntrantProfileFragment fragment = new EditEntrantProfileFragment();
+    public static EditEntrantProfileFragment newInstance(User testUser) {
+        EditEntrantProfileFragment fragment = new EditEntrantProfileFragment(testUser);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

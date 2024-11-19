@@ -1,6 +1,8 @@
 
 package com.example.pigeon_party_app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,18 +95,12 @@ public class EventDetailsFragment extends Fragment {
                     signUpButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null) {
-                                event.removeUserFromCancelledList(MainActivity.currentUser);
-                                Map<String, Object> cancelledListUpdates = event.updateFirebaseEventCancelledList(event);
-                                updateFirebase(cancelledListUpdates, "cancelled list");
+                            if (event.isRequiresLocation()) {
+                                showLocationVerificationDialog();
                             }
-
-                            event.addUserToWaitlist(MainActivity.currentUser);
-                            current_user.addEntrantEventList(event);
-                            MainActivity.addEventToList(event);
-                            Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
-                            updateFirebase(updates, "waitlist");
-
+                            else {
+                                addToWaitlist();
+                            }
                             getActivity().getSupportFragmentManager().popBackStack();
                         }
                     });
@@ -136,5 +132,39 @@ public class EventDetailsFragment extends Fragment {
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's entrant list", e));
     }
 
+    /**
+     * An alert dialog that warns the user if an event requires location verification
+     */
+    private void showLocationVerificationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Warning")
+                .setMessage("This event requires location verification.")
+                .setPositiveButton("Continue", (dialog, which) -> addToWaitlist())
+                .setNegativeButton("Back", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 
+    /**
+     * A method to add a user to the events waitlist upon signing up for the event
+     */
+    private void addToWaitlist() {
+        handleUserCancellation();
+        event.addUserToWaitlist(current_user);
+        current_user.addEntrantEventList(event);
+        MainActivity.addEventToList(event);
+        Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
+        updateFirebase(updates, "waitlist");
+        requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    /**
+     * A method that will remove a user from the cancelled list if they choose to resign up for an event
+     */
+    private void handleUserCancellation() {
+        if (event.getUsersCancelled().containsKey(current_user.getUniqueId())) {
+            event.removeUserFromCancelledList(current_user);
+            Map<String, Object> updates = event.updateFirebaseEventCancelledList(event);
+            updateFirebase(updates, "cancelled list");
+        }
+    }
 }

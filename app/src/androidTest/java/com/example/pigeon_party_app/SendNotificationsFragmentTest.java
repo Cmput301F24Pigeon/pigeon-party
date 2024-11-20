@@ -42,7 +42,7 @@ public class SendNotificationsFragmentTest {
     private Event testEvent;
     private UiDevice device;
     Context context;
-    private Map<String, Map<String, Object>> testUserMap;
+    private Map<String,User> testUserMap;
 
     /**
      * Method which creates the necessary variables to carry out the test

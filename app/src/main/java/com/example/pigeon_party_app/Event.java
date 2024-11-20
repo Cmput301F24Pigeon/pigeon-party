@@ -28,7 +28,7 @@ public class Event implements Serializable {
     private Date dateTime;
     private int waitlistCapacity; // Optional, set to -1 if not applicable
     private String status;
-    private ImageView imageUrl;
+    private String imageUrl;
     private String details;
     private Facility facility; // facility object
     private User organizer;
@@ -36,7 +36,7 @@ public class Event implements Serializable {
     private Map<String, User> usersWaitlist = new HashMap<>();
     private Map<String, User> usersInvited = new HashMap<>();
     private Map<String, User> usersCancelled = new HashMap<>();
-    private Map<String, Map<String, Object>> usersSentInvite = new HashMap<>();
+    private Map<String, User> usersSentInvite = new HashMap<>();
 
     public Event(){
 
@@ -52,7 +52,6 @@ public class Event implements Serializable {
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
         this.imageUrl = null;
-        //this.imageUrl = imageUrl;
         this.details = details;
         this.facility = facility;
         this.requiresLocation = requiresLocation;
@@ -61,18 +60,17 @@ public class Event implements Serializable {
         this.usersCancelled = usersCancelled;
         this.organizer = organizer;
     }
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String imageUrl,String
             details, Facility facility, boolean requiresLocation, Map<
             String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, Map<
-            String, Map<String, Object>> usersSentInvite, User
+            String, User> usersSentInvite, User
                          organizer) {
 
         this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.waitlistCapacity = waitlistCapacity;
-        this.imageUrl = null;
-        //this.imageUrl = imageUrl;
+        this.imageUrl = imageUrl;
         this.details = details;
         this.facility = facility;
         this.requiresLocation = requiresLocation;
@@ -100,7 +98,7 @@ public class Event implements Serializable {
         return status;
     }
 
-    public ImageView getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
@@ -238,7 +236,7 @@ public class Event implements Serializable {
      *
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
-    public Map<String, Map<String, Object>> getUsersSentInvite() {
+    public Map<String, User> getUsersSentInvite() {
         return usersSentInvite;
     }
 
@@ -368,19 +366,19 @@ public class Event implements Serializable {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Map<String, Map<String, Object>> usersToNotify = null;
+                        Map<String, User> usersToNotify = null;
                         if ("waitlisted".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersWaitlisted");
+                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersWaitlisted");
                         } else if ("accepted".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersInvited");
+                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersInvited");
                         } else if ("cancelled".equals(status)) {
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersCancelled");
+                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersCancelled");
                         } else if ("invited".equals(status)){
-                            usersToNotify = (Map<String, Map<String, Object>>) documentSnapshot.get("usersSentInvite");
+                            usersToNotify = (Map<String,User>) documentSnapshot.get("usersSentInvite");
                         }
 
                         if (usersToNotify != null) {
-                            for (Map.Entry<String, Map<String, Object>> entry : usersToNotify.entrySet()) {
+                            for (Map.Entry<String,User> entry : usersToNotify.entrySet()) {
                                 String userId = entry.getKey();
                                 if (userId!= null) {
 

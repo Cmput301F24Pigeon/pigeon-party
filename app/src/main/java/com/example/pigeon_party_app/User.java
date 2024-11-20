@@ -196,7 +196,7 @@ public class User implements Serializable {
 
     /**
      * Getter for user's avatar background colour
-     * @return
+     * @return colour a String representing the colour for the user's default avatar background
      */
     public String getColour() {
         return colour;
@@ -231,7 +231,7 @@ public class User implements Serializable {
         return organizerEventList;
     }
 
-        public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
+    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
         this.organizerEventList = organizerEventList;
     }
 

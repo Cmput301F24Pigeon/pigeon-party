@@ -127,6 +127,10 @@ public class CreateEntrantProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Method randomly selects a colour to use in user's default profile avatar
+     * @return String instance of hexadecimal colour
+     */
     public String pickColour() {
         String[] colours = {"#30BFA0", "#BF3064", "#8928A1",  "#5228A1", "#4B2DB5", "#2D7CB5", "#2DB55D"};
         Random rand = new Random();

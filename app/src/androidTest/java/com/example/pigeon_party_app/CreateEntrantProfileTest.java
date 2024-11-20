@@ -47,10 +47,8 @@ public class CreateEntrantProfileTest {
     private boolean testUserIsEntrant;
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
+    private String testUSerColour;
     private User testUser;
-
-    // This string is specific to Emma's laptop and would need to be changed for tests on a different device
-    private String deviceId = "192d018653d8f5a5";
 
     /**
      * Method to be performed before the test to ensure the necessary attributes are created first
@@ -120,8 +118,9 @@ public class CreateEntrantProfileTest {
             testUserIsEntrant = true;
             testUserFacility = null;
             testUserHasNotifications = true;
+            testUSerColour = "#000000";
 
-            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, new ArrayList<Event>(),new ArrayList<Event>());
+            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUSerColour, new ArrayList<Event>(),new ArrayList<Event>());
             createdFragment.addUser(testUser);
 
             verifyUserInFirestore(testUserId);
@@ -200,6 +199,7 @@ public class CreateEntrantProfileTest {
                             assertEquals("User entrant status should match", testUserIsEntrant, document.getBoolean("entrant"));
                             assertEquals("User facility should match", testUserFacility, document.get("organizer", Facility.class));
                             assertEquals("User notification status should match", testUserHasNotifications, document.getBoolean("notificationStatus"));
+                            assertEquals("User colour should match", testUSerColour, document.getString("colour"));
                         }
 
                         if (!document.exists()) {

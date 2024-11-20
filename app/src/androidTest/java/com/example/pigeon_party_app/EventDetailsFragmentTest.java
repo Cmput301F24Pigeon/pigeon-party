@@ -49,7 +49,7 @@ public class EventDetailsFragmentTest {
     public void setUp() {
         db = FirebaseFirestore.getInstance();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,new ArrayList<Event>(), new ArrayList<Event>());
+        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,"#000000", new ArrayList<Event>(), new ArrayList<Event>());
         Date testDate = new Date();
         Map<String, User> testUsersWaitlist = new HashMap<>();
         Map<String, User> testUsersInvited = new HashMap<>();

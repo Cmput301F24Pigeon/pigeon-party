@@ -41,7 +41,7 @@ public class CreateEntrantProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_entrant_profile, container, false);
-        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
+//        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
         EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
         EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
         EditText createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);

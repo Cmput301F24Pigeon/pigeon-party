@@ -41,7 +41,7 @@ public class CreateEntrantProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_entrant_profile, container, false);
-        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
+//        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
         EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
         EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
         EditText createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);
@@ -127,6 +127,10 @@ public class CreateEntrantProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Method randomly selects a colour to use in user's default profile avatar
+     * @return String instance of hexadecimal colour
+     */
     public String pickColour() {
         String[] colours = {"#30BFA0", "#BF3064", "#8928A1",  "#5228A1", "#4B2DB5", "#2D7CB5", "#2DB55D"};
         Random rand = new Random();

@@ -93,7 +93,7 @@ public class MainActivityTest {
         testUserOrganizerEventList = new ArrayList<>();
         testUserEntrantEventList = new ArrayList<>();
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, testUserOrganizerEventList);
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, testUserEntrantEventList, testUserOrganizerEventList);
         db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));

@@ -49,6 +49,7 @@ public class MainActivityTest {
     private boolean testUserIsEntrant;
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
+    private String testUserColour;
     private User testUser;
     private ArrayList<Event> testUserEntrantEventList;
     private ArrayList<Event> testUserOrganizerEventList;
@@ -88,10 +89,11 @@ public class MainActivityTest {
         testUserIsEntrant = true;
         testUserFacility = null;
         testUserHasNotifications = true;
+        testUserColour = "#000000";
         testUserOrganizerEventList = new ArrayList<>();
         testUserEntrantEventList = new ArrayList<>();
 
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserEntrantEventList, testUserOrganizerEventList);
+        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, testUserOrganizerEventList);
         db.collection("user").document(testUserId).set(testUser)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
@@ -108,6 +110,7 @@ public class MainActivityTest {
                 assertEquals("User entrant status should match", testUserIsEntrant, firebaseUser.isEntrant());
                 assertEquals("User facility should match", testUserFacility, firebaseUser.getFacility());
                 assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
+                assertEquals("User colour should match", testUserColour, firebaseUser.getColour());
                 assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
                 assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
             });

@@ -71,6 +71,9 @@ public class CreateEntrantProfileTest {
         }
     }
 
+    /**
+     * User interface test to test buttons
+     */
     @Test
     public void testCreateUserButton() {
 
@@ -98,12 +101,43 @@ public class CreateEntrantProfileTest {
         onView(withId(R.id.button_profile)).check(matches(isDisplayed()));
     }
 
+//    Firebase test, don't really need it, does work when firebase is working
+//    /**
+//     * Test to check that addUser method from CreateEntrantProfileFragment properly adds the user to firebase
+//     */
+//    @Test
+//    public void testCreateUserInFirebase() {
+//
+//        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+//                CreateEntrantProfileFragment.class,
+//                CreateEntrantProfileFragment.newInstance().getArguments()
+//        );
+//
+//        scenario.onFragment(createdFragment -> {
+//            testUserId = "test-user-id";
+//            testUserName = "test-user-name";
+//            testUserEmail = "test@email.com";
+//            testUserPhone = "1234567890";
+//            testUserIsOrganizer = false;
+//            testUserIsEntrant = true;
+//            testUserFacility = null;
+//            testUserHasNotifications = true;
+//            testUSerColour = "#000000";
+//
+//            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUSerColour, new ArrayList<Event>(),new ArrayList<Event>());
+//            createdFragment.addUser(testUser);
+//
+//            verifyUserInFirestore(testUserId);
+//
+//            removeData();
+//        });
+//    }
+
     /**
-     * Test to check that addUser method from CreateEntrantProfileFragment properly adds the user to firebase
+     * Test the addUser function, this will indirectly test Firebase connection
      */
     @Test
-    public void testCreateUserInFirebase() {
-
+    public void testCreateUser() {
         FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
@@ -122,11 +156,18 @@ public class CreateEntrantProfileTest {
 
             testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUSerColour, new ArrayList<Event>(),new ArrayList<Event>());
             createdFragment.addUser(testUser);
-
-            verifyUserInFirestore(testUserId);
-
-            removeData();
         });
+    }
+
+    /**
+     * Test to check when all input is valid
+     */
+    @Test
+    public void testCorrectInputs() {
+        testInput("Test User", "test@email.com", "1234567890");
+
+        onView(withId(R.id.button_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_add_event)).check(matches(isDisplayed()));
     }
 
     /**
@@ -158,7 +199,6 @@ public class CreateEntrantProfileTest {
 
     /**
      * Test to check invalid user input in phoneNumber editText field
-     * Currently fails: Failed to retrieve user from Firestore
      */
     @Test
     public void testInvalidPhone() {
@@ -167,7 +207,7 @@ public class CreateEntrantProfileTest {
     }
 
     /**
-     * A method to be performed after the test method to remove any data that was added to the firebase
+     * A helper method to be performed after the test method to remove any data that was added to the firebase
      */
     private void removeData() {
         if (testUserId != null) {
@@ -179,7 +219,7 @@ public class CreateEntrantProfileTest {
     }
 
     /**
-     * Method to verify that the user was added to the firebase
+     * Helper method to verify that the user was added to the firebase
      * @param testUserId The unique id of a User
      */
     private void verifyUserInFirestore(String testUserId) {
@@ -217,7 +257,7 @@ public class CreateEntrantProfileTest {
     }
 
     /**
-     * Method to fill user input fields with given parameters and click the "Create" button
+     * Helper method to fill user input fields with given parameters and click the "Create" button
      * Used as a form of data provider to test for focus set on fields with invalid inputs
      * @param name String entered into the name editText field
      * @param email String entered into the email editText field

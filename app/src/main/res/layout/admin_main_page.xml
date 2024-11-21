@@ -46,15 +46,52 @@
 
 
         <Button
+            android:id="@+id/browse_profiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="250dp"
+            android:text="@string/profiles"
+            />
+
+        <Button
+            android:id="@+id/browse_events"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="325dp"
+            android:text="@string/browse_events"
+            />
+
+        <Button
             android:id="@+id/browse_images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="125dp"
-            android:layout_marginTop="300dp"
-            android:text="@string/browse_profiles"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="400dp"
+            android:text="@string/browse_images"
             />
 
+        <Button
+            android:id="@+id/manage_hash_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="475dp"
+            android:text="@string/browse_hashdata"
+            />
+
+
+        <Button
+            android:id="@+id/browse_facilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="550dp"
+            android:text="@string/browse_facilities"
+            />
     </FrameLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

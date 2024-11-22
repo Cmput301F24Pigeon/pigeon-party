@@ -139,6 +139,14 @@ public class Event implements Serializable {
         this.waitlistCapacity = waitlistCapacity;
     }
 
+    public void setRequiresLocation(boolean requiresLocation) {
+        this.requiresLocation = requiresLocation;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public void setFacility(Facility facility){
         this.facility = facility;
     }

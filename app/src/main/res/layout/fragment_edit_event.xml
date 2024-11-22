@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/fragment_create_event"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/appBackground">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/top_section"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@color/headingBackground"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/headingBackground"
+        android:fontFamily="@font/roboto_light"
+        android:gravity="center"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+        android:text="Edit Event"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/headingBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<Button
+    android:id="@+id/button_confirm_edit"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/listBackground"
+    android:text="Confirm Changes"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent" />
+
+<TextView
+    android:id="@+id/text_event_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:text="Title"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toTopOf="@+id/edit_event_title"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/top_section" />
+
+<EditText
+    android:id="@+id/edit_event_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
+    android:background="@android:color/white"
+    android:ems="10"
+    android:inputType="text"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/text_event_title" />
+
+<TextView
+    android:id="@+id/text_upload"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:text="Upload Poster"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toTopOf="@+id/text_date_time"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/edit_event_title" />
+
+<ImageButton
+    android:id="@+id/button_upload_poster"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/appBackground"
+    android:src="@android:drawable/ic_menu_upload"
+    app:layout_constraintBottom_toBottomOf="@+id/text_upload"
+    app:layout_constraintStart_toEndOf="@+id/text_upload"
+    app:layout_constraintTop_toTopOf="@+id/text_upload" />
+
+<TextView
+    android:id="@+id/text_date_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:text="Date/Time"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toTopOf="@+id/text_event_details"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/text_upload" />
+
+
+<EditText
+    android:id="@+id/text_event_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:ems="10"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="64dp"
+    android:layout_marginBottom="16dp"
+    android:focusable="false"
+    android:inputType="none"
+    app:layout_constraintEnd_toStartOf="@+id/button_date_picker"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/text_date_time" />
+
+<ImageButton
+    android:id="@+id/button_date_picker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:layout_constraintBottom_toBottomOf="@+id/text_event_date"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/text_event_date"
+    app:srcCompat="@drawable/ic_calendar_button" />
+
+<TextView
+    android:id="@+id/text_event_details"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:text="Event Details"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintTop_toBottomOf="@id/text_event_date"
+    app:layout_constraintBottom_toTopOf="@+id/edit_event_details"
+    app:layout_constraintStart_toStartOf="parent" />
+
+<EditText
+    android:id="@+id/edit_event_details"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@android:color/white"
+    android:ems="10"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
+    android:inputType="textMultiLine"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/text_event_details"
+    android:gravity="top|start"
+    />
+
+<TextView
+    android:id="@+id/text_waitlist_cap"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:text="Waitlist Capacity (optional)"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintBottom_toBottomOf="@id/edit_waitlist_cap"
+    app:layout_constraintTop_toBottomOf="@id/edit_event_details" />
+
+<EditText
+    android:id="@+id/edit_waitlist_cap"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="64dp"
+    android:ems="10"
+    android:inputType="number"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/text_waitlist_cap" />
+
+<Switch
+    android:id="@+id/switch_require_location"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:text="Require Location Verification"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toTopOf="@+id/button_create_event"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/edit_waitlist_cap" />
+
+<View
+    android:id="@+id/background_view"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:background="@color/appBackground"
+    android:visibility="gone"
+    app:layout_constraintBottom_toTopOf="@+id/button_create_event"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+
+    android:id="@+id/text_event_created"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="25dp"
+    android:text="Event Created! Share this QR code to invite participants."
+    android:textAlignment="center"
+    android:textSize="24dp"
+    android:textStyle="bold"
+    android:visibility="gone"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+<ImageView
+    android:id="@+id/eventQrcode"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_centerHorizontal="true"
+    app:layout_constraintBottom_toTopOf="@+id/button_create_event"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="@+id/text_waitlist_cap"
+    app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

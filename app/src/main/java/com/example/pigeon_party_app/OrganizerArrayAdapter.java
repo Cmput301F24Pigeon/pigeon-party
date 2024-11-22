@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
         }
 
         Event event = events.get(position);
+        ImageButton editButton = view.findViewById(R.id.button_edit);
 
         // Initialize TextViews
         TextView eventTitle = view.findViewById(R.id.eventTitle);
@@ -51,7 +54,15 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault());
         String formattedDate = dateFormat.format(date);
         eventDate.setText(formattedDate);
+        editButton.setOnClickListener(v -> {
+            EditEventFragment editEventFragment = EditEventFragment.newInstance(event.getEventId());
 
+            ((FragmentActivity) getContext()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, editEventFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         return view;
 
 

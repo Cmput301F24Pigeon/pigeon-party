@@ -25,21 +25,29 @@ import androidx.appcompat.widget.AppCompatImageView;
  */
 public class AvatarView extends AppCompatImageView {
 
-    Path clipPath;
-    Drawable background;
-    String initial;
-    TextPaint initialColour;
-    Paint backgroundColour;
+    private float TEXT_SIZE = 50f;
+    private int TEXT_COLOR = Color.WHITE;
 
-    User user;
+    private Path clipPath;
+    private Drawable background;
+    private static String initial;
+    private TextPaint initialColour;
+    private Paint backgroundColour;
 
-    RectF rectF;
+    private User user;
+
+    private RectF rectF;
 
 //    public AvatarView(@NonNull Context context) {
 //        super(context);
 //        init();
 //    }
 
+    /**
+     * Constructor function for Avatar view class, calls constructor for ImageView class
+     * @param context
+     * @param attrs
+     */
     public AvatarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -50,30 +58,64 @@ public class AvatarView extends AppCompatImageView {
 //        init();
 //    }
 
-    protected void init() {
-
-        rectF = new RectF();
-        clipPath = new Path();
-
-//        int imageSize = getResources().getDimensionPixelSize(R.dimen.avatar_size);
-
-        backgroundColour = new Paint(Paint.ANTI_ALIAS_FLAG);
-        initialColour = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        initialColour.setTextSize(50f * getResources().getDisplayMetrics().scaledDensity);
-        initialColour.setColor(Color.WHITE);
+    /**
+     * Getter for the initial that is displayed in the avatar, mainly for testing
+     * @return The initial as a 1 character String
+     */
+    public static String getInitial() {
+        return initial;
     }
 
+    /**
+     * Initializes fields in AvatarView class and sets text colour and size for initials
+     */
+    protected void init() {
+        rectF = new RectF();
+        clipPath = new Path();
+        backgroundColour = new Paint(Paint.ANTI_ALIAS_FLAG);
+        initialColour = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        initialColour.setTextSize(TEXT_SIZE * getResources().getDisplayMetrics().scaledDensity);
+        initialColour.setColor(TEXT_COLOR);
+    }
+
+    /**
+     * Sets the user that the avatar is for
+     * @param user the User object to create the avatar from
+     */
     public void setUser(User user) {
         this.user = user;
         setValues();
     }
 
+    /**
+     * Sets the background colour and initial for the drawable
+     */
     private void setValues() {
+        // Parsing hexadecimal colours:
+        // https://stackoverflow.com/questions/25837449/setbackgroundcolor-with-hex-color-codes-androidstudio
         backgroundColour.setColor(parseColor(user.getColour()));
         initial = user.getName().substring(0, 1);
         setDrawable();
+
+// Logic to set profile pic from storage if it exists
+// Check PR 168 for more if needed?
+
+//        if (user.getAvatarUrl() != null) {
+//            Glide.with(getContext())
+//                    .load(user.getAvatarUrl())
+//                    .placeholder(drawable)
+//                    .centerCrop()
+//                    .override(imageSize, imageSize)
+//                    .into(this);
+//        } else {
+//            setImageDrawable(drawable);
+//            invalidate();
+//        }
     }
 
+    /**
+     * Draws the background colour and text on a canvas and stores it in a drawable
+     */
     private void setDrawable() {
         background = new Drawable() {
             @Override

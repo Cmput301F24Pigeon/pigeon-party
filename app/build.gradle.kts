@@ -33,7 +33,9 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.firebase:firebase-storage")
     implementation(libs.uiautomator)
+    implementation(libs.firebase.database)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
     testImplementation("org.robolectric:robolectric:4.8")
@@ -51,7 +53,9 @@ dependencies {
     testImplementation(libs.ext.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("org.checkerframework:checker-qual:3.37.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

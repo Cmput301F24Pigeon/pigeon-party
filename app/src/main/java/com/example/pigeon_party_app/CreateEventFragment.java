@@ -3,6 +3,7 @@ package com.example.pigeon_party_app;
 import static java.lang.Integer.parseInt;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,12 +31,20 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,11 +68,16 @@ public class CreateEventFragment extends Fragment {
     private EditText dateText;
     private ImageButton uploadImage;
     private Uri imageUri;
-
+    private String imageUrl;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMediaLauncher =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), result -> {
                 if (result != null) {
                     imageUri = result;
+                        Log.d("Image URI", "Selected image URI: " + imageUri.toString());
+
+
                 } else {
                     Log.e("PickMedia", "No image selected");
                 }
@@ -98,6 +112,8 @@ public class CreateEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+         storage = FirebaseStorage.getInstance();
+         storageRef = storage.getReference();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         dateButton = view.findViewById(R.id.button_date_picker);
@@ -120,6 +136,7 @@ public class CreateEventFragment extends Fragment {
             pickMediaLauncher.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
+
         });
         dateButton.setOnClickListener(v -> showDateTimePicker());
 
@@ -145,7 +162,43 @@ public class CreateEventFragment extends Fragment {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
-                String imageUrl = imageUri != null ? imageUri.toString() : "";
+                if (imageUri != null){
+                    final ProgressDialog pd = new ProgressDialog(getContext());
+                    pd.setTitle("Uploading event. . .");
+                    pd.show();
+                    StorageReference imageRef = storage.getReference().child("event_posters/" + eventId);
+                    imageRef.putFile(imageUri)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
+                                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                        imageUrl = uri.toString();  // Assign the image URL here
+                                    });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    pd.dismiss();
+                                    Log.e("Firebase Storage", "Upload failed", e);
+                                    Toast.makeText(getContext(), "Failed to upload", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount() );
+                                    pd.setMessage("Progress: " + (int) progressPercent + "%");
+                                    if (progressPercent == 100.0) {
+                                        pd.dismiss();
+                                    }
+                                }
+                            });
+
+
+
+                }
                 //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
                 Map<String, User> usersWaitlist = new HashMap<>();
                 Map<String, User> usersInvited = new HashMap<>();
@@ -161,7 +214,7 @@ public class CreateEventFragment extends Fragment {
                     addEvent(db,event);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
+                            .replace(R.id.fragment_container, new OrganizerFragment())
                             .addToBackStack(null)
                             .commit();
 
@@ -181,6 +234,7 @@ public class CreateEventFragment extends Fragment {
 
         return view;
     }
+// ...
 
     /**
      * This is a method to show the date and time to be chosen by the user

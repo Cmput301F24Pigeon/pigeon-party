@@ -190,6 +190,9 @@ public class CreateEventFragment extends Fragment {
                                 public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                                     double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount() );
                                     pd.setMessage("Progress: " + (int) progressPercent + "%");
+                                    if (progressPercent == 100.0) {
+                                        pd.dismiss();
+                                    }
                                 }
                             });
 

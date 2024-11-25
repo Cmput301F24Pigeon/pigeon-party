@@ -101,16 +101,8 @@ public class EditEntrantProfileTest {
         String newUserName = "User Name";
         String newUserEmail = "new@email.com";
         String newUserPhone = "1111111111";
-//        onView(withId(R.id.button_profile)).perform(click());
-//        onView(withId(R.id.edit_entrant_profile_button)).perform(click());
 
-        onView(withId(R.id.editText_edit_user_name)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
-        onView(withId(R.id.editText_edit_user_email)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_email)).perform(ViewActions.typeText(newUserEmail), closeSoftKeyboard());
-        onView(withId(R.id.editText_edit_user_phone)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_phone)).perform(ViewActions.typeText(newUserPhone), closeSoftKeyboard());
-        onView(withId(R.id.update_user_profile_button)).perform(click());
+        testInput(newUserName, newUserEmail, newUserPhone);
 
         onView(withId(R.id.textView_entrant_name)).check(matches(withText(newUserName)));
         onView(withId(R.id.textView_entrant_email)).check(matches(withText(newUserEmail)));
@@ -122,8 +114,6 @@ public class EditEntrantProfileTest {
      */
     @Test public void testAvatarUpdate() {
         String newUserName = "User Name";
-//        onView(withId(R.id.button_profile)).perform(click());
-//        onView(withId(R.id.edit_entrant_profile_button)).perform(click());
 
         onView(withId(R.id.editText_edit_user_name)).perform(clearText());
         onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());

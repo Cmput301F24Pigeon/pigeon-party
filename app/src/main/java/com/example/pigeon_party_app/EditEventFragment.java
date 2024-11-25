@@ -43,9 +43,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditEventFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment allows an organizer to edit their existing event
  */
 public class EditEventFragment extends Fragment {
     private String eventId;

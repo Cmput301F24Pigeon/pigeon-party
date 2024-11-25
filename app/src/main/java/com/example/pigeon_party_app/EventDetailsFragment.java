@@ -36,6 +36,7 @@ public class EventDetailsFragment extends Fragment {
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static Boolean organizerView;
 
     public EventDetailsFragment(){
     }
@@ -78,6 +79,21 @@ public class EventDetailsFragment extends Fragment {
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void signUpButton(){
+
+        if(organizerView){
+            signUpButton.setText("View Entrant List");
+            signUpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(event.getEventId());
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, entrantListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
 
         DocumentReference eventRef = FirebaseFirestore.getInstance()
                 .collection("events")

@@ -127,8 +127,15 @@ public class OrganizerFragment extends Fragment {
         loadEventsFromFirebase();
 
         // Set item click listener to open entrant list
+        // TODO: set organizerView to true somehow
         organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
-            Event selectedEvent = organizerArrayList.get(position);
+            MainActivity.currentEvent = organizerArrayList.get(position);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new EventDetailsFragment())
+                    .addToBackStack(null)
+                    .commit();
+
+            /*Event selectedEvent = organizerArrayList.get(position);
 
             // Pass selected event ID to EntrantListFragment
             EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(selectedEvent.getEventId());
@@ -137,7 +144,7 @@ public class OrganizerFragment extends Fragment {
                     .beginTransaction()
                     .replace(R.id.fragment_container, entrantListFragment)
                     .addToBackStack(null)
-                    .commit();
+                    .commit();*/
         });
 
         return view;

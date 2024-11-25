@@ -59,6 +59,7 @@ import java.util.UUID;
  * This is a fragment in which the user can create an event
  */
 public class CreateEventFragment extends Fragment {
+    private ImageView uploadedImageView;
     private User current_user = MainActivity.getCurrentUser();
     private Calendar selectedDateTime = Calendar.getInstance();
     private ImageView qrCode;
@@ -75,8 +76,8 @@ public class CreateEventFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), result -> {
                 if (result != null) {
                     imageUri = result;
+                    uploadedImageView.setImageURI(imageUri);
                         Log.d("Image URI", "Selected image URI: " + imageUri.toString());
-
 
                 } else {
                     Log.e("PickMedia", "No image selected");
@@ -118,7 +119,7 @@ public class CreateEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         dateButton = view.findViewById(R.id.button_date_picker);
         dateText = view.findViewById(R.id.text_event_date);
-
+        uploadedImageView = view.findViewById(R.id.uploadedImageView);
         //add an addimage button later
         Button createEventButton = view.findViewById(R.id.button_create_event);
         ImageButton backButton = view.findViewById(R.id.button_back);
@@ -157,71 +158,94 @@ public class CreateEventFragment extends Fragment {
                 String eventId = UUID.randomUUID().toString();
 
 
-
-                if (waitlistCap.getText().toString().isEmpty()){
+                if (waitlistCap.getText().toString().isEmpty()) {
                     waitlistCap.setText("-1");
                 }
                 Date eventDateTime = selectedDateTime.getTime();
-                if (imageUri != null){
+                if (imageUri != null) {
                     final ProgressDialog pd = new ProgressDialog(getContext());
                     pd.setTitle("Uploading event. . .");
                     pd.show();
+
+
                     StorageReference imageRef = storage.getReference().child("event_posters/" + eventId);
-                    imageRef.putFile(imageUri)
-                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
-                                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                        imageUrl = uri.toString();  // Assign the image URL here
-                                    });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    pd.dismiss();
-                                    Log.e("Firebase Storage", "Upload failed", e);
-                                    Toast.makeText(getContext(), "Failed to upload", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount() );
-                                    pd.setMessage("Progress: " + (int) progressPercent + "%");
-                                    if (progressPercent == 100.0) {
-                                        pd.dismiss();
-                                    }
-                                }
+
+
+                    UploadTask uploadTask = imageRef.putFile(imageUri);
+
+
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+                        // Upload successful, now get the download URL
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            pd.dismiss();
+                            String imageUrl = uri.toString();
+                            Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
+                            Log.d("Firebase Storage", "Download URL: " + imageUrl);
+                            Map<String, User> usersWaitlist = new HashMap<>();
+                            Map<String, User> usersInvited = new HashMap<>();
+                            Map<String, User> usersCancelled = new HashMap<>();
+                            Map<String, User> usersSentInvite = new HashMap<>();
+                            Event event = new Event(eventId, eventTitle.getText().toString(), eventDateTime, Integer.parseInt(waitlistCap.getText().toString()), imageUrl, eventDetails.getText().toString(), current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, usersSentInvite, current_user);
+                            qrBackground.setVisibility(View.VISIBLE);
+                            eventCreatedMessage.setVisibility(View.VISIBLE);
+                            generateQRCode(eventId);
+
+                            createEventButton.setText("Finish");
+                            createEventButton.setOnClickListener(v2 -> {
+                                addEvent(db, event);
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragment_container, new OrganizerFragment())
+                                        .addToBackStack(null)
+                                        .commit();
+
                             });
+                        }).addOnFailureListener(e -> {
+                            pd.dismiss();
+                            Log.e("Firebase Storage", "Failed to retrieve download URL", e);
+                            Toast.makeText(getContext(), "Failed to get download URL", Toast.LENGTH_SHORT).show();
+                        });
+                    }).addOnFailureListener(e -> {
+                        pd.dismiss();
+                        Log.e("Firebase Storage", "Upload failed", e);
+                        Toast.makeText(getContext(), "Failed to upload", Toast.LENGTH_SHORT).show();
+                    });
 
 
+                    uploadTask.addOnProgressListener(snapshot -> {
+                        double progressPercent = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                        pd.setMessage("Progress: " + (int) progressPercent + "%");
+
+                        if (progressPercent == 100.0) {
+                            pd.dismiss();
+                        }
+                    });
+                } else {
+                    //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
+                    Map<String, User> usersWaitlist = new HashMap<>();
+                    Map<String, User> usersInvited = new HashMap<>();
+                    Map<String, User> usersCancelled = new HashMap<>();
+                    Map<String, User> usersSentInvite = new HashMap<>();
+                    Event event = new Event(eventId, eventTitle.getText().toString(), eventDateTime, Integer.parseInt(waitlistCap.getText().toString()), imageUrl, eventDetails.getText().toString(), current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, usersSentInvite, current_user);
+                    qrBackground.setVisibility(View.VISIBLE);
+                    eventCreatedMessage.setVisibility(View.VISIBLE);
+                    generateQRCode(eventId);
+
+                    createEventButton.setText("Finish");
+                    createEventButton.setOnClickListener(v2 -> {
+                        addEvent(db, event);
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, new OrganizerFragment())
+                                .addToBackStack(null)
+                                .commit();
+
+                    });
 
                 }
-                //Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),eventDetails.getText().toString(),eventFacility, requiresLocation.isChecked());
-                Map<String, User> usersWaitlist = new HashMap<>();
-                Map<String, User> usersInvited = new HashMap<>();
-                Map<String, User> usersCancelled = new HashMap<>();
-                Map<String, User> usersSentInvite = new HashMap<>();
-                Event event = new Event(eventId,eventTitle.getText().toString(),eventDateTime,Integer.parseInt(waitlistCap.getText().toString()),imageUrl,eventDetails.getText().toString(),current_user.getFacility(), requiresLocation.isChecked(), usersWaitlist, usersInvited, usersCancelled, usersSentInvite, current_user);
-                qrBackground.setVisibility(View.VISIBLE);
-                eventCreatedMessage.setVisibility(View.VISIBLE);
-                generateQRCode(eventId);
-
-                createEventButton.setText("Finish");
-                createEventButton.setOnClickListener(v2->{
-                    addEvent(db,event);
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new OrganizerFragment())
-                            .addToBackStack(null)
-                            .commit();
-
-                });
-
             }
         });
+
 
         backButton.setOnClickListener(v -> {
         getActivity().getSupportFragmentManager()
@@ -233,6 +257,7 @@ public class CreateEventFragment extends Fragment {
 
 
         return view;
+
     }
 // ...
 

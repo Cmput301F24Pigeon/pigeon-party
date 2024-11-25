@@ -87,7 +87,7 @@ android:background="@color/appBackground">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="16dp"
-    android:text="Upload Poster"
+    android:text="Update Poster"
     android:textSize="20sp"
     android:textStyle="bold"
     app:layout_constraintBottom_toTopOf="@+id/text_date_time"
@@ -103,6 +103,17 @@ android:background="@color/appBackground">
     app:layout_constraintBottom_toBottomOf="@+id/text_upload"
     app:layout_constraintStart_toEndOf="@+id/text_upload"
     app:layout_constraintTop_toTopOf="@+id/text_upload" />
+
+    <ImageView
+        android:id="@+id/updatedImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="@+id/button_upload_poster"
+        app:layout_constraintBottom_toBottomOf="@+id/button_upload_poster"
+        android:contentDescription="Selected Image"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_upload_poster" />
 
 <TextView
     android:id="@+id/text_date_time"

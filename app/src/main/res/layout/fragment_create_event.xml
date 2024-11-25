@@ -104,6 +104,16 @@
         app:layout_constraintStart_toEndOf="@+id/text_upload"
         app:layout_constraintTop_toTopOf="@+id/text_upload" />
 
+    <ImageView
+        android:id="@+id/uploadedImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="@+id/button_upload_poster"
+        app:layout_constraintBottom_toBottomOf="@+id/button_upload_poster"
+        android:contentDescription="Selected Image"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_upload_poster" />
     <TextView
         android:id="@+id/text_date_time"
         android:layout_width="wrap_content"

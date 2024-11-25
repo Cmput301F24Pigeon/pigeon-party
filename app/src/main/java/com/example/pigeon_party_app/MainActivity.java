@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         });
         currentUser = receiveCurrentUser(uniqueId);
         if (currentUser != null) {
-            NotificationHelper notificationHelper = new NotificationHelper(this);
             checkUserNotifications(currentUser);
 
 

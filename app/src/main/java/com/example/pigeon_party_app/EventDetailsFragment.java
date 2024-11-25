@@ -11,12 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -36,7 +40,9 @@ public class EventDetailsFragment extends Fragment {
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private ImageView eventPoster;
     public EventDetailsFragment(){
     }
 
@@ -45,13 +51,15 @@ public class EventDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         eventTitle = view.findViewById(R.id.eventName);
         eventDateTime = view.findViewById(R.id.eventDateTime);
         //eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
-
+        eventPoster = view.findViewById(R.id.eventPoster);
         Format formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
 
         eventTitle.setText(event.getTitle());
@@ -59,8 +67,14 @@ public class EventDetailsFragment extends Fragment {
         //eventLocation.setText(event.getLocation());
         eventDetails.setText("Event Details:\n" + event.getDetails());
         eventCapacity.setText("Waitlist capacity: " + String.valueOf(event.getWaitlistCapacity()));
+        String imageUrl = event.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imageUrl)
+                    .into(eventPoster);
+        }
 
-        signUpButton();
+            signUpButton();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);

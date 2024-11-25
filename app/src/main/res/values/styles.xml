@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Rounded image layout/style-->
+<!--https://stackoverflow.com/questions/59750076/how-can-i-shape-circular-the-selected-image-from-gallery-->
+<resources>
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

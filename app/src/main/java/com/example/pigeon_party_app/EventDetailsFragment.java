@@ -58,7 +58,6 @@ public class EventDetailsFragment extends Fragment {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private ImageView eventPoster;
-    private LocationManager locationManager;
 
     public EventDetailsFragment(){
     }

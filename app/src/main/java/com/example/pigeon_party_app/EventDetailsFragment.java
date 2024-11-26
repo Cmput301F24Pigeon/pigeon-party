@@ -49,11 +49,13 @@ public class EventDetailsFragment extends Fragment {
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private LocationManager locationManager;
 
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private ImageView eventPoster;
+
 
     public EventDetailsFragment(){
     }
@@ -86,7 +88,7 @@ public class EventDetailsFragment extends Fragment {
                     .into(eventPoster);
         }
 
-        signUpButton();
+            signUpButton();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);

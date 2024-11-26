@@ -177,7 +177,9 @@ public class EditEventFragment extends Fragment {
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
+
                     String storagePath = "event_posters/" + eventId;
+
                     FirebaseStorage.getInstance().getReference(storagePath)
                             .putFile(imageUri)
                             .addOnSuccessListener(taskSnapshot -> {

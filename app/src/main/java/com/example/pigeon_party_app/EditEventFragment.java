@@ -23,8 +23,11 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -38,9 +41,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditEventFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment allows an organizer to edit their existing event
  */
 public class EditEventFragment extends Fragment {
     private String eventId;
@@ -49,12 +50,17 @@ public class EditEventFragment extends Fragment {
     private TextView eventCreatedMessage;
     private EditText dateText;
     private ImageButton uploadImage;
+    private ImageView updateImagePoster;
     private Uri imageUri;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMediaLauncher =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), result -> {
                 if (result != null) {
                     imageUri = result;
+                    updateImagePoster.setImageURI(imageUri);
+                    Log.d("Image URI", "Selected image URI: " + imageUri.toString());
                 } else {
                     Log.e("PickMedia", "No image selected");
                 }
@@ -83,10 +89,13 @@ public class EditEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
         dateButton = view.findViewById(R.id.button_date_picker);
         dateText = view.findViewById(R.id.text_event_date);
+        updateImagePoster = view.findViewById(R.id.updatedImageView);
 
 
         Button confirmButton = view.findViewById(R.id.button_confirm_edit);
@@ -116,7 +125,10 @@ public class EditEventFragment extends Fragment {
 
                                 String imageUrl = document.getString("imageUrl");
                                 if (imageUrl != null && !imageUrl.isEmpty()) {
-                                    imageUri = Uri.parse(imageUrl);
+                                    Glide.with(this)
+                                            .load(imageUrl)
+                                            .into(updateImagePoster);
+
 
                                 }
                             }
@@ -146,9 +158,7 @@ public class EditEventFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                if (editWaitlistCap.getText().toString().isEmpty()){
-                    editWaitlistCap.setText("-1");
-                }
+
                 Map<String, Object> updatedFields = new HashMap<>();
                 updatedFields.put("title", editEventTitle.getText().toString());
                 updatedFields.put("details", editEventDetails.getText().toString());
@@ -157,14 +167,49 @@ public class EditEventFragment extends Fragment {
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-                    updatedFields.put("imageUrl", imageUri.toString());
+                    String storagePath = "event_posters/" + eventId + ".jpg";
+                    FirebaseStorage.getInstance().getReference(storagePath)
+                            .putFile(imageUri)
+                            .addOnSuccessListener(taskSnapshot -> {
+
+                                taskSnapshot.getStorage().getDownloadUrl()
+                                        .addOnSuccessListener(downloadUri -> {
+
+                                            updatedFields.put("imageUrl", downloadUri.toString());
+
+                                            db.collection("events").document(eventId)
+                                                    .update(updatedFields)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        Log.d("EditEventFragment", "Event updated successfully!");
+
+                                                        // Navigate to OrganizerFragment
+                                                        getActivity().getSupportFragmentManager()
+                                                                .beginTransaction()
+                                                                .replace(R.id.fragment_container, new OrganizerFragment())
+                                                                .addToBackStack(null)
+                                                                .commit();
+                                                    })
+                                                    .addOnFailureListener(e -> Log.e("EditEventFragment", "Error updating Firestore", e));
+                                        })
+                                        .addOnFailureListener(e -> Log.e("EditEventFragment", "Error fetching download URL", e));
+                            })
+                            .addOnFailureListener(e -> Log.e("EditEventFragment", "Error uploading image", e));
                 }
-                db.collection("events").document(eventId).update(updatedFields);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new OrganizerFragment()) // Change fragment_container to your actual container
-                        .addToBackStack(null)
-                        .commit();
+                else{
+                    // If no new image is selected, update Firestore directly
+                    db.collection("events").document(eventId)
+                            .update(updatedFields)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("EditEventFragment", "Event updated successfully!");
+
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragment_container, new OrganizerFragment())
+                                        .addToBackStack(null)
+                                        .commit();
+                            })
+                            .addOnFailureListener(e -> Log.e("EditEventFragment", "Error updating Firestore", e));
+                }
 
 
             }

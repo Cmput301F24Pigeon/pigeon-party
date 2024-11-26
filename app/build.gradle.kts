@@ -70,6 +70,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
     debugImplementation("androidx.fragment:fragment-testing-manifest:1.8.5")
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
+    implementation(libs.xplay.services.location)
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation(libs.xplay.services.location)

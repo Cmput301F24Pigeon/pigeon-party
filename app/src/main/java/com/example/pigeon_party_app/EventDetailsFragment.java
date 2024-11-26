@@ -43,6 +43,8 @@ public class EventDetailsFragment extends Fragment {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private ImageView eventPoster;
+    private Button drawParticipantsButton;
+
     public EventDetailsFragment(){
     }
 
@@ -60,6 +62,9 @@ public class EventDetailsFragment extends Fragment {
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
         eventPoster = view.findViewById(R.id.eventPoster);
+        drawParticipantsButton = view.findViewById(R.id.drawParticipantsButton);
+        drawParticipantsButton.setEnabled(false);
+
         Format formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
 
         eventTitle.setText(event.getTitle());
@@ -74,7 +79,7 @@ public class EventDetailsFragment extends Fragment {
                     .into(eventPoster);
         }
 
-            signUpButton();
+            Buttons();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -91,7 +96,24 @@ public class EventDetailsFragment extends Fragment {
      * integration, and updating the event's waitlist
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
-    private void signUpButton(){
+    private void Buttons(){
+
+        if(current_user.equals(event.getOrganizer())){
+            drawParticipantsButton.setVisibility(View.VISIBLE);
+            drawParticipantsButton.setEnabled(true);
+            drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(event.getEventId());
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, entrantListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
 
         DocumentReference eventRef = FirebaseFirestore.getInstance()
                 .collection("events")

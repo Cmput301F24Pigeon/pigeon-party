@@ -75,7 +75,6 @@ public class CreateEntrantProfileFragment extends Fragment {
         uniqueId = Settings.Secure.getString(requireActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         View view = inflater.inflate(R.layout.fragment_create_entrant_profile, container, false);
-//        AvatarView createEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
         profilePic = view.findViewById(R.id.entrant_profile_image);
         EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
         EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);

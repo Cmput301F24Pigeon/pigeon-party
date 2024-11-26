@@ -40,6 +40,9 @@ public class EditEntrantProfileTest {
     private String testUserName;
     private String testUserEmail;
     private String testUserPhone;
+    private String newUserName = "User Name";
+    private String newUserEmail = "new@email.com";
+    private String newUserPhone = "1111111111";
     private UiDevice device;
 
     @Rule
@@ -98,10 +101,6 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testEditUserInfo() {
-        String newUserName = "User Name";
-        String newUserEmail = "new@email.com";
-        String newUserPhone = "1111111111";
-
         testInput(newUserName, newUserEmail, newUserPhone);
 
         onView(withId(R.id.textView_entrant_name)).check(matches(withText(newUserName)));
@@ -113,8 +112,6 @@ public class EditEntrantProfileTest {
      * This method tests that the initial on the user's avatar is updated if they change their name in their profile
      */
     @Test public void testAvatarUpdate() {
-        String newUserName = "User Name";
-
         onView(withId(R.id.editText_edit_user_name)).perform(clearText());
         onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
         onView(withId(R.id.update_user_profile_button)).perform(click());
@@ -127,7 +124,7 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testEmptyUserName() {
-        testInput("", "test@email.com", "1234567890");
+        testInput("", newUserEmail, newUserPhone);
         onView(withId(R.id.editText_edit_user_name)).check(matches(hasFocus()));
     }
 
@@ -136,7 +133,7 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testEmptyEmail() {
-        testInput("Test User", "", "1234567890");
+        testInput(newUserName, "", newUserEmail);
         onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
     }
 
@@ -145,7 +142,7 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testInvalidEmail() {
-        testInput("Test User", "test@email", "1234567890");
+        testInput(newUserName, "test@email", newUserPhone);
         onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
     }
 
@@ -154,8 +151,28 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testInvalidPhone() {
-        testInput("Test User", "test@email.com", "1");
+        testInput(newUserName, newUserEmail, "1");
         onView(withId(R.id.editText_edit_user_phone)).check(matches(hasFocus()));
+    }
+
+    /**
+     * Test to check that changes are undone if fragment is closed with back button
+     */
+    @Test
+    public void testBackButton() {
+        onView(withId(R.id.editText_edit_user_name)).perform(clearText());
+        onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_edit_user_email)).perform(clearText());
+        onView(withId(R.id.editText_edit_user_email)).perform(ViewActions.typeText(newUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_edit_user_phone)).perform(clearText());
+        onView(withId(R.id.editText_edit_user_phone)).perform(ViewActions.typeText(newUserPhone), closeSoftKeyboard());
+
+        onView(withId(R.id.button_back)).perform(click());
+
+        onView(withId(R.id.textView_entrant_name)).check(matches(withText(testUserName)));
+        onView(withId(R.id.textView_entrant_email)).check(matches(withText(testUserEmail)));
+        onView(withId(R.id.textView_entrant_phone)).check(matches(withText(testUserPhone)));
+        assertEquals(testUserName.substring(0, 1), AvatarView.getInitial());
     }
 
     /**
@@ -166,16 +183,12 @@ public class EditEntrantProfileTest {
      * @param phoneNumber String entered into the phoneNumber editText field
      */
     private void testInput(String name, String email, String phoneNumber) {
-        testUserName = name;
-        testUserEmail = email;
-        testUserPhone = phoneNumber;
-
         onView(withId(R.id.editText_edit_user_name)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(name), closeSoftKeyboard());
         onView(withId(R.id.editText_edit_user_email)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_edit_user_email)).perform(ViewActions.typeText(email), closeSoftKeyboard());
         onView(withId(R.id.editText_edit_user_phone)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
+        onView(withId(R.id.editText_edit_user_phone)).perform(ViewActions.typeText(phoneNumber), closeSoftKeyboard());
         onView(withId(R.id.update_user_profile_button)).perform(click());
     }
 }

@@ -1,10 +1,21 @@
 
 package com.example.pigeon_party_app;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +24,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +49,7 @@ public class EventDetailsFragment extends Fragment {
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private LocationManager locationManager;
 
     public EventDetailsFragment(){
     }
@@ -74,10 +88,10 @@ public class EventDetailsFragment extends Fragment {
 
     /**
      * This method handles everything to do with the signup button: setting the text, firebase
-     * integration, and updating the event's waitlist
+     * integration, getting the users location, and updating the event's waitlist
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
-    private void signUpButton(){
+    private void signUpButton() {
 
         DocumentReference eventRef = FirebaseFirestore.getInstance()
                 .collection("events")
@@ -92,26 +106,101 @@ public class EventDetailsFragment extends Fragment {
                     signUpButton.setText("Waitlist is Full");
                     signUpButton.setEnabled(false);
                 } else {
-                    signUpButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (event.isRequiresLocation()) {
-                                showLocationVerificationDialog();
-                            }
-                            else {
-                                addToWaitlist();
-                            }
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        }
-                    });
+                    signUpButton.setOnClickListener(v -> {
 
+                        if (event.isRequiresLocation()) {
+                            if (ActivityCompat.checkSelfPermission(requireContext(),
+                                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                        1);
+                            } else {
+                                getLocationAndSignUp();
+                            }
+
+                        } else {
+                            addToWaitlist();
+                        }
+                        getActivity().getSupportFragmentManager().popBackStack();
+
+                    });
                 }
+
             } else {
                 System.err.println("Error getting waitlist size: " + task.getException());
             }
         });
     }
 
+    /**
+     * This method gets the users current location
+     */
+    private void getLocationAndSignUp() {
+        locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager != null) {
+
+            if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+
+
+                    //current_user.setLocation(latitude, longitude);
+                    addToWaitlist();
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
+                @Override
+                public void onProviderEnabled(String provider) {}
+                @Override
+                public void onProviderDisabled(String provider) {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Location Disabled")
+                            .setMessage("Please enable location services to sign up for this event.")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                            .show();
+                }
+
+            }, Looper.getMainLooper());
+        }
+    }
+
+    /**
+     * This method creates an alert dialog requiring location from user
+     * @param requestCode The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                getLocationAndSignUp();
+            } else {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Permission Required")
+                        .setMessage("You must allow location access to sign up for this event.")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                        .show();
+            }
+        }
+    }
     /**
      * Adds the user to the corresponding event's waitlist in firebase
      * @param updates
@@ -132,17 +221,6 @@ public class EventDetailsFragment extends Fragment {
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's entrant list", e));
     }
 
-    /**
-     * An alert dialog that warns the user if an event requires location verification
-     */
-    private void showLocationVerificationDialog() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Warning")
-                .setMessage("This event requires location verification.")
-                .setPositiveButton("Continue", (dialog, which) -> addToWaitlist())
-                .setNegativeButton("Back", (dialog, which) -> dialog.dismiss())
-                .show();
-    }
 
     /**
      * A method to add a user to the events waitlist upon signing up for the event

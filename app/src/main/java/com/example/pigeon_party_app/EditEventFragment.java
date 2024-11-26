@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import static java.lang.String.valueOf;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Bitmap;
@@ -104,7 +106,10 @@ public class EditEventFragment extends Fragment {
                             if (event != null) {
                                 editEventTitle.setText(document.getString("title"));
                                 editEventDetails.setText(document.getString("details"));
-                                editWaitlistCap.setText(String.valueOf(document.getLong("waitlistCapacity")));
+                                Long waitlistCapacity = document.getLong("waitlistCapacity");
+                                if (waitlistCapacity != null && waitlistCapacity != -1) {
+                                    editWaitlistCap.setText(valueOf(document.getLong("waitlistCapacity")));
+                                }
                                 editRequiresLocation.setChecked(document.getBoolean("requiresLocation"));
 
 

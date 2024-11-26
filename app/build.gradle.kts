@@ -66,6 +66,6 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")
     debugImplementation("androidx.fragment:fragment-testing-manifest:1.8.5")
-
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
+    implementation(libs.xplay.services.location)
 }

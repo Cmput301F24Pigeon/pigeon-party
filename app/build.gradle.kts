@@ -34,6 +34,8 @@ android {
 
 dependencies {
     implementation(libs.uiautomator)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.database)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
     testImplementation("org.robolectric:robolectric:4.8")
@@ -52,7 +54,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -66,4 +68,6 @@ dependencies {
     debugImplementation("androidx.fragment:fragment-testing-manifest:1.8.5")
 
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 }

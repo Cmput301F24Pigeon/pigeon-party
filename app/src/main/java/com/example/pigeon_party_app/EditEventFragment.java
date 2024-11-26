@@ -166,13 +166,18 @@ public class EditEventFragment extends Fragment {
 
                 Map<String, Object> updatedFields = new HashMap<>();
                 updatedFields.put("title", editEventTitle.getText().toString());
+                updatedFields.put("waitlistCapacity",-1);
+                if ( !editWaitlistCap.getText().toString().isEmpty()) {
+                    updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
+                }
+
+
                 updatedFields.put("details", editEventDetails.getText().toString());
-                updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
                 updatedFields.put("requiresLocation", editRequiresLocation.isChecked());
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-                    String storagePath = "event_posters/" + eventId + ".jpg";
+                    String storagePath = "event_posters/" + eventId;
                     FirebaseStorage.getInstance().getReference(storagePath)
                             .putFile(imageUri)
                             .addOnSuccessListener(taskSnapshot -> {

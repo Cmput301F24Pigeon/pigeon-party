@@ -19,15 +19,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/button_notifications"
+            android:id="@+id/button_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/headingBackground"
-            android:text="Notifications"
+            android:text="Admin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_notification_button" />
+            app:srcCompat="@drawable/ic_notification_button"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/title"
@@ -43,7 +44,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_profile"
-            app:layout_constraintStart_toEndOf="@+id/button_notifications"
+            app:layout_constraintStart_toEndOf="@+id/button_admin"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton

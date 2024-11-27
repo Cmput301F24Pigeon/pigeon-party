@@ -31,4 +31,11 @@
         android:layout_height="wrap_content"
         android:text="@string/phonenumber"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/Facility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/facility"
+        android:textSize="16sp" />
 </LinearLayout>

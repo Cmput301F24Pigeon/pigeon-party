@@ -1,10 +1,14 @@
 package com.example.pigeon_party_app;
 
+import static com.example.pigeon_party_app.MainActivity.db;
+
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -13,7 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,10 +42,36 @@ public class BrowseProfilesFragment extends Fragment {
 
         users = new ArrayList<>();
         userListView = view.findViewById(R.id.user_list);
+        fill_list();
         userArrayAdapter = new AdminUserArrayAdapter(getActivity(), users);
-        userListView.setAdapter((ListAdapter) userArrayAdapter);
+        userListView.setAdapter(userArrayAdapter);
 
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User current = userArrayAdapter.getItem(position);
+                if (current.isOrganizer()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Do you want to remove user or remove it's facility");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Remove user", (dialog, which) -> {
+                        deleteUser(position);
+                    });
+                    builder.setNegativeButton("Remove facility", (dialog, which) -> {
+                        deleteFacility(position);
+                    });
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Do you want to remove user");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Remove user", (dialog, which) -> {
+                        deleteUser(position);
+                    });
+                }
+            }
+        });
         return view;
     }
 
@@ -59,6 +92,51 @@ public class BrowseProfilesFragment extends Fragment {
                         }
                     }
                 });
+
+    }
+
+    private void deleteUser(int i){
+        // Add the city to the local list
+        User temp = users.get(i);
+        users.remove(i);
+        userArrayAdapter.notifyDataSetChanged();
+        db.collection("users").document(temp.getUniqueId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error deleting document", e);
+                    }
+                });
+    }
+
+    private void deleteFacility(int i){
+        // Add the city to the local list
+        User temp = users.get(i);
+        temp.setFacility(null);
+        users.get(i).setFacility(null);
+        DocumentReference entrantRef = db.collection("user").document(temp.getUniqueId());
+
+        entrantRef.update("facility", temp.getFacility())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error deleting document", e);
+                    }
+                });
+        userArrayAdapter.notifyDataSetChanged();
 
     }
 }

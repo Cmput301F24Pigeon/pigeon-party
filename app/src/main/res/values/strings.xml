@@ -16,4 +16,5 @@
     <string name="id">id</string>
     <string name="email">email</string>
     <string name="phonenumber">phonenumber</string>
+    <string name="facility">Facility:</string>
 </resources>

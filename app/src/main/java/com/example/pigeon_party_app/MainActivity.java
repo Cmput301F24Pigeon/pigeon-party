@@ -116,9 +116,11 @@ public class MainActivity extends AppCompatActivity {
         setUpAdminButton();
         setUpFacilityButton();
         setUpAddEventButton();
-        adminButton.setVisibility(View.VISIBLE);
-
-
+        if (MainActivity.currentUser != null) {
+            if (MainActivity.currentUser.isAdmin()) {
+                adminButton.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     /**

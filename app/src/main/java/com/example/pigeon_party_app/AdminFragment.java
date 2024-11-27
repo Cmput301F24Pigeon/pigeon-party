@@ -1,5 +1,6 @@
 package com.example.pigeon_party_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ public class AdminFragment extends Fragment {
         Button browseEvents = view.findViewById(R.id.browse_events);
         Button browseImages = view.findViewById(R.id.browse_images);
         Button manageHashdata = view.findViewById(R.id.manage_hash_data);
+        ImageButton backButton = view.findViewById(R.id.button_back);
 
         browseProfiles.setOnClickListener( v -> {
             requireActivity().getSupportFragmentManager()
@@ -27,6 +29,14 @@ public class AdminFragment extends Fragment {
                     .replace(R.id.fragment_container, new BrowseProfilesFragment())
                     .addToBackStack(null)
                     .commit();
+        });
+
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            getActivity().finish();
         });
 
         return view;

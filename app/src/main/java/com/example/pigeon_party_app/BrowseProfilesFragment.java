@@ -3,6 +3,7 @@ package com.example.pigeon_party_app;
 import static com.example.pigeon_party_app.MainActivity.db;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -43,6 +45,16 @@ public class BrowseProfilesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.admin_profile_fragment, container, false);
+
+        ImageButton backButton = view.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AdminFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
         users = new ArrayList<>();
         userListView = view.findViewById(R.id.user_list);
@@ -129,10 +141,19 @@ public class BrowseProfilesFragment extends Fragment {
         // Add the city to the local list
         User temp = users.get(i);
         temp.setFacility(null);
+        ArrayList<Event> emptyList = new ArrayList<Event>();
+        temp.setOrganizer(false);
+        //remove the events the facility hosts
+        for (Event event :temp.getOrganizerEventList()){
+            removeEvent(event);
+        }
+        temp.setOrganizerEventList(emptyList);
+
+
         users.get(i).setFacility(null);
         DocumentReference userRef = db.collection("user").document(temp.getUniqueId());
 
-        userRef.update("facility", null, "organizer", false)
+        userRef.update("facility", null, "organizer", false, "organizerEventList", emptyList)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -146,10 +167,6 @@ public class BrowseProfilesFragment extends Fragment {
                     }
                 });
 
-        //remove the events the facility hosts
-        for (Event event :temp.getOrganizerEventList()){
-            removeEvent(event);
-        }
         userArrayAdapter.notifyDataSetChanged();
     }
 

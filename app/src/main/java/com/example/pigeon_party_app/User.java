@@ -23,8 +23,7 @@ public class User implements Serializable {
     private List<String> notifications;
     private ArrayList<Event> entrantEventList;
     private ArrayList<Event> organizerEventList;
-
-    //private boolean isAdmin;
+    private boolean admin;
     // need to make an images for our profile
 
     public User() {
@@ -45,10 +44,12 @@ public class User implements Serializable {
      * @param facility a facility object associated with the user
      * @param notificationStatus a boolean representing if the user has notifications turned on
      * @param colour a string representing the background colour for a user's avatar
-     * @param entrantEventList
-     * @param organizerEventList
+     * @param entrantEventList a list of events that our user has joined
+     * @param organizerEventList a list of events the user has made
+     * @param isAdmin a boolean representing if the user is an admin
      */
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList, boolean isAdmin) {
+
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -61,6 +62,7 @@ public class User implements Serializable {
         this.notifications = notifications != null ? notifications : new ArrayList<>();
         this.entrantEventList = entrantEventList != null ? entrantEventList : new ArrayList<>();
         this.organizerEventList = organizerEventList != null ? organizerEventList : new ArrayList<>();
+        this.admin = isAdmin;
     }
 
     public User(String userId, Map<String, Object> userMap) {
@@ -268,9 +270,13 @@ public class User implements Serializable {
         this.organizerEventList.remove(pos);
     }
 
-
-
-
+    /**
+     * Getter for user's admin status either true or false
+     * @return admin status as a boolean of true or false
+     */
+    public boolean isAdmin() {
+        return admin;
+    }
 
     /**
      * Converts User object to a Map for Firebase

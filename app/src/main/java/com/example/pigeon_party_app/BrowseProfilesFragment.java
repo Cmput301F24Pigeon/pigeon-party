@@ -14,14 +14,18 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -47,7 +51,6 @@ public class BrowseProfilesFragment extends Fragment {
         userListView.setAdapter(userArrayAdapter);
 
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User current = userArrayAdapter.getItem(position);
@@ -56,11 +59,13 @@ public class BrowseProfilesFragment extends Fragment {
                     builder.setTitle("Do you want to remove user or remove it's facility");
                     builder.setCancelable(true);
                     builder.setPositiveButton("Remove user", (dialog, which) -> {
+                        deleteFacility(position);
                         deleteUser(position);
                     });
                     builder.setNegativeButton("Remove facility", (dialog, which) -> {
                         deleteFacility(position);
                     });
+                    builder.show();
                 }
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -69,7 +74,9 @@ public class BrowseProfilesFragment extends Fragment {
                     builder.setPositiveButton("Remove user", (dialog, which) -> {
                         deleteUser(position);
                     });
+                    builder.show();
                 }
+
             }
         });
         return view;
@@ -77,22 +84,24 @@ public class BrowseProfilesFragment extends Fragment {
 
 
     private void fill_list(){
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                users.add(document.toObject(User.class));
 
-                            }
-                        } else {
-                            Log.d("firebase", "Error getting documents: ", task.getException());
-                        }
+        CollectionReference usersRef = db.collection("user");
+        usersRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+                if (querySnapshots != null) {
+                    users.clear();
+                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                        users.add(doc.toObject(User.class));
                     }
-                });
-
+                    userArrayAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void deleteUser(int i){
@@ -100,7 +109,7 @@ public class BrowseProfilesFragment extends Fragment {
         User temp = users.get(i);
         users.remove(i);
         userArrayAdapter.notifyDataSetChanged();
-        db.collection("users").document(temp.getUniqueId())
+        db.collection("user").document(temp.getUniqueId())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -121,9 +130,9 @@ public class BrowseProfilesFragment extends Fragment {
         User temp = users.get(i);
         temp.setFacility(null);
         users.get(i).setFacility(null);
-        DocumentReference entrantRef = db.collection("user").document(temp.getUniqueId());
+        DocumentReference userRef = db.collection("user").document(temp.getUniqueId());
 
-        entrantRef.update("facility", temp.getFacility())
+        userRef.update("facility", null, "organizer", false)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -136,7 +145,28 @@ public class BrowseProfilesFragment extends Fragment {
                         Log.w("firebase", "Error deleting document", e);
                     }
                 });
-        userArrayAdapter.notifyDataSetChanged();
 
+        //remove the events the facility hosts
+        for (Event event :temp.getOrganizerEventList()){
+            removeEvent(event);
+        }
+        userArrayAdapter.notifyDataSetChanged();
+    }
+
+    private void removeEvent(Event event){
+        db.collection("events").document(event.getEventId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error deleting document", e);
+                    }
+                });
     }
 }

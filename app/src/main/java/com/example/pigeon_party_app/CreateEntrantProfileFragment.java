@@ -112,7 +112,7 @@ public class CreateEntrantProfileFragment extends Fragment {
             if (isValid) {
                 ArrayList<Event> emptyList = new ArrayList<>();
                 String colour = pickColour();
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList);
+                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList, false);
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);
@@ -145,6 +145,7 @@ public class CreateEntrantProfileFragment extends Fragment {
         Users.put("notifications", user.getNotifications());
         Users.put("entrantEventList", user.getEntrantEventList());
         Users.put("organizerEventList", user.getOrganizerEventList());
+        Users.put("admin", user.isAdmin());
 
         MainActivity.db.collection("user").document(uniqueId)
                 .set(Users)

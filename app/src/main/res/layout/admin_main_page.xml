@@ -82,14 +82,6 @@
             />
 
 
-        <Button
-            android:id="@+id/browse_facilities"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="125dp"
-            android:layout_marginTop="550dp"
-            android:text="@string/browse_facilities"
-            />
     </FrameLayout>
 
 

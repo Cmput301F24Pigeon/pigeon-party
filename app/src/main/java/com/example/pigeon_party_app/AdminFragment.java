@@ -20,7 +20,6 @@ public class AdminFragment extends Fragment {
         Button browseEvents = view.findViewById(R.id.browse_events);
         Button browseImages = view.findViewById(R.id.browse_images);
         Button manageHashdata = view.findViewById(R.id.manage_hash_data);
-        Button browseFacilties = view.findViewById(R.id.browse_facilities);
 
         browseProfiles.setOnClickListener( v -> {
             requireActivity().getSupportFragmentManager()

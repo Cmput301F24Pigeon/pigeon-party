@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.Manifest;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> qrScannerLauncher;
     private ImageView facilityButton;
     private ImageView profileButton;
-    private ImageView notificationButton;
+    private ImageView adminButton;
     private ImageButton addEventButton;
     private ListView eventListView;
     private static EventsArrayAdapter eventsArrayAdapter;
@@ -111,9 +113,12 @@ public class MainActivity extends AppCompatActivity {
         });
         setUpEventClickListener();
         setUpProfileButton();
-        setUpNotificationButton();
+        setUpAdminButton();
         setUpFacilityButton();
         setUpAddEventButton();
+        adminButton.setVisibility(View.VISIBLE);
+
+
     }
 
     /**
@@ -284,44 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * This method gets a user from Firebase was needed before but not needed anymore
-     * @param documentSnapshot the data from the user document in Firebase
-     * @return a User object
-     */
-    private User getUserFromFirebase(DocumentSnapshot documentSnapshot) {
-        User user = null;
-        String userName = (documentSnapshot.get("name")).toString();
-        String userEmail = (documentSnapshot.get("email")).toString();
-        String userPhoneNumber = (documentSnapshot.get("phoneNumber")).toString();
-        String userId = (documentSnapshot.get("uniqueId")).toString();
-        boolean isOrganizer = (documentSnapshot.getBoolean("organizer"));
-        boolean isEntrant = (documentSnapshot.getBoolean("entrant"));
-        boolean notificationStatus = (documentSnapshot.getBoolean("notificationStatus"));
-        String userColour = (documentSnapshot.get("colour")).toString();
-        ArrayList<Event> entrantList = (ArrayList<Event>) documentSnapshot.get("entrantList");
-        ArrayList<Event> organizerList = (ArrayList<Event>) documentSnapshot.get("organizerList");
-
-
-        if ((documentSnapshot.get("facility")) != null) {
-            String facilityAddress = (documentSnapshot.get("facility.address")).toString();
-            String facilityName = (documentSnapshot.get("facility.name")).toString();
-            String facilityOwner = (documentSnapshot.get("facility.ownerId")).toString();
-
-            Facility userFacility = new Facility(facilityOwner, facilityAddress, facilityName);
-
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, userFacility, notificationStatus, userColour, entrantList, organizerList);
-        }
-
-        if ((documentSnapshot.get("facility")) == null) {
-            organizerList = new ArrayList<>();
-            user = new User(userName, userEmail, userPhoneNumber, userId, isOrganizer, isEntrant, null, notificationStatus, userColour, entrantList, organizerList);
-        }
-        
-        return user;
-    }
-
-    /**
+        /**
      * This method sets up the facility button
      */
     private void setUpFacilityButton() {
@@ -367,15 +335,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method sets up the notification button
+     * This method sets up the admin button
      */
-    private void setUpNotificationButton() {
-        notificationButton = findViewById(R.id.button_notifications);
-        notificationButton.setOnClickListener(v -> {
-            currentUser = getCurrentUser();
+    private void setUpAdminButton() {
+        adminButton = findViewById(R.id.button_admin);
+        adminButton.setOnClickListener(v -> {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewNotificationsFragment(currentUser))
+                    .replace(R.id.fragment_container, new AdminFragment())
                     .addToBackStack(null)
                     .commit();
         });

@@ -11,6 +11,9 @@ import android.widget.ImageButton;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * This fragment allows us to see the main page for our admin and from there the admin can select what he wants to do
+ */
 public class AdminFragment extends Fragment {
 
     @Override

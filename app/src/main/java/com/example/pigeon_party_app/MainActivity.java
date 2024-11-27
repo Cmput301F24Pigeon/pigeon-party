@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
+     * @param uniqueId a string that is our id of our device
+     * @return currentuser the currentuser data from firebase
      */
     public User receiveCurrentUser(String uniqueId) {
 
@@ -256,41 +258,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-    //https://www.geeksforgeeks.org/how-to-create-dynamic-listview-in-android-using-firebase-firestore/
 
-    /**
-     * Receives events user is associated with and adapts them to the ListView
-     * was used before but not needed
-     */
-    private void receiveEvents() {
-        String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        eventArrayList.clear();
-        db.collection("events").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
-                                Event event = d.toObject(Event.class);
-                                if((!event.getUsersWaitlisted().isEmpty() && event.getUsersWaitlisted().containsKey(uniqueId))
-                                || (!event.getUsersInvited().isEmpty() && event.getUsersInvited().containsKey(uniqueId))
-                                || (!event.getUsersCancelled().isEmpty() && event.getUsersCancelled().containsKey(uniqueId))) {
-                                    eventArrayList.add(event);
-                                }
-
-                                eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
-                                eventListView.setAdapter(eventsArrayAdapter);
-                            }
-                        }
-                    }
-
-                });
-
-    }
-
-
+    /*
      * This method sets up the facility button
      */
     private void setUpFacilityButton() {

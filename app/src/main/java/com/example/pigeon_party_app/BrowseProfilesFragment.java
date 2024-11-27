@@ -33,6 +33,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment allows us to browse profiles and remove them
+ */
 public class BrowseProfilesFragment extends Fragment {
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<User> users;
@@ -94,7 +97,9 @@ public class BrowseProfilesFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     *this method fills our list of users in the firebase and that have used our app
+     */
     private void fill_list(){
 
         CollectionReference usersRef = db.collection("user");
@@ -116,6 +121,10 @@ public class BrowseProfilesFragment extends Fragment {
         });
     }
 
+    /**
+     * This deletes the user from firebase
+     * @param i which is the position in our listview
+     */
     private void deleteUser(int i){
         // Add the city to the local list
         User temp = users.get(i);
@@ -137,6 +146,10 @@ public class BrowseProfilesFragment extends Fragment {
                 });
     }
 
+    /**
+     * This deletes the facility and updates our firebase user
+     * @param i this is the position of the user in our list
+     */
     private void deleteFacility(int i){
         // Add the city to the local list
         User temp = users.get(i);
@@ -170,6 +183,10 @@ public class BrowseProfilesFragment extends Fragment {
         userArrayAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Removes events that are associated to the facility since the facility doesn't exist anymore we delete that event
+     * @param event the event we want to delete
+     */
     private void removeEvent(Event event){
         db.collection("events").document(event.getEventId())
                 .delete()

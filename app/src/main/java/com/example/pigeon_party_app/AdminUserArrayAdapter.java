@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * This class adapts our array for users when we want to browse profiles
+ */
 public class AdminUserArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;

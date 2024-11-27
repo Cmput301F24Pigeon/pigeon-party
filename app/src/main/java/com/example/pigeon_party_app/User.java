@@ -49,6 +49,7 @@ public class User implements Serializable {
      * @param isAdmin a boolean representing if the user is an admin
      */
     public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList, boolean isAdmin) {
+
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;

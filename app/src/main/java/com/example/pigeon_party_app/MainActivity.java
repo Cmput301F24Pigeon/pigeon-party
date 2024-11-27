@@ -1,7 +1,6 @@
 package com.example.pigeon_party_app;
 
 
-
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.Manifest;
@@ -291,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-        /**
+
      * This method sets up the facility button
      */
     private void setUpFacilityButton() {

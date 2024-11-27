@@ -112,7 +112,9 @@ public class CreateEntrantProfileFragment extends Fragment {
             if (isValid) {
                 ArrayList<Event> emptyList = new ArrayList<>();
                 String colour = pickColour();
+
                 User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList, false);
+
                 addUser(user);
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.putExtra("user", user);

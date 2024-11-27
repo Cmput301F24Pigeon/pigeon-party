@@ -3,6 +3,8 @@ package com.example.pigeon_party_app;
 import static android.graphics.Color.parseColor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -13,10 +15,17 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * This class creates a default avatar with the user's first initial
@@ -96,21 +105,11 @@ public class AvatarView extends AppCompatImageView {
         backgroundColour.setColor(parseColor(user.getColour()));
         initial = user.getName().substring(0, 1);
         setDrawable();
+        getProfilePic(user);
 
 // Logic to set profile pic from storage if it exists
 // Check PR 168 for more if needed?
-
-//        if (user.getAvatarUrl() != null) {
-//            Glide.with(getContext())
-//                    .load(user.getAvatarUrl())
-//                    .placeholder(drawable)
-//                    .centerCrop()
-//                    .override(imageSize, imageSize)
-//                    .into(this);
-//        } else {
-//            setImageDrawable(drawable);
-//            invalidate();
-//        }
+     
     }
 
     /**
@@ -170,5 +169,33 @@ public class AvatarView extends AppCompatImageView {
         clipPath.addCircle(rectF.centerX(), rectF.centerY(), (rectF.height() / 2), Path.Direction.CW);
         canvas.clipPath(clipPath);
         super.onDraw(canvas);
+    }
+
+    private void getProfilePic(User user) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference imageRef = storageRef.child("profile_images/" + user.getUniqueId());
+
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            downloadImage(uri.toString(), this);
+        }).addOnFailureListener(exception -> {
+            setDrawable();
+            invalidate();  // Force a redraw with the default avatar
+        });
+    }
+
+    private void downloadImage(String imageUrl, final ImageView imageView) {
+        new Thread(() -> {
+            try {
+                // Download image using URL
+                InputStream inputStream = new URL(imageUrl).openStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                // Run on UI thread to update ImageView
+                post(() -> imageView.setImageBitmap(bitmap));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

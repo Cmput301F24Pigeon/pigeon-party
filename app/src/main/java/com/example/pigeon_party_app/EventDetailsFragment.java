@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -93,10 +95,11 @@ public class EventDetailsFragment extends Fragment {
             signUpButton();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            getActivity().finish();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
@@ -123,20 +126,13 @@ public class EventDetailsFragment extends Fragment {
                     signUpButton.setEnabled(false);
                 } else {
                     signUpButton.setOnClickListener(v -> {
-
                         if (event.isRequiresLocation()) {
-                            if (ActivityCompat.checkSelfPermission(requireContext(),
-                                    android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-                                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                        1);
+                            requestLocationAndSignUp();
                             } else {
-                                getLocationAndSignUp();
+                                addToWaitlist();
                             }
 
-                        } else {
-                            addToWaitlist();
-                        }
+
                         getActivity().getSupportFragmentManager().popBackStack();
 
                     });
@@ -149,6 +145,16 @@ public class EventDetailsFragment extends Fragment {
     }
 
     /**
+     * This method is used to request the users location and then sign up
+     */
+    private void requestLocationAndSignUp() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            getLocationAndSignUp();
+        }
+    }
+    /**
      * This method gets the users current location
      */
     private void getLocationAndSignUp() {
@@ -157,7 +163,7 @@ public class EventDetailsFragment extends Fragment {
         if (locationManager != null) {
 
             if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                Toast.makeText(requireContext(), "Location permissions are required to sign up.", Toast.LENGTH_SHORT).show();
                 return;
             }
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, new LocationListener() {
@@ -165,16 +171,17 @@ public class EventDetailsFragment extends Fragment {
                 public void onLocationChanged(Location location) {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
+                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+                    GeoPoint geoPoint = new GeoPoint(latitude,longitude);
+
+                    // Update the Firestore database
                     db.collection("events").document(event.getEventId())
-                            .update("entrantsLocation."+current_user.getName(), new double[]{latitude, longitude})
+                            .update("entrantsLocation." + current_user.getName(), geoPoint)
                             .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "msg" );
+                                Log.d("Firestore", "Location updated successfully");
                             })
                             .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
 
-
-                    //current_user.setLocation(latitude, longitude);
                     addToWaitlist();
                 }
 
@@ -211,7 +218,6 @@ public class EventDetailsFragment extends Fragment {
 
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                 getLocationAndSignUp();
             } else {
                 new AlertDialog.Builder(requireContext())
@@ -253,7 +259,11 @@ public class EventDetailsFragment extends Fragment {
         MainActivity.addEventToList(event);
         Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
         updateFirebase(updates, "waitlist");
-        requireActivity().getSupportFragmentManager().popBackStack();
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        getActivity().finish();
+        Toast.makeText(requireContext(), "Sign-up successful!", Toast.LENGTH_SHORT).show();
     }
 
     /**

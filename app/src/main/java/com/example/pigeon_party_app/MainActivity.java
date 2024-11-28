@@ -80,12 +80,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         qrScannerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), result.getResultCode(), result.getData());
-                if (intentResult != null && intentResult.getContents() != null) {
+                IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), result.getData());
+                if (intentResult != null) {
                     String qrContent = intentResult.getContents();
-                    handleQrCode(qrContent);
+                    if (qrContent != null) {
+                        handleQrCode(qrContent);
+                    } else {
+                        Log.e("QR Scan", "QR code content is null.");
+                    }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Invalid QR Code", Toast.LENGTH_SHORT).show();
+                    Log.e("QR Scan", "Intent result is null.");
                 }
             }
         });

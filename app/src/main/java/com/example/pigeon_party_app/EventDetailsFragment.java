@@ -31,8 +31,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -161,9 +163,14 @@ public class EventDetailsFragment extends Fragment {
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
+                    db.collection("events").document(event.getEventId())
+                            .update("entrantsLocation."+current_user.getName(), new double[]{latitude, longitude})
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firestore", "msg" );
+                            })
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
                     Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
 
 

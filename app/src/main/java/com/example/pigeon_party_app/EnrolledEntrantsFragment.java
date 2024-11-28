@@ -37,6 +37,8 @@ public class EnrolledEntrantsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enrolled_entrants, container, false);
+        entrantListView = view.findViewById(R.id.entrant_list_view);
+
         return view;
     }
 

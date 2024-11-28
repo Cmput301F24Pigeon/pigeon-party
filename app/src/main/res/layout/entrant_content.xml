@@ -2,21 +2,41 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="10dp">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Name/ID"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/entrantStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status"
-        android:textSize="16sp" />
+        <com.example.pigeon_party_app.AvatarView
+            android:id="@+id/entrant_profile_image"
+            android:layout_width="@dimen/avatar_list_view_size"
+            android:layout_height="@dimen/avatar_list_view_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name/ID"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/entrantStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

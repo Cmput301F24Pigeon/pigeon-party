@@ -1,5 +1,7 @@
 package com.example.pigeon_party_app;
 
+import static java.lang.String.valueOf;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Bitmap;
@@ -113,7 +115,10 @@ public class EditEventFragment extends Fragment {
                             if (event != null) {
                                 editEventTitle.setText(document.getString("title"));
                                 editEventDetails.setText(document.getString("details"));
-                                editWaitlistCap.setText(String.valueOf(document.getLong("waitlistCapacity")));
+                                Long waitlistCapacity = document.getLong("waitlistCapacity");
+                                if (waitlistCapacity != null && waitlistCapacity != -1) {
+                                    editWaitlistCap.setText(valueOf(document.getLong("waitlistCapacity")));
+                                }
                                 editRequiresLocation.setChecked(document.getBoolean("requiresLocation"));
 
 
@@ -161,13 +166,20 @@ public class EditEventFragment extends Fragment {
 
                 Map<String, Object> updatedFields = new HashMap<>();
                 updatedFields.put("title", editEventTitle.getText().toString());
+                updatedFields.put("waitlistCapacity",-1);
+                if ( !editWaitlistCap.getText().toString().isEmpty()) {
+                    updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
+                }
+
+
                 updatedFields.put("details", editEventDetails.getText().toString());
-                updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
                 updatedFields.put("requiresLocation", editRequiresLocation.isChecked());
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-                    String storagePath = "event_posters/" + eventId + ".jpg";
+
+                    String storagePath = "event_posters/" + eventId;
+
                     FirebaseStorage.getInstance().getReference(storagePath)
                             .putFile(imageUri)
                             .addOnSuccessListener(taskSnapshot -> {

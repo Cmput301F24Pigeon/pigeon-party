@@ -40,7 +40,6 @@ public class BrowseProfilesFragment extends Fragment {
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<User> users;
     private AdminUserArrayAdapter userArrayAdapter;
-    private NotificationHelper notificationHelper;
     private ListView userListView;
 
 

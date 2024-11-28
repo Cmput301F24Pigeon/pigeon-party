@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*
+    /**
      * This method sets up the facility button
      */
     private void setUpFacilityButton() {

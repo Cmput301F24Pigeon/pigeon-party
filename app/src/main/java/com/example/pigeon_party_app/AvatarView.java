@@ -106,10 +106,6 @@ public class AvatarView extends AppCompatImageView {
         initial = user.getName().substring(0, 1);
         setDrawable();
         getProfilePic(user);
-
-// Logic to set profile pic from storage if it exists
-// Check PR 168 for more if needed?
-     
     }
 
     /**
@@ -172,16 +168,31 @@ public class AvatarView extends AppCompatImageView {
     }
 
     private void getProfilePic(User user) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference imageRef = storageRef.child("profile_images/" + user.getUniqueId());
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageRef = storage.getReference();
+//        StorageReference imageRef = storageRef.child("profile_images/" + user.getUniqueId());
+//
+//        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+//            downloadImage(uri.toString(), this);
+//        }).addOnFailureListener(exception -> {
+//            setDrawable();
+//            invalidate();  // Force a redraw with the default avatar
+//        });
 
-        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            downloadImage(uri.toString(), this);
-        }).addOnFailureListener(exception -> {
-            setDrawable();
-            invalidate();  // Force a redraw with the default avatar
-        });
+        if (user.getProfileImagePath() == null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference imageRef = storageRef.child("profile_images/" + user.getUniqueId());
+
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                downloadImage(uri.toString(), this);
+            }).addOnFailureListener(exception -> {
+                setDrawable();  // If there's an error (e.g., image not found), use the default avatar
+                invalidate();    // Force a redraw with the default avatar
+            });
+        } else {
+            post(() -> this.setImageBitmap(user.getProfileImagePath()));
+        }
     }
 
     private void downloadImage(String imageUrl, final ImageView imageView) {
@@ -190,6 +201,7 @@ public class AvatarView extends AppCompatImageView {
                 // Download image using URL
                 InputStream inputStream = new URL(imageUrl).openStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                user.setProfileImagePath(bitmap);
 
                 // Run on UI thread to update ImageView
                 post(() -> imageView.setImageBitmap(bitmap));

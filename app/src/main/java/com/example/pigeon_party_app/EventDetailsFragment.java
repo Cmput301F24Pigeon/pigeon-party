@@ -249,7 +249,7 @@ public class EventDetailsFragment extends Fragment {
     private void addToWaitlist() {
         handleUserCancellation();
         event.addUserToWaitlist(current_user);
-        current_user.addEntrantEventList(event);
+        current_user.addEntrantEventList(event.getEventId());
         MainActivity.addEventToList(event);
         Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
         updateFirebase(updates, "waitlist");

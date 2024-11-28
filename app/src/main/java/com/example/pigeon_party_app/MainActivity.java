@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             eventArrayList = new ArrayList<>();
-            eventArrayList = MainActivity.currentUser.getEntrantEventList();
+            loadEvents(MainActivity.currentUser.getEntrantEventList());
             eventListView = findViewById(R.id.event_list);
             eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
             eventListView.setAdapter(eventsArrayAdapter);
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*
+    /**
      * This method sets up the facility button
      */
     private void setUpFacilityButton() {
@@ -459,4 +459,44 @@ public class MainActivity extends AppCompatActivity {
         eventsArrayAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Load the events from firebase into our list so it takes the string values and converts it into events
+     * @param eventIds is a list of eventIds for our so it takes the strings from the list
+     */
+    private void loadEvents(ArrayList<String> eventIds){
+        for (String i: eventIds){
+            DocumentReference docRef = db.collection("events").document(i);
+
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        eventArrayList.add(documentSnapshot.toObject(Event.class));
+                        eventsArrayAdapter.notifyDataSetChanged();
+
+                    } else {
+                        eventIds.remove(i);
+                    }
+
+
+                }
+
+            });
+            DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
+            userRef.update("entrantEventList", eventIds )
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("firebase", "Error deleting document", e);
+                        }
+                    });
+        }
+
+    }
 }

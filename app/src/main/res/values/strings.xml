@@ -6,4 +6,15 @@
     <string name="status">Status</string>
     <string name="title">Title</string>
     <string name="waitlist">waitlist</string>
+    <string name="admin_actions">Admin Actions</string>
+    <string name="profiles">Browse Profiles</string>
+    <string name="browse_images">Browse Images</string>
+    <string name="browse_events">Browse Events</string>
+    <string name="browse_facilities">Browse Facilities</string>
+    <string name="browse_hashdata">Browse Hashdata</string>
+    <string name="name">Name</string>
+    <string name="id">id</string>
+    <string name="email">email</string>
+    <string name="phonenumber">phonenumber</string>
+    <string name="facility">Facility:</string>
 </resources>

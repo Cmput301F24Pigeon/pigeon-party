@@ -128,13 +128,7 @@ public class OrganizerFragment extends Fragment {
 
         // Set item click listener to open entrant list
         organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
-            MainActivity.currentEvent = organizerArrayList.get(position);
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new EventDetailsFragment())
-                    .addToBackStack(null)
-                    .commit();
-
-            /*Event selectedEvent = organizerArrayList.get(position);
+            Event selectedEvent = organizerArrayList.get(position);
 
             // Pass selected event ID to EntrantListFragment
             EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(selectedEvent.getEventId());
@@ -143,7 +137,7 @@ public class OrganizerFragment extends Fragment {
                     .beginTransaction()
                     .replace(R.id.fragment_container, entrantListFragment)
                     .addToBackStack(null)
-                    .commit();*/
+                    .commit();
         });
 
         return view;

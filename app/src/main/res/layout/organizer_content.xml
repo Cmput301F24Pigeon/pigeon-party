@@ -40,6 +40,7 @@
         android:text="Event Details"
         android:textSize="16sp" />
 
+
     <TextView
         android:id="@+id/eventDate"
         android:layout_width="wrap_content"
@@ -47,5 +48,12 @@
         android:text="Event Date"
         android:textColor="#757575"
         android:textSize="14sp" />
+    <ImageButton
+        android:id="@+id/button_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/appBackground"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_map" />
 
 </LinearLayout>

@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.firebase:firebase-storage")
     implementation(libs.uiautomator)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.database)
@@ -53,8 +54,10 @@ dependencies {
     testImplementation(libs.ext.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
-    implementation("com.google.firebase:firebase-firestore:25.0.0")
+    implementation("org.checkerframework:checker-qual:3.37.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -66,8 +69,13 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")
     debugImplementation("androidx.fragment:fragment-testing-manifest:1.8.5")
-
     androidTestImplementation("androidx.fragment:fragment-testing:1.4.1")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation(libs.xplay.services.location)
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation(libs.xplay.services.location)
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 }

@@ -50,11 +50,10 @@ public class InvitationTest {
             context = ApplicationProvider.getApplicationContext();
             db = FirebaseFirestore.getInstance();
             HashMap<String, User> testUserMap = new HashMap<>();
-            HashMap<String, Map<String, Object>> testUserMapOther = new HashMap<>();
 
             testFacility = new Facility("test-user-id", "test-address", "test-name");
             testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<Event>(), new ArrayList<Event>());
-            testAcceptEvent = new Event("testEventId", "testEventTitle", new Date(), 50, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUserMapOther, testUser);
+            testAcceptEvent = new Event("testEventId", "testEventTitle", new Date(), 50, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUser);
             testAcceptEvent.addUserToSentInvite(testUser);
             db.collection("events").document(testAcceptEvent.getEventId())
                     .set(testAcceptEvent)

@@ -1,15 +1,24 @@
 package com.example.pigeon_party_app;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +48,7 @@ public class EntrantMapFragment extends Fragment {
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
         }
+
     }
 
 
@@ -48,14 +58,48 @@ public class EntrantMapFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entrant_map, container, false);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ImageButton backButton = view.findViewById(R.id.button_back);
+
         worldMap = view.findViewById(R.id.imageViewBackground);
         markerContainer = view.findViewById(R.id.marker_container);
+
         worldMap.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            // Fetch the entrantsLocation map from Firestore
+            db.collection("events").document(eventId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists() && documentSnapshot.contains("entrantsLocation")) {
+                            // Get the entrantsLocation map
+                            Map<String, Object> entrantsLocation = (Map<String, Object>) documentSnapshot.get("entrantsLocation");
 
-            addMarker(53, -113, "Jax");
-            addMarker(50,-100,"Random");
+                            if (entrantsLocation != null) {
+                                for (Map.Entry<String, Object> entry : entrantsLocation.entrySet()) {
+                                    String userName = entry.getKey(); // User ID or name
+                                    GeoPoint location = (GeoPoint) entry.getValue(); // GeoPoint value
+
+                                    if (location != null) {
+                                        double latitude = location.getLatitude();
+                                        double longitude = location.getLongitude();
+
+                                        // Add marker for this user
+                                        addMarker(latitude, longitude, userName);
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("Firestore", "No entrantsLocation data found.");
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error fetching event data", e));
         });
-
+        backButton.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
         return view;
 
     }
@@ -66,11 +110,11 @@ public class EntrantMapFragment extends Fragment {
 
         ImageView marker = new ImageView(requireContext());
         marker.setImageResource(R.drawable.vector_marker);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(30, 30);  // Marker size (width, height)
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(20, 20);  // Marker size (width, height)
         params.leftMargin = x - 15;
         params.topMargin = y - 15;
         marker.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Participant: " + participantName, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Participant: " + participantName, Toast.LENGTH_SHORT).show()
         );
         markerContainer.addView(marker, params);
     }

@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -94,10 +95,11 @@ public class EventDetailsFragment extends Fragment {
             signUpButton();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            getActivity().finish();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
@@ -170,10 +172,13 @@ public class EventDetailsFragment extends Fragment {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
                     Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+                    GeoPoint geoPoint = new GeoPoint(latitude,longitude);
+
+                    // Update the Firestore database
                     db.collection("events").document(event.getEventId())
-                            .update("entrantsLocation." + current_user.getName(), new double[]{latitude, longitude})
+                            .update("entrantsLocation." + current_user.getName(), geoPoint)
                             .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "Location updated successfully" );
+                                Log.d("Firestore", "Location updated successfully");
                             })
                             .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
 

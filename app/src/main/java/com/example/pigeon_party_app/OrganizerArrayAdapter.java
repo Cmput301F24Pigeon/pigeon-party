@@ -40,7 +40,11 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
         ImageButton editButton = view.findViewById(R.id.button_edit);
         ImageButton mapButton = view.findViewById(R.id.button_map);
-
+        if (event.isRequiresLocation()){
+            mapButton.setVisibility(View.VISIBLE);
+        } else {
+            mapButton.setVisibility(View.GONE);
+        }
         // Initialize TextViews
         TextView eventTitle = view.findViewById(R.id.eventTitle);
         TextView eventDetails = view.findViewById(R.id.eventDetails);
@@ -65,9 +69,6 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
                     .commit();
         });
 
-        if (event.isRequiresLocation()){
-            mapButton.setVisibility(View.VISIBLE);
-        }
         mapButton.setOnClickListener(v -> {
             EntrantMapFragment mapFragment = EntrantMapFragment.newInstance(event.getEventId());
 

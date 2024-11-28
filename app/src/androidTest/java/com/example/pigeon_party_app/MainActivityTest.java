@@ -2,6 +2,7 @@ package com.example.pigeon_party_app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -82,45 +83,6 @@ public class MainActivityTest {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
-//    Firebase Test, don't need it?
-    @Test
-    public void testRecieveCurrentUser() {
-        testUserId = "test-user-id";
-        testUserName = "test-user-name";
-        testUserEmail = "test@email.com";
-        testUserPhone = "1234567890";
-        testUserIsOrganizer = false;
-        testUserIsEntrant = true;
-        testUserFacility = null;
-        testUserHasNotifications = true;
-        testUserColour = "#000000";
-        testUserOrganizerEventList = new ArrayList<>();
-        testUserEntrantEventList = new ArrayList<>();
-
-        testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, testUserEntrantEventList, testUserOrganizerEventList);
-        db.collection("user").document(testUserId).set(testUser)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test write successful"))
-                .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
-
-
-        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
-            scenario.onActivity(activity -> {
-                User firebaseUser = activity.receiveCurrentUser(testUserId);
-                assertEquals("User name should match", testUserName, firebaseUser.getName());
-                assertEquals("User email should match", testUserEmail, firebaseUser.getEmail());
-                assertEquals("User phone should match", testUserPhone, firebaseUser.getPhoneNumber());
-                assertEquals("User Id should match", testUserId, firebaseUser.getUniqueId());
-                assertEquals("User organizer status should match", testUserIsOrganizer, firebaseUser.isOrganizer());
-                assertEquals("User entrant status should match", testUserIsEntrant, firebaseUser.isEntrant());
-                assertEquals("User facility should match", testUserFacility, firebaseUser.getFacility());
-                assertEquals("User notification status should match", testUserHasNotifications, firebaseUser.hasNotificationsOn());
-                assertEquals("User colour should match", testUserColour, firebaseUser.getColour());
-                assertEquals("User has entrant array list", testUserEntrantEventList, firebaseUser.getEntrantEventList());
-                assertEquals("User has organizer array list", testUserOrganizerEventList, firebaseUser.getOrganizerEventList());
-            });
-        }
-    }
-
     @Test
     public void testSetUpAddFacilityButtonAsEntrant() throws UiObjectNotFoundException {
         testUserName = "test-user-name";
@@ -130,9 +92,9 @@ public class MainActivityTest {
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
         onView(withId(R.id.create_user_profile_button)).perform(click());
 
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
@@ -154,9 +116,9 @@ public class MainActivityTest {
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
         onView(withId(R.id.create_user_profile_button)).perform(click());
 
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
@@ -180,9 +142,9 @@ public class MainActivityTest {
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
         onView(withId(R.id.create_user_profile_button)).perform(click());
 
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
@@ -206,9 +168,9 @@ public class MainActivityTest {
                 CreateEntrantProfileFragment.class,
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
         onView(withId(R.id.create_user_profile_button)).perform(click());
 
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));

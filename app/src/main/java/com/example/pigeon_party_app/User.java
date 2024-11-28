@@ -1,5 +1,8 @@
 package com.example.pigeon_party_app;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +24,14 @@ public class User implements Serializable {
     private boolean notificationStatus;
     private String colour;
     private List<String> notifications;
+
     private ArrayList<String> entrantEventList;
     private ArrayList<String> organizerEventList;
+
+
     private boolean admin;
-    // need to make an images for our profile
+    private Bitmap profileImagePath;
+
 
     public User() {
         notifications = new ArrayList<>();
@@ -239,6 +246,14 @@ public class User implements Serializable {
 
     public void setEntrantEventList(ArrayList<String> entrantEventList) {
         this.entrantEventList = entrantEventList;
+
+    public Bitmap getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public void setProfileImagePath(Bitmap profileImagePath) {
+        this.profileImagePath = profileImagePath;
+
     }
 
     /**

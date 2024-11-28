@@ -342,7 +342,7 @@ public class CreateEventFragment extends Fragment {
                 .addOnFailureListener(e ->{Log.w("FireStore", "Error adding event", e);});
 
         Map<String, Object> updates = new HashMap<>();
-        current_user.addOrganizerEventList(event);
+        current_user.addOrganizerEventList(event.getEventId());
         updates.put("organizerEventList", current_user.getOrganizerEventList());
         db.collection("user").document(current_user.getUniqueId())
                 .update("organizerEventList", FieldValue.arrayUnion(event))

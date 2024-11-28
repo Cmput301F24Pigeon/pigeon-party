@@ -3,6 +3,7 @@ package com.example.pigeon_party_app;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.provider.Settings;
@@ -15,8 +16,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,7 +36,7 @@ import java.util.Map;
 public class OrganizerFragment extends Fragment {
     private ListView organizerListView;
     private OrganizerArrayAdapter organizerArrayAdapter;
-    private ArrayList<Event> organizerArrayList;
+    public ArrayList<Event> organizerArrayList;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /*if (user.isOrganizer == False){
@@ -118,11 +121,12 @@ public class OrganizerFragment extends Fragment {
         });
 
         organizerArrayList = new ArrayList<>();
-        organizerArrayList = MainActivity.currentUser.getOrganizerEventList();
         organizerListView = view.findViewById(R.id.organizer_event_list);
         organizerArrayAdapter = new OrganizerArrayAdapter(getActivity(), organizerArrayList);
         organizerListView.setAdapter(organizerArrayAdapter);
-        loadEventsFromFirebase();
+        loadEvents(MainActivity.currentUser.getOrganizerEventList());
+
+        //loadEventsFromFirebase();
 
         // Set item click listener to open entrant list
         organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -206,6 +210,49 @@ public class OrganizerFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> Log.e("OrganizerFragment", "Error loading user data", e));
+    }
+
+    /**
+     * Load the events from firebase into our list so it takes the string values and converts it into events
+     * @param eventIds is a list of eventIds for our so it takes the strings from the list
+     */
+    private void loadEvents(ArrayList<String> eventIds){
+        for (String i: eventIds){
+            DocumentReference docRef = db.collection("events").document(i);
+
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        organizerArrayList.add(documentSnapshot.toObject(Event.class));
+                        organizerArrayAdapter.notifyDataSetChanged();
+                    } else {
+                        eventIds.remove(i);
+
+
+                    }
+
+
+                }
+
+            });
+            MainActivity.currentUser.setOrganizerEventList(eventIds);
+            DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
+            userRef.update("organizerEventList", eventIds )
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("firebase", "Error deleting document", e);
+                        }
+                    });
+        }
+
     }
 
 }

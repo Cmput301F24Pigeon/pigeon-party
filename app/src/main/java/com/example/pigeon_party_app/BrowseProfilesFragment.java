@@ -153,10 +153,10 @@ public class BrowseProfilesFragment extends Fragment {
         // Add the city to the local list
         User temp = users.get(i);
         temp.setFacility(null);
-        ArrayList<Event> emptyList = new ArrayList<Event>();
+        ArrayList<String> emptyList = new ArrayList<String>();
         temp.setOrganizer(false);
         //remove the events the facility hosts
-        for (Event event :temp.getOrganizerEventList()){
+        for (String event :temp.getOrganizerEventList()){
             removeEvent(event);
         }
         temp.setOrganizerEventList(emptyList);
@@ -186,8 +186,8 @@ public class BrowseProfilesFragment extends Fragment {
      * Removes events that are associated to the facility since the facility doesn't exist anymore we delete that event
      * @param event the event we want to delete
      */
-    private void removeEvent(Event event){
-        db.collection("events").document(event.getEventId())
+    private void removeEvent(String event){
+        db.collection("events").document(event)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

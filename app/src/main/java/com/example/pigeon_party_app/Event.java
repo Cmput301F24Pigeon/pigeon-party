@@ -163,8 +163,6 @@ public class Event implements Serializable {
         this.usersWaitlist = usersInvited;
     }
 
-    public User getOrganizer() {return organizer;}
-
     public void removeUserFromWaitlist(User user) {
         if(usersWaitlist.get(user.getUniqueId()) != null){
             usersWaitlist.remove(user.getUniqueId());

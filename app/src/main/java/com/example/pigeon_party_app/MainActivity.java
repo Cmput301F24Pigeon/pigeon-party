@@ -51,6 +51,7 @@ import java.util.UUID;
  */
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> qrScannerLauncher;
+//    private ActivityResultLauncher<String> requestPermissionsLauncher;
     private ImageView facilityButton;
     private ImageView profileButton;
     private ImageView adminButton;

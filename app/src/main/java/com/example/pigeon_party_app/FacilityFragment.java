@@ -109,7 +109,7 @@ public class FacilityFragment extends Fragment {
      */
     public void createFacility(FirebaseFirestore db,  Facility facility) {
         current_user.setFacility(facility);
-        ArrayList<Event> organizerList = new ArrayList<>();
+        ArrayList<String> organizerList = new ArrayList<>();
         current_user.setOrganizerEventList(organizerList);
 
         Map<String, Object> updates = new HashMap<>();

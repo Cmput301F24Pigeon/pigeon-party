@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
+public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
 
-    public OrganizerArrayAdapter(Context context, ArrayList<Event> events){
+    public AdminEventArrayAdapter(Context context, ArrayList<Event> events){
         super(context,0, events);
         this.events = events;
         this.context = context;
@@ -39,12 +39,7 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
         ImageButton editButton = view.findViewById(R.id.button_edit);
-        ImageButton mapButton = view.findViewById(R.id.button_map);
-        if (event.isRequiresLocation()){
-            mapButton.setVisibility(View.VISIBLE);
-        } else {
-            mapButton.setVisibility(View.GONE);
-        }
+
         // Initialize TextViews
         TextView eventTitle = view.findViewById(R.id.eventTitle);
         TextView eventDetails = view.findViewById(R.id.eventDetails);
@@ -68,23 +63,9 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
                     .addToBackStack(null)
                     .commit();
         });
-
-        mapButton.setOnClickListener(v -> {
-            EntrantMapFragment mapFragment = EntrantMapFragment.newInstance(event.getEventId());
-
-            ((FragmentActivity) getContext()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, mapFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-
         return view;
 
 
     }
-
-
 
 }

@@ -110,7 +110,7 @@ public class CreateEntrantProfileFragment extends Fragment {
                 isValid = false;
             }
             if (isValid) {
-                ArrayList<Event> emptyList = new ArrayList<>();
+                ArrayList<String> emptyList = new ArrayList<>();
                 String colour = pickColour();
 
                 User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList, false);

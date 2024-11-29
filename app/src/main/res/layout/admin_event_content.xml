@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/listBackground"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="162dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/date"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/eventName"
+        android:layout_width="158dp"
+        android:layout_height="wrap_content"
+        android:text="@string/title"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/eventId"
+        android:layout_width="153dp"
+        android:layout_height="wrap_content"
+        android:text="@string/eventid" />
+
+    <TextView
+        android:id="@+id/facility"
+        android:layout_width="153dp"
+        android:layout_height="wrap_content"
+        android:text="@string/facility" />
+
+
+</LinearLayout>

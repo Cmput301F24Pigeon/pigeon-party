@@ -1,5 +1,8 @@
 package com.example.pigeon_party_app;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +24,14 @@ public class User implements Serializable {
     private boolean notificationStatus;
     private String colour;
     private List<String> notifications;
-    private ArrayList<Event> entrantEventList;
-    private ArrayList<Event> organizerEventList;
+
+    private ArrayList<String> entrantEventList;
+    private ArrayList<String> organizerEventList;
+
+
     private boolean admin;
-    // need to make an images for our profile
+    private Bitmap profileImagePath;
+
 
     public User() {
         notifications = new ArrayList<>();
@@ -48,7 +55,7 @@ public class User implements Serializable {
      * @param organizerEventList a list of events the user has made
      * @param isAdmin a boolean representing if the user is an admin
      */
-    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<Event> entrantEventList, ArrayList<Event> organizerEventList, boolean isAdmin) {
+    public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<String> entrantEventList, ArrayList<String> organizerEventList, boolean isAdmin) {
 
         this.name = name;
         this.email = email;
@@ -225,23 +232,35 @@ public class User implements Serializable {
         this.notifications = notifications;
     }
 
-    public ArrayList<Event> getEntrantEventList() {
+    public ArrayList<String> getEntrantEventList() {
         return entrantEventList;
     }
 
-    public ArrayList<Event> getOrganizerEventList() {
+    public ArrayList<String> getOrganizerEventList() {
         return organizerEventList;
     }
 
-    public void setOrganizerEventList(ArrayList<Event> organizerEventList) {
+    public void setOrganizerEventList(ArrayList<String> organizerEventList) {
         this.organizerEventList = organizerEventList;
+    }
+
+    public void setEntrantEventList(ArrayList<String> entrantEventList) {
+        this.entrantEventList = entrantEventList;
+
+    public Bitmap getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public void setProfileImagePath(Bitmap profileImagePath) {
+        this.profileImagePath = profileImagePath;
+
     }
 
     /**
      * adding the event to our entrant event list
      * @param event an event we are adding to our `list
      */
-    public void addEntrantEventList(Event event){
+    public void addEntrantEventList(String event){
         this.entrantEventList.add(event);
     }
 
@@ -258,7 +277,7 @@ public class User implements Serializable {
      * adding the event to our organizer event list
      * @param event an event we are adding to our `list
      */
-    public void addOrganizerEventList(Event event){
+    public void addOrganizerEventList(String event){
         this.organizerEventList.add(event);
     }
 
@@ -283,6 +302,7 @@ public class User implements Serializable {
      *
      * @return userMap
      */
+
     public Map<String, Object> toMap() {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", this.name);
@@ -295,18 +315,10 @@ public class User implements Serializable {
         userMap.put("notifications", this.notifications);
         userMap.put("colour", this.colour);
 
-        // Convert Event lists to a format Firebase can handle if needed
-        List<Map<String, Object>> serializedEntrantEventList = new ArrayList<>();
-        for (Event event : this.entrantEventList) {
-            serializedEntrantEventList.add(event.toMap());
-        }
-        userMap.put("entrantEventList", serializedEntrantEventList);
 
-        List<Map<String, Object>> serializedOrganizerEventList = new ArrayList<>();
-        for (Event event : this.organizerEventList) {
-            serializedOrganizerEventList.add(event.toMap());
-        }
-        userMap.put("organizerEventList", serializedOrganizerEventList);
+        userMap.put("entrantEventList", this.entrantEventList);
+
+        userMap.put("organizerEventList", this.organizerEventList);
 
         // Handle facility serialization if needed
         if (facility != null) {
@@ -315,6 +327,8 @@ public class User implements Serializable {
 
         return userMap;
     }
+
+
 
     /**
      * Helper method to convert a list of events to a Map (to store in Firestore).

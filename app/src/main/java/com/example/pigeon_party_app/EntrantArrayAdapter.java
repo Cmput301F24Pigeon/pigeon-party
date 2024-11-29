@@ -32,6 +32,10 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         this.usersCancelled = usersCancelled;
     }
 
+    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> usersInvited) {
+        super(context, 0, users);
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

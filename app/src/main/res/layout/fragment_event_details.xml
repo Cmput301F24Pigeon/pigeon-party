@@ -85,6 +85,23 @@
         app:layout_constraintTop_toBottomOf="@+id/eventDetails" />
 
     <Button
+        android:id="@+id/drawParticipantsButton"
+        android:layout_width="291dp"
+        android:layout_height="58.09dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/listBackground"
+        android:text="Draw Participants"
+        app:layout_constraintBottom_toTopOf="@+id/signupButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventCapacity"
+        android:visibility="invisible"/>
+
+    <Button
         android:backgroundTint="@color/listBackground"
         android:id="@+id/signupButton"
         android:layout_width="291dp"

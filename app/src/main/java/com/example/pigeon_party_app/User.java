@@ -246,8 +246,9 @@ public class User implements Serializable {
 
     public void setEntrantEventList(ArrayList<String> entrantEventList) {
         this.entrantEventList = entrantEventList;
+    }
 
-    public Bitmap getProfileImagePath() {
+    public Bitmap getProfileImagePath(){
         return profileImagePath;
     }
 

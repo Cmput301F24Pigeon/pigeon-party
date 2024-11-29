@@ -42,19 +42,21 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         // Initialize TextViews
         TextView eventTitle = view.findViewById(R.id.title);
         TextView facility = view.findViewById(R.id.facility);
-        TextView eventDate = view.findViewById(R.id.eventDate);
+        TextView eventDate = view.findViewById(R.id.date);
         TextView eventId = view.findViewById(R.id.eventId);
         // Set event title and details
         eventTitle.setText(event.getTitle());
         String format = "Facility: %s";
         String facilityFormat = String.format(format, event.getFacility().getName());
         facility.setText(facilityFormat);
-        eventId.setText(event.getEventId());
+
+
         // Format the date
         Date date = event.getDateTime(); // or event.getDateTime().toDate() if using Firebase Timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault());
         String formattedDate = dateFormat.format(date);
         eventDate.setText(formattedDate);
+        eventId.setText(event.getEventId());
 
         return view;
 

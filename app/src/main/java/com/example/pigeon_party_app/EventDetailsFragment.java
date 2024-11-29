@@ -52,6 +52,7 @@ public class EventDetailsFragment extends Fragment {
     Event event = MainActivity.getCurrentEvent();
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
+    private Button drawParticipantsButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private LocationManager locationManager;
@@ -78,6 +79,8 @@ public class EventDetailsFragment extends Fragment {
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
         eventPoster = view.findViewById(R.id.eventPoster);
+        drawParticipantsButton = view.findViewById(R.id.drawParticipantsButton);
+        drawParticipantsButton.setEnabled(false);
         Format formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
 
         eventTitle.setText(event.getTitle());
@@ -92,7 +95,7 @@ public class EventDetailsFragment extends Fragment {
                     .into(eventPoster);
         }
 
-            signUpButton();
+            Buttons();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager()
@@ -106,11 +109,30 @@ public class EventDetailsFragment extends Fragment {
     }
 
     /**
-     * This method handles everything to do with the signup button: setting the text, firebase
+     * This method handles everything to do with the buttons: for signing up: setting the text,firebase
      * integration, getting the users location, and updating the event's waitlist
+     * for drawing participants: setting the visibility of the button, handling click, and sending
+     * info to the next fragment
      */
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
-    private void signUpButton() {
+    private void Buttons() {
+
+        if(current_user.getUniqueId().equals(event.getFacility().getOwnerId())){
+            drawParticipantsButton.setVisibility(View.VISIBLE);
+            drawParticipantsButton.setEnabled(true);
+            drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(event.getEventId());
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, entrantListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
 
         DocumentReference eventRef = FirebaseFirestore.getInstance()
                 .collection("events")

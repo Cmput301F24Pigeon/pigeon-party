@@ -110,6 +110,8 @@ public class Event implements Serializable {
         return facility;
     }
 
+    public User getOrganizer() { return organizer; }
+
     public boolean isRequiresLocation() {
         return requiresLocation;
     }

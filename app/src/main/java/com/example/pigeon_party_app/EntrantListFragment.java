@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -136,9 +138,22 @@ public class EntrantListFragment extends Fragment {
                     });
         });
 
+        Button viewAcceptedParticipantsButton = view.findViewById(R.id.view_participants_button);
+        viewAcceptedParticipantsButton.setOnClickListener(v -> {
+            EnrolledEntrantsFragment enrolledEntrantsFragment = EnrolledEntrantsFragment.newInstance(usersInvited);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, enrolledEntrantsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return view;
     }
 
+    /**
+     * loads entrants from firebase
+     */
     private void loadEntrants() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventId).get()

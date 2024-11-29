@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -130,17 +131,16 @@ public class OrganizerFragment extends Fragment {
         //loadEventsFromFirebase();
 
         // Set item click listener to open entrant list
-        organizerListView.setOnItemClickListener((parent, view1, position, id) -> {
-            Event selectedEvent = organizerArrayList.get(position);
-
-            // Pass selected event ID to EntrantListFragment
-            EntrantListFragment entrantListFragment = EntrantListFragment.newInstance(selectedEvent.getEventId());
-
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, entrantListFragment)
-                    .addToBackStack(null)
-                    .commit();
+        organizerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MainActivity.currentEvent = organizerArrayAdapter.getItem(position);
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new EventDetailsFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         return view;

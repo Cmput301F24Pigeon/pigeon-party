@@ -56,9 +56,9 @@ public class BrowseEventsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event current = eventArrayAdapter.getItem(position);
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Do you want to remove user");
+                    builder.setTitle("Do you want to remove event");
                     builder.setCancelable(true);
-                    builder.setPositiveButton("Remove user", (dialog, which) -> {
+                    builder.setPositiveButton("Remove event", (dialog, which) -> {
                         removeEvent(position);
                     });
                     builder.show();

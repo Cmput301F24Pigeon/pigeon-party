@@ -95,7 +95,7 @@ public class EventDetailsFragment extends Fragment {
                     .into(eventPoster);
         }
 
-            Buttons();
+        Buttons();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager()
@@ -118,6 +118,9 @@ public class EventDetailsFragment extends Fragment {
     private void Buttons() {
 
         if(current_user.getUniqueId().equals(event.getFacility().getOwnerId())){
+            signUpButton.setVisibility(View.INVISIBLE);
+            signUpButton.setEnabled(false);
+
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {

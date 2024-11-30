@@ -2,7 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBackground">
+    android:background="@color/appBackground"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ImageButton
         android:id="@+id/button_back"
@@ -21,6 +23,8 @@
             android:id="@+id/imageViewBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/white"
+            android:backgroundTint="@color/white"
             android:scaleType="fitCenter"
             android:src="@drawable/worldmap" />
 

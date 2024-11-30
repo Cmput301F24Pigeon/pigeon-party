@@ -252,18 +252,18 @@ public class User implements Serializable {
         return profileImagePath;
     }
 
-    public void setProfileImagePath(Bitmap profileImagePath) {
-        this.profileImagePath = profileImagePath;
+        public void setProfileImagePath (Bitmap profileImagePath){
+            this.profileImagePath = profileImagePath;
 
-    }
+        }
 
-    /**
-     * adding the event to our entrant event list
-     * @param event an event we are adding to our `list
-     */
-    public void addEntrantEventList(String event){
-        this.entrantEventList.add(event);
-    }
+        /**
+         * adding the event to our entrant event list
+         * @param event an event we are adding to our `list
+         */
+        public void addEntrantEventList (String event){
+            this.entrantEventList.add(event);
+        }
 
     /**
      * remove the event to our entrant event list

@@ -299,13 +299,13 @@ public class MainActivity extends AppCompatActivity {
             profileButton.setOnClickListener(v -> {
                 User currentUser = MainActivity.getCurrentUser();
 
-                if (currentUser.isEntrant()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-                            .addToBackStack(null)
-                            .commit();
-                }
+            if (currentUser != null && currentUser.isEntrant()) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                        .addToBackStack(null)
+                        .commit();
+            }
 
             });
         }
@@ -469,6 +469,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadEvents(ArrayList<String> eventIds){
 
         for (String i: eventIds){
+            Log.d("blehh", i);
             DocumentReference docRef = db.collection("events").document(i);
 
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -477,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         eventArrayList.add(documentSnapshot.toObject(Event.class));
                         eventsArrayAdapter.notifyDataSetChanged();
+
                     } else {
                         eventIds.remove(i);
                     }

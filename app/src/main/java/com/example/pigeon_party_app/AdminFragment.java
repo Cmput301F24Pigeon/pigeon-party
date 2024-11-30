@@ -34,6 +34,13 @@ public class AdminFragment extends Fragment {
                     .commit();
         });
 
+        browseEvents.setOnClickListener( v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new BrowseEventsFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);

@@ -47,6 +47,10 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
         User user = users.get(position);
 
+        // Initialize avatars
+        AvatarView avatar = view.findViewById(R.id.entrant_profile_image);
+        avatar.setUser(user);
+
         // Initialize TextViews
         TextView name = view.findViewById(R.id.name);
         TextView entrantStatus = view.findViewById(R.id.entrantStatus);

@@ -43,6 +43,10 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
 
         User user = users.get(position);
 
+        // Initialize AvatarViews
+        AvatarView avatar = view.findViewById(R.id.entrant_profile_image);
+        avatar.setUser(user);
+
         // Initialize TextViews
         TextView name = view.findViewById(R.id.name);
         TextView id = view.findViewById(R.id.id);

@@ -96,12 +96,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         currentUser = receiveCurrentUser(uniqueId);
+
         if (currentUser != null) {
             checkUserNotifications(currentUser);
 
 
             eventArrayList = new ArrayList<>();
-            loadEvents(MainActivity.currentUser.getEntrantEventList());
+            loadEvents(currentUser.getEntrantEventList());
             eventListView = findViewById(R.id.event_list);
             eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
             eventListView.setAdapter(eventsArrayAdapter);
@@ -294,19 +295,21 @@ public class MainActivity extends AppCompatActivity {
      * This method sets up the profile button
      */
     private void setUpProfileButton() {
-        profileButton = findViewById(R.id.button_profile);
-        profileButton.setOnClickListener(v -> {
-            User currentUser = MainActivity.getCurrentUser();
+        if (currentUser != null) {
+            profileButton = findViewById(R.id.button_profile);
+            profileButton.setOnClickListener(v -> {
+                User currentUser = MainActivity.getCurrentUser();
 
-            if (currentUser.isEntrant()) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-                        .addToBackStack(null)
-                        .commit();
-            }
+                if (currentUser.isEntrant()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                            .addToBackStack(null)
+                            .commit();
+                }
 
-        });
+            });
+        }
     }
 
     /**
@@ -465,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
      * @param eventIds is a list of eventIds for our so it takes the strings from the list
      */
     private void loadEvents(ArrayList<String> eventIds){
+
         for (String i: eventIds){
             DocumentReference docRef = db.collection("events").document(i);
 
@@ -474,7 +478,6 @@ public class MainActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         eventArrayList.add(documentSnapshot.toObject(Event.class));
                         eventsArrayAdapter.notifyDataSetChanged();
-
                     } else {
                         eventIds.remove(i);
                     }
@@ -483,21 +486,22 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             });
-            DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
-            userRef.update("entrantEventList", eventIds )
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("firebase", "DocumentSnapshot successfully deleted!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("firebase", "Error deleting document", e);
-                        }
-                    });
+
         }
 
+        DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
+        userRef.update("entrantEventList", eventIds )
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firebase", "Error deleting document", e);
+                    }
+                });
     }
 }

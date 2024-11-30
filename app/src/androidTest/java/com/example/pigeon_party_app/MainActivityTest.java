@@ -42,18 +42,9 @@ import java.util.ArrayList;
 
 public class MainActivityTest {
     private FirebaseFirestore db;
-    private String testUserId;
     private String testUserName;
     private String testUserEmail;
     private String testUserPhone;
-    private boolean testUserIsOrganizer;
-    private boolean testUserIsEntrant;
-    private Facility testUserFacility;
-    private boolean testUserHasNotifications;
-    private String testUserColour;
-    private User testUser;
-    private ArrayList<Event> testUserEntrantEventList;
-    private ArrayList<Event> testUserOrganizerEventList;
     private UiDevice device;
 
     @Rule
@@ -156,30 +147,4 @@ public class MainActivityTest {
         onView(withId(R.id.textView_entrant_name)).check(matches(isDisplayed()));
         onView(withId(R.id.textView_entrant_email)).check(matches(isDisplayed()));
     }
-
-
-    @Test
-    public void testSetUpNotificationButton() throws UiObjectNotFoundException {
-        // This Fragment is probably going to be removed, it and any tests are just along for the ride right now
-        testUserName = "test-user-name";
-        testUserEmail = "test@email.com";
-        testUserPhone = "1234567890";
-        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
-                CreateEntrantProfileFragment.class,
-                CreateEntrantProfileFragment.newInstance().getArguments()
-        );
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
-        onView(withId(R.id.create_user_profile_button)).perform(click());
-
-        UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
-        if (permissionDialog.waitForExists(2000)) {
-            permissionDialog.click();
-        }
-
-        onView(withId(R.id.button_notifications)).perform(click());
-        onView(withId(R.id.notification_switch)).check(matches(isDisplayed()));
-    }
-
 }

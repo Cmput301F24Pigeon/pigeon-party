@@ -1,7 +1,6 @@
 package com.example.pigeon_party_app;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.Map;
  * This class is used to create and manage users
  */
 public class User implements Serializable {
-    //first testing with just name
     private Facility facility;
     private String name;
     private String email;
@@ -211,6 +209,10 @@ public class User implements Serializable {
         return colour;
     }
 
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+
 
     public List<String> getNotifications() {
         return notifications;
@@ -252,16 +254,15 @@ public class User implements Serializable {
         return profileImagePath;
     }
 
-        public void setProfileImagePath (Bitmap profileImagePath){
-            this.profileImagePath = profileImagePath;
+    public void setProfileImagePath (Bitmap profileImagePath){
+        this.profileImagePath = profileImagePath;
+    }
 
-        }
-
-        /**
-         * adding the event to our entrant event list
-         * @param event an event we are adding to our `list
-         */
-        public void addEntrantEventList (String event){
+    /**
+     * adding the event to our entrant event list
+     * @param event an event we are adding to our `list
+     */
+    public void addEntrantEventList (String event){
             this.entrantEventList.add(event);
         }
 
@@ -272,7 +273,6 @@ public class User implements Serializable {
     public void removeEntrantEventList(int pos){
         this.entrantEventList.remove(pos);
     }
-
 
     /**
      * adding the event to our organizer event list
@@ -303,7 +303,6 @@ public class User implements Serializable {
      *
      * @return userMap
      */
-
     public Map<String, Object> toMap() {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", this.name);

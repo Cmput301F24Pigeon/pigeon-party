@@ -5,7 +5,8 @@ xmlns:tools="http://schemas.android.com/tools"
 android:id="@+id/fragment_create_event"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:background="@color/appBackground">
+android:background="@color/appBackground"
+    android:clickable="true">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/top_section"

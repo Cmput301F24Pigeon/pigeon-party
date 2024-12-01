@@ -39,7 +39,6 @@ import com.google.firebase.storage.StorageReference;
 import java.lang.reflect.Array;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ import java.util.Map;
 public class EventDetailsFragment extends Fragment {
     private TextView eventTitle;
     private TextView eventDateTime;
-    //private TextView eventLocation;
+    private TextView eventLocation;
     private TextView eventDetails;
     private TextView eventCapacity;
     Event event = MainActivity.getCurrentEvent();
@@ -66,7 +65,7 @@ public class EventDetailsFragment extends Fragment {
     private ImageView eventPoster;
 
 
-    public EventDetailsFragment(){
+    public EventDetailsFragment() {
     }
 
     @Override
@@ -79,7 +78,7 @@ public class EventDetailsFragment extends Fragment {
         storageRef = storage.getReference();
         eventTitle = view.findViewById(R.id.eventName);
         eventDateTime = view.findViewById(R.id.eventDateTime);
-        //eventLocation = view.findViewById(R.id.eventLocation);
+        eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
@@ -90,9 +89,9 @@ public class EventDetailsFragment extends Fragment {
 
         eventTitle.setText(event.getTitle());
         eventDateTime.setText("Date/Time: " + formatter.format(event.getDateTime()));
-        //eventLocation.setText(event.getLocation());
-        eventDetails.setText("Event Details:\n" + event.getDetails());
-        eventCapacity.setText("Waitlist capacity: " + String.valueOf(event.getWaitlistCapacity()));
+        eventLocation.setText("Location: " + event.getFacility().getAddress());
+        eventDetails.setText("Details:\n" + event.getDetails());
+        eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
         String imageUrl = event.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
@@ -103,11 +102,12 @@ public class EventDetailsFragment extends Fragment {
         Buttons();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new OrganizerFragment())
-                    .addToBackStack(null)
-                    .commit();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            // Optionally, finish the current activity if you want to remove this fragment from the activity stack
+            getActivity().finish();
         });
 
         return view;
@@ -122,10 +122,9 @@ public class EventDetailsFragment extends Fragment {
     // https://stackoverflow.com/questions/51737667/since-the-android-getfragmentmanager-api-is-deprecated-is-there-any-alternati
     private void Buttons() {
 
-        if(current_user.getUniqueId().equals(event.getFacility().getOwnerId())){
+        if (current_user.getUniqueId().equals(event.getFacility().getOwnerId())) {
             signUpButton.setVisibility(View.INVISIBLE);
             signUpButton.setEnabled(false);
-
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
@@ -161,19 +160,14 @@ public class EventDetailsFragment extends Fragment {
                             if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                                     == PackageManager.PERMISSION_GRANTED) {
                                 getLocation();
-                                addToWaitlist();
                             } else {
                                 ActivityCompat.requestPermissions(getActivity(),
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         1);
-                                addToWaitlist();
                             }
-                            } else {
-                                addToWaitlist();
-                            }
-
-
-                        getActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            addToWaitlist();
+                        }
 
                     });
                 }
@@ -183,7 +177,6 @@ public class EventDetailsFragment extends Fragment {
             }
         });
     }
-
 
 
     private void getLocation() {
@@ -218,6 +211,7 @@ public class EventDetailsFragment extends Fragment {
                         .update("entrantsLocation." + current_user.getName(), geoPoint)
                         .addOnSuccessListener(aVoid -> {
                             Log.d("Firestore", "Location updated successfully");
+                            addToWaitlist();
                         })
                         .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
             } else {
@@ -275,17 +269,13 @@ public class EventDetailsFragment extends Fragment {
     }
 
 
-
-
-
-
-
     /**
      * Adds the user to the corresponding event's waitlist in firebase
+     *
      * @param updates
      * @param list
      */
-    public void updateFirebase(Map<String, Object> updates, String list){
+    public void updateFirebase(Map<String, Object> updates, String list) {
         String msg = String.format("Event's %s successfully updated", list);
         db.collection("events").document(event.getEventId())
                 .update(updates)
@@ -311,11 +301,19 @@ public class EventDetailsFragment extends Fragment {
         MainActivity.addEventToList(event);
         Map<String, Object> updates = event.updateFirebaseEventWaitlist(event);
         updateFirebase(updates, "waitlist");
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        getActivity().finish();
-        Toast.makeText(requireContext(), "Sign-up successful!", Toast.LENGTH_SHORT).show();
+        if (isAdded()) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            getActivity().finish();
+        } else {
+            Log.e("EventDetailsFragment", "Activity is null, cannot proceed with Intent.");
+        }
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Sign-up successful!", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e("EventDetailsFragment", "Context is null, cannot show Toast.");
+        }
     }
 
     /**

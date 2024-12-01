@@ -176,6 +176,16 @@ public class Event implements Serializable {
             usersCancelled.remove(user.getUniqueId());
         }
     }
+    public void removeUserFromInvited(User user) {
+        if(usersInvited.get(user.getUniqueId()) != null){
+            usersInvited.remove(user.getUniqueId());
+        }
+    }
+    public void removeUserFromSentInvite(User user) {
+        if(usersSentInvite.get(user.getUniqueId()) != null){
+            usersSentInvite.remove(user.getUniqueId());
+        }
+    }
 
     /**
      * Adds a user to the usersWaitList map.
@@ -247,7 +257,7 @@ public class Event implements Serializable {
      * @return A map where each key is a user's unique ID and each value is a map of user details.
      */
     public Map<String, User> getUsersSentInvite() {
-        return usersSentInvite;
+        return usersSentInvite != null ? usersSentInvite : new HashMap<>();
     }
 
 //    /**
@@ -280,6 +290,16 @@ public class Event implements Serializable {
         updates.put("usersCancelled", serializedUsersCancelled);
         return updates;
     }
+    public Map<String, Object> updateFirebaseEventSentInvited(Event event) {
+        Map<String, Object> updates = new HashMap<>();
+        Map<String, Map<String, Object>> serializedUsersSentInvite = new HashMap<>();
+
+        for (Map.Entry<String, User> entry : event.getUsersCancelled().entrySet()) {
+            serializedUsersSentInvite.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
+        }
+        updates.put("usersSentInvite", serializedUsersSentInvite);
+        return updates;
+    }
 
     /**
      * Creates the hash map needed to update the waitlist in firebase
@@ -294,7 +314,7 @@ public class Event implements Serializable {
         for (Map.Entry<String, User> entry : event.getUsersWaitlisted().entrySet()) {
             serializedUsersWaitlisted.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
         }
-        updates.put("usersWaitlist", serializedUsersWaitlisted);
+        updates.put("usersWaitlisted", serializedUsersWaitlisted);
         return updates;
     }
 

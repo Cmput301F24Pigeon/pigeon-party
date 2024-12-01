@@ -56,8 +56,8 @@ public class SendNotificationsFragmentTest {
         db = FirebaseFirestore.getInstance();
         testUserMap = new HashMap<>();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, "#000000", new ArrayList<Event>(), new ArrayList<Event>());
-        testEvent = new Event("testEventId","testEventTitle", new Date(), 50, "testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUserMap, testUser);
+        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
+        testEvent = new Event("testEventId","testEventTitle", new Date(), 50, null,"testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUserMap,testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())
                 .set(testEvent)

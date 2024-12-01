@@ -42,12 +42,12 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         TextView status = view.findViewById(R.id.status);
         //address.setText(event.getFacility.getAddress);
         if(event.getDateTime() != null){
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy 'at' HH:mm", Locale.getDefault());
             String formattedDate = formatter.format(event.getDateTime());
-            date.setText("Date/Time: " + formattedDate);;
+            date.setText(formattedDate);
         }
         else{
-            date.setText("Date/Time: ");
+            date.setText(" ");
         }
 
         if(event.getTitle() != null){
@@ -57,16 +57,19 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
             eventName.setText("");
         }
         if(event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status (Waitlisted): " + event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()));
+            status.setText("Status: Waitlist");
         }
         else if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status (Cancelled): " + event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()));
+            status.setText("Status: Cancelled");
         }
         else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status (Invited): " + event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()));
+            status.setText("Status: Confirmed");
+        }
+        else if (event.getUsersSentInvite().get(MainActivity.currentUser.getUniqueId()) != null){
+            status.setText("Status: Invited (Click to accept");
         }
         else{
-            status.setText("Status: ");
+            status.setText("");
         }
 
         return view;

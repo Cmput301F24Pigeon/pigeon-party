@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView adminButton;
     private ImageButton addEventButton;
     private ListView eventListView;
-    private static EventsArrayAdapter eventsArrayAdapter;
-    private static ArrayList<Event> eventArrayList;
+    public static EventsArrayAdapter eventsArrayAdapter;
+    public static ArrayList<Event> eventArrayList;
     private NotificationHelper notificationHelper;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static User currentUser;
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method gets the current user from firebase for us to use if the current user is not displayed then we prompt the user to enter in details
+     *
      * @param uniqueId a string that is our id of our device
      * @return currentuser the currentuser data from firebase
      */
@@ -198,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @param qrContent the string which a qr code returns
      */
     private void handleQrCode(String qrContent) {
@@ -212,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     /**
      * This method initializes the QR scanner
      */
@@ -241,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     private void askNotificationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED) {
-                currentUser.setNotificationsOn(true);
+            currentUser.setNotificationsOn(true);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 requestPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -256,13 +259,11 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (!isGranted) {
                     MainActivity.currentUser.setNotificationsOn(false);
-                }
-                else {
+                } else {
                     MainActivity.currentUser.setNotificationsOn(true);
 
                 }
             });
-
 
 
     /**
@@ -300,13 +301,13 @@ public class MainActivity extends AppCompatActivity {
             profileButton.setOnClickListener(v -> {
                 User currentUser = MainActivity.getCurrentUser();
 
-            if (currentUser != null && currentUser.isEntrant()) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-                        .addToBackStack(null)
-                        .commit();
-            }
+                if (currentUser != null && currentUser.isEntrant()) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
+                            .addToBackStack(null)
+                            .commit();
+                }
 
             });
         }
@@ -347,9 +348,9 @@ public class MainActivity extends AppCompatActivity {
                     Event currentEvent = eventsArrayAdapter.getItem(position);
                     String userId = currentUser.getUniqueId();
 
-                    if (currentEvent.getUsersSentInvite().get(userId) != null) {
+                    if (currentEvent.getUsersCancelled().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Do you want to accept the invitation?");
+                        builder.setTitle("Congratulations! You have been invited to" + currentEvent.getTitle());
                         builder.setCancelable(true);
 
                         builder.setPositiveButton("Accept", (dialog, which) -> {
@@ -391,10 +392,9 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
 
-                    } else {
-                        // For second half of project, we can add to this for user story which allows entrant to stay on waiting list in case spot opens
+                    } else if (currentEvent.getUsersWaitlisted().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from this event?");
+                        builder.setTitle("Remove yourself from the waitlist of " + currentEvent.getTitle() + "?");
                         builder.setCancelable(true);
 
                         builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
@@ -404,8 +404,10 @@ public class MainActivity extends AppCompatActivity {
                             currentEvent.addUserToCancelled(currentUser);
                             currentUser.removeEntrantEventList(position);
                             updateEntrantEventList(currentUser);
-                            eventArrayList.remove(position);
-                            eventsArrayAdapter.notifyDataSetChanged();
+                            if (eventArrayList != null) {
+                                eventArrayList.remove(position);
+                                eventsArrayAdapter.notifyDataSetChanged();
+                            }
 
 
                             Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
@@ -424,7 +426,76 @@ public class MainActivity extends AppCompatActivity {
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
+                    } else if (currentEvent.getUsersSentInvite().get(userId) != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Remove yourself from " + currentEvent.getTitle());
+                        builder.setCancelable(true);
+
+                        builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
+
+                        builder.setPositiveButton("OK", (dialog, which) -> {
+                            currentEvent.removeUserFromInvited(currentUser);
+                            currentEvent.addUserToCancelled(currentUser);
+                            currentUser.removeEntrantEventList(position);
+                            updateEntrantEventList(currentUser);
+                            if (eventArrayList != null) {
+                                eventArrayList.remove(position);
+                                eventsArrayAdapter.notifyDataSetChanged();
+                            }
+
+
+                            Map<String, Object> sentInvitedUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
+                            Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+
+                            db.collection("events").document(currentEvent.getEventId())
+                                    .update(sentInvitedUpdates)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's sentInviteList successfully updated"))
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+
+                            db.collection("events").document(currentEvent.getEventId())
+                                    .update(cancelledListUpdates)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's cancelled list successfully updated"))
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's cancelled list", e));
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    } else if (currentEvent.getUsersInvited().get(userId) != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Remove yourself from" + currentEvent.getEventId());
+                        builder.setCancelable(true);
+
+                        builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
+
+                        builder.setPositiveButton("OK", (dialog, which) -> {
+                            currentEvent.removeUserFromInvited(currentUser);
+                            currentEvent.addUserToCancelled(currentUser);
+                            currentUser.removeEntrantEventList(position);
+                            updateEntrantEventList(currentUser);
+                            if (eventArrayList != null) {
+                                eventArrayList.remove(position);
+                                eventsArrayAdapter.notifyDataSetChanged();
+                            }
+
+
+                            Map<String, Object> invitedUpdates = currentEvent.updateFirebaseEventInvitedList(currentEvent);
+                            Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
+
+                            db.collection("events").document(currentEvent.getEventId())
+                                    .update(invitedUpdates)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's invite list successfully updated"))
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+
+                            db.collection("events").document(currentEvent.getEventId())
+                                    .update(cancelledListUpdates)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's cancelled list successfully updated"))
+                                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's cancelled list", e));
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
                     }
+
 
                     //receiveEvents();
                 }
@@ -435,6 +506,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function updates the user's eventlist in Firebase
+     *
      * @param user The user who has his entrant eventlist updated
      */
     public void updateEntrantEventList(User user) {
@@ -458,18 +530,21 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public static void addEventToList(Event event){
-        eventArrayList.add(event);
-        eventsArrayAdapter.notifyDataSetChanged();
+    public static void addEventToList(Event event) {
+        if (eventArrayList != null) {
+            eventArrayList.add(event);
+            eventsArrayAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
      * Load the events from firebase into our list so it takes the string values and converts it into events
+     *
      * @param eventIds is a list of eventIds for our so it takes the strings from the list
      */
-    private void loadEvents(ArrayList<String> eventIds){
+    private void loadEvents(ArrayList<String> eventIds) {
 
-        for (String i: eventIds){
+        for (String i : eventIds) {
             Log.d("blehh", i);
             DocumentReference docRef = db.collection("events").document(i);
 
@@ -492,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
-        userRef.update("entrantEventList", eventIds )
+        userRef.update("entrantEventList", eventIds)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -506,4 +581,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 }

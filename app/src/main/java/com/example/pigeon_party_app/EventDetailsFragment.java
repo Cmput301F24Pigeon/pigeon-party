@@ -49,7 +49,7 @@ import java.util.Map;
 public class EventDetailsFragment extends Fragment {
     private TextView eventTitle;
     private TextView eventDateTime;
-    //private TextView eventLocation;
+    private TextView eventLocation;
     private TextView eventDetails;
     private TextView eventCapacity;
     Event event = MainActivity.getCurrentEvent();
@@ -78,7 +78,7 @@ public class EventDetailsFragment extends Fragment {
         storageRef = storage.getReference();
         eventTitle = view.findViewById(R.id.eventName);
         eventDateTime = view.findViewById(R.id.eventDateTime);
-        //eventLocation = view.findViewById(R.id.eventLocation);
+        eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
         signUpButton = view.findViewById(R.id.signupButton);
@@ -89,9 +89,9 @@ public class EventDetailsFragment extends Fragment {
 
         eventTitle.setText(event.getTitle());
         eventDateTime.setText("Date/Time: " + formatter.format(event.getDateTime()));
-        //eventLocation.setText(event.getLocation());
-        eventDetails.setText("Event Details:\n" + event.getDetails());
-        eventCapacity.setText("Waitlist capacity: " + String.valueOf(event.getWaitlistCapacity()));
+        eventLocation.setText("Location: " + event.getFacility().getAddress());
+        eventDetails.setText("Details:\n" + event.getDetails());
+        eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
         String imageUrl = event.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
@@ -123,6 +123,8 @@ public class EventDetailsFragment extends Fragment {
     private void Buttons() {
 
         if (current_user.getUniqueId().equals(event.getFacility().getOwnerId())) {
+            signUpButton.setVisibility(View.INVISIBLE);
+            signUpButton.setEnabled(false);
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {

@@ -99,14 +99,7 @@ public class EntrantListFragment extends Fragment {
 
                                 // Call the runLottery method on the event object
                                 event.runLottery(drawAmount);
-
-                                // Refresh entrant list display
-                                entrantList.clear();
-                                if (event.getUsersWaitlisted() != null) entrantList.addAll(event.getUsersWaitlisted().values());
-                                if (event.getUsersInvited() != null) entrantList.addAll(event.getUsersInvited().values());
-                                if (event.getUsersCancelled() != null) entrantList.addAll(event.getUsersCancelled().values());
-
-                                entrantArrayAdapter.notifyDataSetChanged();
+                                loadEntrants();
                             });
 
                             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());

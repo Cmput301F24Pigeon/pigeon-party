@@ -318,35 +318,51 @@ public class Event implements Serializable {
          * Samples/Draws a specific number of users among the waitlist to be invited to an event.
          * @param drawAmount
          */
-        public void runLottery (int drawAmount){
-            // If the amount to draw is more than the waitlist size, match the draw amount with
-            // the amount of people in the current waitlist.
+        public void runLottery(int drawAmount) {
+            // Ensure the draw amount does not exceed the size of the waitlist
             if (usersWaitlist.size() < drawAmount) {
                 drawAmount = usersWaitlist.size();
             }
 
-            // Creates a list of user IDs (from waitlist)
+            // Create a list of user IDs from the waitlist
             List<String> waitlistUserIds = new ArrayList<>(usersWaitlist.keySet());
 
-            // Shuffles and picks a sample of users
-            // https://www.geeksforgeeks.org/collections-shuffle-method-in-java-with-examples/
+            // Shuffle the list of user IDs to randomize selection
             Collections.shuffle(waitlistUserIds);
-            List<String> selectedUsers = waitlistUserIds.subList(0, drawAmount);
 
-            // Moves users from waitlist to the invited/joined list
-            for (String userId : selectedUsers) {
-                usersInvited.put(userId, usersWaitlist.get(userId));
-                usersWaitlist.remove(userId);
+            // Select the specified number of users from the shuffled list
+            List<String> selectedUserIds = waitlistUserIds.subList(0, drawAmount);
 
-                // Notify them afterwards...
-                User selectedUser = usersInvited.get(userId);
+            // Move the selected users from the waitlist to the invited list
+            for (String userId : selectedUserIds) {
+                // Get the User object from the waitlist
+                User user = usersWaitlist.get(userId);
 
-            // Notify the user if they've been chosen
-            if (selectedUser != null && selectedUser.hasNotificationsOn()) {
-                notificationHelper.notifyUserIfChosen(selectedUser, this);
+                if (user != null) {
+                    // Add the user to the invited list
+                    usersInvited.put(userId, user);
+
+                    // Remove the user from the waitlist
+                    usersWaitlist.remove(userId);
+
+                    // Notify the user if notifications are enabled
+                    if (user.hasNotificationsOn()) {
+                        notificationHelper.notifyUserIfChosen(user, this);
+                    }
+                }
             }
+
+            // Update Firestore with the modified event
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(eventId)
+                    .set(this) // Update the Firestore document with the current event object
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("runLottery", "Event successfully updated in Firestore.");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("runLottery", "Error updating event in Firestore.", e);
+                    });
         }
-    }
 
     /**
      * This method uses the addNotificationToUser method to add a notification message to the users notification list

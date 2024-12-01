@@ -158,11 +158,11 @@ public class Event implements Serializable {
     }
 
     public void setUsersCancelled(Map <String, User> usersCancelled) {
-        this.usersWaitlist = usersCancelled;
+        this.usersCancelled = usersCancelled;
     }
 
     public void setUsersInvited(Map <String, User> usersInvited) {
-        this.usersWaitlist = usersInvited;
+        this.usersInvited = usersInvited;
     }
 
     public void removeUserFromWaitlist(User user) {
@@ -209,7 +209,7 @@ public class Event implements Serializable {
      * @param user
      */
     public void addUserToSentInvite(User user) {
-        usersCancelled.put(user.getUniqueId(), user);
+        usersSentInvite.put(user.getUniqueId(), user);
     }
 
 
@@ -250,20 +250,20 @@ public class Event implements Serializable {
         return usersSentInvite;
     }
 
-    /**
-     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
-     *
-     * @param user
-     * @param status
-     * @return
-     */
-    public Map<String, Object> createUserDetails(User user, String status) {
-            Map<String, Object> userDetails = new HashMap<>();
-            userDetails.put("name", user.getName());
-            userDetails.put("status", status);
-            // Add more user-specific fields as needed
-            return userDetails;
-        }
+//    /**
+//     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
+//     *
+//     * @param user
+//     * @param status
+//     * @return
+//     */
+//    public Map<String, Object> createUserDetails(User user, String status) {
+//            Map<String, Object> userDetails = new HashMap<>();
+//            userDetails.put("name", user.getName());
+//            userDetails.put("status", status);
+//            // Add more user-specific fields as needed
+//            return userDetails;
+//        }
 
     /**
      * Creates the hash map needed to update the cancelled list in firebase

@@ -1,6 +1,8 @@
 
 package com.example.pigeon_party_app;
 
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import java.lang.reflect.Array;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +75,7 @@ public class EventDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
         storage = FirebaseStorage.getInstance();
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         storageRef = storage.getReference();
         eventTitle = view.findViewById(R.id.eventName);
         eventDateTime = view.findViewById(R.id.eventDateTime);
@@ -95,7 +100,7 @@ public class EventDetailsFragment extends Fragment {
                     .into(eventPoster);
         }
 
-            Buttons();
+        Buttons();
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager()
@@ -118,6 +123,9 @@ public class EventDetailsFragment extends Fragment {
     private void Buttons() {
 
         if(current_user.getUniqueId().equals(event.getFacility().getOwnerId())){
+            signUpButton.setVisibility(View.INVISIBLE);
+            signUpButton.setEnabled(false);
+
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +157,17 @@ public class EventDetailsFragment extends Fragment {
                 } else {
                     signUpButton.setOnClickListener(v -> {
                         if (event.isRequiresLocation()) {
-                            requestLocationAndSignUp();
+                            // Check if location permission is granted
+                            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                    == PackageManager.PERMISSION_GRANTED) {
+                                getLocation();
+                                addToWaitlist();
+                            } else {
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                        1);
+                                addToWaitlist();
+                            }
                             } else {
                                 addToWaitlist();
                             }
@@ -166,73 +184,82 @@ public class EventDetailsFragment extends Fragment {
         });
     }
 
-    /**
-     * This method is used to request the users location and then sign up
-     */
-    private void requestLocationAndSignUp() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            getLocationAndSignUp();
+
+
+    private void getLocation() {
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+            addToWaitlist();
+            return;
         }
-    }
-    /**
-     * This method gets the users current location
-     */
-    private void getLocationAndSignUp() {
-        locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-
-        if (locationManager != null) {
-
-            if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(requireContext(), "Location permissions are required to sign up.", Toast.LENGTH_SHORT).show();
+        try {
+            // Check if GPS is enabled
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(getContext(), "GPS is disabled", Toast.LENGTH_SHORT).show();
                 return;
             }
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
-                    GeoPoint geoPoint = new GeoPoint(latitude,longitude);
 
-                    // Update the Firestore database
-                    db.collection("events").document(event.getEventId())
-                            .update("entrantsLocation." + current_user.getName(), geoPoint)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firestore", "Location updated successfully");
-                            })
-                            .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+            // Get the last known location
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                    addToWaitlist();
-                }
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+                GeoPoint geoPoint = new GeoPoint(latitude, longitude);
 
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-                @Override
-                public void onProviderEnabled(String provider) {}
-                @Override
-                public void onProviderDisabled(String provider) {
-                    new AlertDialog.Builder(requireContext())
-                            .setTitle("Location Disabled")
-                            .setMessage("Please enable location services to sign up for this event.")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                            .show();
-                }
 
-            }, Looper.getMainLooper());
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("events").document(event.getEventId())
+                        .update("entrantsLocation." + current_user.getName(), geoPoint)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Firestore", "Location updated successfully");
+                        })
+                        .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+            } else {
+                Toast.makeText(getContext(), "Unable to get last known location", Toast.LENGTH_SHORT).show();
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Location permission not granted", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    /**
-     * This method creates an alert dialog requiring location from user
-     * @param requestCode The request code passed in {@link #requestPermissions(String[], int)}.
-     * @param permissions The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
-     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
-     *
-     */
+    }
+/*
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            Double latitude = location.getLatitude();
+            Double longitude = location.getLongitude();
+            Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+
+            // Update the Firestore database
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(event.getEventId())
+                    .update("entrantsLocation." + current_user.getName(), geoPoint)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firestore", "Location updated successfully");
+                    })
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            // Handle provider enabled
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            // Handle provider disabled
+        }
+    };
+*/
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -240,16 +267,19 @@ public class EventDetailsFragment extends Fragment {
 
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocationAndSignUp();
+                getLocation();
             } else {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle("Permission Required")
-                        .setMessage("You must allow location access to sign up for this event.")
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                        .show();
+                Toast.makeText(getContext(), "This event requires location verification", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
+
+
+
+
+
     /**
      * Adds the user to the corresponding event's waitlist in firebase
      * @param updates
@@ -298,4 +328,6 @@ public class EventDetailsFragment extends Fragment {
             updateFirebase(updates, "cancelled list");
         }
     }
+
+
 }

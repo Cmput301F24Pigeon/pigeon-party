@@ -34,35 +34,30 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.organizer_content, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.admin_event_content, parent,false);
         }
 
         Event event = events.get(position);
-        ImageButton editButton = view.findViewById(R.id.button_edit);
 
         // Initialize TextViews
-        TextView eventTitle = view.findViewById(R.id.eventTitle);
-        TextView eventDetails = view.findViewById(R.id.eventDetails);
-        TextView eventDate = view.findViewById(R.id.eventDate);
-
+        TextView eventTitle = view.findViewById(R.id.title);
+        TextView facility = view.findViewById(R.id.facility);
+        TextView eventDate = view.findViewById(R.id.date);
+        TextView eventId = view.findViewById(R.id.eventId);
         // Set event title and details
         eventTitle.setText(event.getTitle());
-        eventDetails.setText(event.getDetails());
+        String format = "Facility: %s";
+        String facilityFormat = String.format(format, event.getFacility().getName());
+        facility.setText(facilityFormat);
+
 
         // Format the date
         Date date = event.getDateTime(); // or event.getDateTime().toDate() if using Firebase Timestamp
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault());
         String formattedDate = dateFormat.format(date);
         eventDate.setText(formattedDate);
-        editButton.setOnClickListener(v -> {
-            EditEventFragment editEventFragment = EditEventFragment.newInstance(event.getEventId());
+        eventId.setText(event.getEventId());
 
-            ((FragmentActivity) getContext()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, editEventFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
         return view;
 
 

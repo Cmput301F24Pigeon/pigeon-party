@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasFocus;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -35,6 +36,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+// Run all these tests, one of them fails
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class CreateEntrantProfileTest {
@@ -47,7 +51,8 @@ public class CreateEntrantProfileTest {
     private boolean testUserIsEntrant;
     private Facility testUserFacility;
     private boolean testUserHasNotifications;
-    private String testUSerColour;
+    private String testUserColour;
+    private boolean testUserIsAdmin;
     private User testUser;
 
     /**
@@ -97,41 +102,9 @@ public class CreateEntrantProfileTest {
                 .addOnFailureListener(e -> Log.w("Firestore Test", "Test write failed", e));
 
         // Check that fragment closes and MainActivity is displayed
-        onView(withId(R.id.button_notifications)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_facility)).check(matches(isDisplayed()));
         onView(withId(R.id.button_profile)).check(matches(isDisplayed()));
     }
-
-//    Firebase test, don't really need it, does work when firebase is working
-//    /**
-//     * Test to check that addUser method from CreateEntrantProfileFragment properly adds the user to firebase
-//     */
-//    @Test
-//    public void testCreateUserInFirebase() {
-//
-//        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
-//                CreateEntrantProfileFragment.class,
-//                CreateEntrantProfileFragment.newInstance().getArguments()
-//        );
-//
-//        scenario.onFragment(createdFragment -> {
-//            testUserId = "test-user-id";
-//            testUserName = "test-user-name";
-//            testUserEmail = "test@email.com";
-//            testUserPhone = "1234567890";
-//            testUserIsOrganizer = false;
-//            testUserIsEntrant = true;
-//            testUserFacility = null;
-//            testUserHasNotifications = true;
-//            testUSerColour = "#000000";
-//
-//            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUSerColour, new ArrayList<Event>(),new ArrayList<Event>());
-//            createdFragment.addUser(testUser);
-//
-//            verifyUserInFirestore(testUserId);
-//
-//            removeData();
-//        });
-//    }
 
     /**
      * Test the addUser function, this will indirectly test Firebase connection
@@ -152,9 +125,10 @@ public class CreateEntrantProfileTest {
             testUserIsEntrant = true;
             testUserFacility = null;
             testUserHasNotifications = true;
-            testUSerColour = "#000000";
+            testUserColour = "#000000";
+            testUserIsAdmin = false;
 
-            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUSerColour, new ArrayList<Event>(),new ArrayList<Event>());
+            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, new ArrayList<String>(),new ArrayList<String>(), testUserIsAdmin);
             createdFragment.addUser(testUser);
         });
     }
@@ -207,18 +181,6 @@ public class CreateEntrantProfileTest {
     }
 
     /**
-     * A helper method to be performed after the test method to remove any data that was added to the firebase
-     */
-    private void removeData() {
-        if (testUserId != null) {
-            db.collection("user").document(testUserId)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore Test", "Test user deleted"))
-                    .addOnFailureListener(e -> Log.w("Firestore Test", "Failed to delete test user", e));
-        }
-    }
-
-    /**
      * Helper method to verify that the user was added to the firebase
      * @param testUserId The unique id of a User
      */
@@ -239,7 +201,7 @@ public class CreateEntrantProfileTest {
                             assertEquals("User entrant status should match", testUserIsEntrant, document.getBoolean("entrant"));
                             assertEquals("User facility should match", testUserFacility, document.get("organizer", Facility.class));
                             assertEquals("User notification status should match", testUserHasNotifications, document.getBoolean("notificationStatus"));
-                            assertEquals("User colour should match", testUSerColour, document.getString("colour"));
+                            assertEquals("User colour should match", testUserColour, document.getString("colour"));
                         }
 
                         if (!document.exists()) {
@@ -273,9 +235,9 @@ public class CreateEntrantProfileTest {
                 CreateEntrantProfileFragment.newInstance().getArguments()
         );
 
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName));
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail));
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone));
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
         onView(withId(R.id.create_user_profile_button)).perform(click());
     }
 }

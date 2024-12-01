@@ -193,6 +193,7 @@ public class CreateEventFragment extends Fragment {
                             createEventButton.setText("Finish");
                             createEventButton.setOnClickListener(v2 -> {
                                 addEvent(db, event);
+                                Log.d("Event", "Waitlist after addition: " + usersWaitlist.toString());
                                 getActivity().getSupportFragmentManager()
                                         .beginTransaction()
                                         .replace(R.id.fragment_container, new OrganizerFragment())

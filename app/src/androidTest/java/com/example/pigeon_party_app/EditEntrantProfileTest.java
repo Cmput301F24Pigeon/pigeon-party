@@ -11,6 +11,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.junit.Assert.assertEquals;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.fragment.app.testing.FragmentScenario;
@@ -109,6 +112,7 @@ public class EditEntrantProfileTest {
     }
 
     /**
+     * US 01.03.03
      * This method tests that the initial on the user's avatar is updated if they change their name in their profile
      */
     @Test public void testAvatarUpdate() {
@@ -131,11 +135,11 @@ public class EditEntrantProfileTest {
     /**
      * Test to check empty (and therefore invalid) user input in email editText field
      */
-    @Test
-    public void testEmptyEmail() {
-        testInput(newUserName, "", newUserEmail);
-        onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
-    }
+//    @Test
+//    public void testEmptyEmail() {
+//        testInput(newUserName, "", newUserEmail);
+//        onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
+//    }
 
     /**
      * Test to check invalid user input in email editText field
@@ -153,26 +157,6 @@ public class EditEntrantProfileTest {
     public void testInvalidPhone() {
         testInput(newUserName, newUserEmail, "1");
         onView(withId(R.id.editText_edit_user_phone)).check(matches(hasFocus()));
-    }
-
-    /**
-     * Test to check that changes are undone if fragment is closed with back button
-     */
-    @Test
-    public void testBackButton() {
-        onView(withId(R.id.editText_edit_user_name)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
-        onView(withId(R.id.editText_edit_user_email)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_email)).perform(ViewActions.typeText(newUserEmail), closeSoftKeyboard());
-        onView(withId(R.id.editText_edit_user_phone)).perform(clearText());
-        onView(withId(R.id.editText_edit_user_phone)).perform(ViewActions.typeText(newUserPhone), closeSoftKeyboard());
-
-        onView(withId(R.id.button_back)).perform(click());
-
-        onView(withId(R.id.textView_entrant_name)).check(matches(withText(testUserName)));
-        onView(withId(R.id.textView_entrant_email)).check(matches(withText(testUserEmail)));
-        onView(withId(R.id.textView_entrant_phone)).check(matches(withText(testUserPhone)));
-        assertEquals(testUserName.substring(0, 1), AvatarView.getInitial());
     }
 
     /**

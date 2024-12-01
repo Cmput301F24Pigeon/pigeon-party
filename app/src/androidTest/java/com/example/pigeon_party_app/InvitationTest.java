@@ -1,18 +1,25 @@
 package com.example.pigeon_party_app;
 
+import static androidx.test.InstrumentationRegistry.getContext;
 import static org.junit.Assert.assertNotNull;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ListView;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,14 +28,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class InvitationTest {
-
-
+        private ArrayList<Event> eventList;
+        private EventsArrayAdapter testAdapter;
         private FirebaseFirestore db;
         private Facility testFacility;
         private User testUser;
@@ -44,37 +52,31 @@ public class InvitationTest {
          */
         @Before
         public void setUp() {
+
             context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             testUserID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-            context = ApplicationProvider.getApplicationContext();
-            db = FirebaseFirestore.getInstance();
+            eventList = new ArrayList<>();
             HashMap<String, User> testUserMap = new HashMap<>();
-
             testFacility = new Facility("test-user-id", "test-address", "test-name");
-            testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<Event>(), new ArrayList<Event>());
+            testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<>(), new ArrayList<>(), false);
             testAcceptEvent = new Event("testEventId", "testEventTitle", new Date(), 50, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUser);
             testAcceptEvent.addUserToSentInvite(testUser);
-            db.collection("events").document(testAcceptEvent.getEventId())
-                    .set(testAcceptEvent)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("FireStore", "Event successfully added");
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w("FireStore", "Error adding event", e);
-                    });
+            eventList.add(testAcceptEvent);
+            testAdapter = new EventsArrayAdapter(getContext(),eventList);
 
         }
         @Test
-        public void acceptInviteTest(){
+        public void acceptInviteTest() throws UiObjectNotFoundException{
             device.pressHome();
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            context.startActivity(intent);
-
-            UiObject2 eventList = device.wait(Until.findObject(By.res("com.pigeon_party_app:id/event_list")), 5000);
+            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.example.pigeon_party_app");
+            context.startActivity(launchIntent);
+            UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
+            if (permissionDialog.waitForExists(6000)) {
+                permissionDialog.click();
+            }
+            UiObject2 eventList = device.wait(Until.findObject(By.res("com.pigeon_party_app:id/event_list")), 10000);
 
 
             UiObject2 eventItem = eventList.findObject(By.text("testEventTitle"));

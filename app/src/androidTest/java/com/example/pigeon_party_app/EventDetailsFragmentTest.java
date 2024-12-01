@@ -22,6 +22,7 @@ import com.google.firebase.firestore.Source;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,7 +50,7 @@ public class EventDetailsFragmentTest {
     public void setUp() {
         db = FirebaseFirestore.getInstance();
         testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,"#000000", new ArrayList<Event>(), new ArrayList<Event>());
+        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,"#000000", new ArrayList<String>(), new ArrayList<String>(),false);
         Date testDate = new Date();
         Map<String, User> testUsersWaitlist = new HashMap<>();
         Map<String, User> testUsersInvited = new HashMap<>();
@@ -66,7 +67,7 @@ public class EventDetailsFragmentTest {
                 });
         Map<String, Object> updates = new HashMap<>();
 
-        testUser.addOrganizerEventList(testEvent);
+        testUser.addOrganizerEventList(testEvent.getEventId());
         updates.put("organizerEventList", testUser.getOrganizerEventList());
         db.collection("user").document(testUser.getUniqueId())
                 .update(updates)

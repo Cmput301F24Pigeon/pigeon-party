@@ -29,6 +29,7 @@ import java.util.Date;
 /**
  * This class that the notifications are properly sent by the app and received by the user
  */
+
 @RunWith(AndroidJUnit4.class)
 public class NotificationTest {
     private String testUserId = "test-id";
@@ -64,7 +65,7 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<Event>(), new ArrayList<Event>());
+        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
         Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
 
         device.openNotification();
@@ -98,7 +99,7 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<Event>(), new ArrayList<Event>());
+        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
         Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
         testUser.setNotificationsOn(false);
         device.openNotification();

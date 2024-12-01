@@ -42,8 +42,8 @@ public class ImageArrayAdapter extends ArrayAdapter<StorageReference> {
         StorageReference currentImage = images.get(position);
 
         ImageView image = view.findViewById(R.id.image);
-        Glide.with(getContext())
-                .load(currentImage)
+        Glide.with(context)
+                .load(currentImage.getDownloadUrl())
                 .into(image);
 
 

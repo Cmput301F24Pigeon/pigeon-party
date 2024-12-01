@@ -21,13 +21,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EntrantListFragment extends Fragment {
     private static final String ARG_EVENT_ID = "eventId";
     private String eventId;
     private ListView entrantListView;
-    private ArrayAdapter<User> entrantArrayAdapter;
+    //private ArrayAdapter<User> entrantArrayAdapter;
+    private EntrantArrayAdapter entrantArrayAdapter;
     private ArrayList<User> entrantList = new ArrayList<>();
     private Map<String, User> usersWaitlist;
     private Map<String, User> usersInvited;
@@ -55,7 +57,7 @@ public class EntrantListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_entrant_list, container, false);
         entrantListView = view.findViewById(R.id.entrant_list_view);
         // Set up adapter
-        entrantArrayAdapter = new EntrantArrayAdapter(getContext(), entrantList, usersWaitlist, usersInvited, usersCancelled);
+        entrantArrayAdapter = new EntrantArrayAdapter(getContext(), entrantList, new HashMap<>(), new HashMap<>(), new HashMap<>());
         entrantListView.setAdapter(entrantArrayAdapter);
 
         // Load entrants for the event from Firestore
@@ -102,9 +104,9 @@ public class EntrantListFragment extends Fragment {
 
                                 // Refresh entrant list display
                                 entrantList.clear();
-                                if (event.getUsersWaitlisted() != null) entrantList.addAll(event.getUsersWaitlisted().values());
-                                if (event.getUsersInvited() != null) entrantList.addAll(event.getUsersInvited().values());
-                                if (event.getUsersCancelled() != null) entrantList.addAll(event.getUsersCancelled().values());
+                                entrantList.addAll(usersWaitlist.values());
+                                entrantList.addAll(usersInvited.values());
+                                entrantList.addAll(usersCancelled.values());
 
                                 entrantArrayAdapter.notifyDataSetChanged();
                             });
@@ -167,10 +169,12 @@ public class EntrantListFragment extends Fragment {
 
                         // Create a combined list of users to show in the list
                         entrantList.clear();
-                        if (usersWaitlist != null) entrantList.addAll(usersWaitlist.values());
-                        if (usersInvited != null) entrantList.addAll(usersInvited.values());
-                        if (usersCancelled != null) entrantList.addAll(usersCancelled.values());
+                        entrantList.addAll(usersWaitlist.values());
+                        entrantList.addAll(usersInvited.values());
+                        entrantList.addAll(usersCancelled.values());
 
+                        // Update the adapter's maps and refresh
+                        entrantArrayAdapter.updateMaps(usersWaitlist, usersInvited, usersCancelled);
                         entrantArrayAdapter.notifyDataSetChanged();
                     }
                 });

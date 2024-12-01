@@ -15,25 +15,32 @@ import java.util.Map;
 
 public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
-    private Map<String, User> usersWaitlisted;
-    private Map<String, User> usersInvited;
-    private Map<String, User> usersCancelled;
+    private Map<String, User> waitlist;
+    private Map<String, User> invited;
+    private Map<String, User> cancelled;
     private Context context;
 
     public EntrantArrayAdapter(Context context, ArrayList<User> users,
-                               Map<String, User> usersWaitlisted,
-                               Map<String, User> usersInvited,
-                               Map<String, User> usersCancelled) {
+                               Map<String, User> waitlist,
+                               Map<String, User> invited,
+                               Map<String, User> cancelled) {
         super(context, 0, users);
         this.users = users;
         this.context = context;
-        this.usersWaitlisted = usersWaitlisted;
-        this.usersInvited = usersInvited;
-        this.usersCancelled = usersCancelled;
+        this.waitlist = waitlist;
+        this.invited = invited;
+        this.cancelled = cancelled;
     }
 
     public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> usersInvited) {
         super(context, 0, users);
+    }
+
+    // Method to update maps
+    public void updateMaps(Map<String, User> waitlist, Map<String, User> invited, Map<String, User> cancelled) {
+        this.waitlist = waitlist;
+        this.invited = invited;
+        this.cancelled = cancelled;
     }
 
     @NonNull
@@ -42,7 +49,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         View view = convertView;
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.organizer_content, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.entrant_content, parent, false);
         }
 
         User user = users.get(position);
@@ -55,11 +62,11 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         name.setText(user.getName());
 
         // Determine the user's status based on the map they belong to
-        if (usersWaitlisted.containsKey(user.getUniqueId())) {
+        if (waitlist.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Waitlisted");
-        } else if (usersInvited.containsKey(user.getUniqueId())) {
+        } else if (invited.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Invited");
-        } else if (usersCancelled.containsKey(user.getUniqueId())) {
+        } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
         }
 

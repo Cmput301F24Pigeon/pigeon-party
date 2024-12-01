@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/appBackground"
-        app:layout_constraintBottom_toTopOf="@+id/send_notifications_button"
+        app:layout_constraintBottom_toTopOf="@+id/view_participants_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,10 +62,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Send Notifications"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/draw_lottery_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/entrant_list_view"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/draw_lottery_button"
@@ -76,15 +77,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/send_notifications_button"
-        app:layout_constraintTop_toBottomOf="@id/entrant_list_view" />
+        app:layout_constraintTop_toBottomOf="@id/entrant_list_view"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/view_participants_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Accepted Participants"
-        app:layout_constraintBottom_toBottomOf="@+id/entrant_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/send_notifications_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/entrant_list_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

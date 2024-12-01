@@ -135,11 +135,11 @@ public class EditEntrantProfileTest {
     /**
      * Test to check empty (and therefore invalid) user input in email editText field
      */
-//    @Test
-//    public void testEmptyEmail() {
-//        testInput(newUserName, "", newUserEmail);
-//        onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
-//    }
+    @Test
+    public void testEmptyEmail() {
+        testInput(newUserName, "", newUserEmail);
+        onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
+    }
 
     /**
      * Test to check invalid user input in email editText field

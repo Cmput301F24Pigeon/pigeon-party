@@ -59,50 +59,6 @@ import java.util.UUID;
  * This is a fragment in which the user can create an event
  */
 public class CreateEventFragment extends Fragment {
-    public User testUser1 = new User(
-            "Alice",
-            "alice@example.com",
-            "556-1234",
-            "1324-5867",
-            false,
-            true,
-            null,
-            true,
-            "#8928A1",
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false
-    );
-
-    public User testUser2 = new User(
-            "Bob",
-            "bob@example.com",
-            "557-1234",
-            "1333-2942",
-            false,
-            true,
-            null,
-            true,
-            "#8928A1",
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false
-    );
-
-    public User testUser3 = new User(
-            "James",
-            "james@example.com",
-            "555-1234",
-            "1842-4281",
-            false,
-            true,
-            null,
-            true,
-            "#8928A1",
-            new ArrayList<>(),
-            new ArrayList<>(),
-            false
-    );
     private ImageView uploadedImageView;
     private User current_user = MainActivity.getCurrentUser();
     private Calendar selectedDateTime = Calendar.getInstance();

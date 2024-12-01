@@ -180,43 +180,10 @@ public class CreateEntrantProfileTest {
         onView(withId(R.id.editText_create_user_phone)).check(matches(hasFocus()));
     }
 
-    /**
-     * Helper method to verify that the user was added to the firebase
-     * @param testUserId The unique id of a User
-     */
-    private void verifyUserInFirestore(String testUserId) {
-        db.collection("user").document(testUserId).get(Source.SERVER)
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Log.d("Firestore Test", "User found in Firestore!");
-                            assertTrue("User was successfully added to Firestore", document.exists());
-                            assertEquals("User name should match", testUserName, document.getString("name"));
-                            assertEquals("User email should match", testUserEmail, document.getString("email"));
-                            assertEquals("User phone should match", testUserPhone, document.getString("phone"));
-                            assertEquals("User Id should match", testUserId, document.getString("id"));
-                            assertEquals("User organizer status should match", testUserIsOrganizer, document.getBoolean("organizer"));
-                            assertEquals("User entrant status should match", testUserIsEntrant, document.getBoolean("entrant"));
-                            assertEquals("User facility should match", testUserFacility, document.get("organizer", Facility.class));
-                            assertEquals("User notification status should match", testUserHasNotifications, document.getBoolean("notificationStatus"));
-                            assertEquals("User colour should match", testUserColour, document.getString("colour"));
-                        }
-
-                        if (!document.exists()) {
-                            fail("User was not found in Firestore");
-                        }
-                    }
-
-                    if (!task.isSuccessful()) {
-                        FirebaseFirestoreException e = (FirebaseFirestoreException) task.getException();
-                        Log.w("Firestore Test", "Error verifying user", e);
-                        fail("Failed to retrieve user from Firestore");
-                    }
-                });
-
-    }
+//    @Test
+//    public void testProfilePicUpload() {
+//
+//    }
 
     /**
      * Helper method to fill user input fields with given parameters and click the "Create" button

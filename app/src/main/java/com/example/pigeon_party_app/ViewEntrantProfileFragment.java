@@ -2,6 +2,7 @@ package com.example.pigeon_party_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +21,16 @@ import androidx.fragment.app.Fragment;
 
 public class ViewEntrantProfileFragment extends Fragment {
 
-    public User entrant;
+    public static User entrant;
 
     public ViewEntrantProfileFragment() {}
 
-    public ViewEntrantProfileFragment(User entrant) {
-        this.entrant = entrant;
-    }
+//    public ViewEntrantProfileFragment(User entrant) {
+//        this.entrant = entrant;
+//    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        entrant = MainActivity.getCurrentUser();
         View view = inflater.inflate(R.layout.fragment_view_entrant_profile, container, false);
         AvatarView viewEntrantProfileImage = view.findViewById(R.id.entrant_profile_image);
         viewEntrantProfileImage.setUser(entrant);
@@ -62,5 +64,16 @@ public class ViewEntrantProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * newInstance method creates a mock fragment for testing
+     * @return ViewEntrantProfileFragment the mock fragment being used for testing
+     */
+    public static ViewEntrantProfileFragment newInstance() {
+        ViewEntrantProfileFragment fragment = new ViewEntrantProfileFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

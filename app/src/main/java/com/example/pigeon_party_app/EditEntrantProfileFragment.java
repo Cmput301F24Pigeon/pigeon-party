@@ -81,7 +81,7 @@ public class EditEntrantProfileFragment extends Fragment {
         backButton.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment(entrant))
+                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment())
                     .addToBackStack(null)
                     .commit();
         });
@@ -126,7 +126,7 @@ public class EditEntrantProfileFragment extends Fragment {
 
     /**
      * newInstance method creates a mock fragment for testing
-     * @return CreateEntrantProfileFragment the mock fragment being used for testing
+     * @return EditEntrantProfileFragment the mock fragment being used for testing
      */
     public static EditEntrantProfileFragment newInstance(User testUser) {
         EditEntrantProfileFragment fragment = new EditEntrantProfileFragment(testUser);
@@ -160,7 +160,7 @@ public class EditEntrantProfileFragment extends Fragment {
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment(entrant))
+                    .replace(R.id.fragment_container, new ViewEntrantProfileFragment())
                     .addToBackStack(null)
                     .commit();
         }

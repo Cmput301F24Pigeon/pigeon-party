@@ -296,21 +296,16 @@ public class MainActivity extends AppCompatActivity {
      * This method sets up the profile button
      */
     private void setUpProfileButton() {
-        if (currentUser != null) {
-            profileButton = findViewById(R.id.button_profile);
-            profileButton.setOnClickListener(v -> {
-                User currentUser = MainActivity.getCurrentUser();
-
-                if (currentUser != null && currentUser.isEntrant()) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new ViewEntrantProfileFragment(currentUser))
-                            .addToBackStack(null)
-                            .commit();
-                }
-
-            });
-        }
+        profileButton = findViewById(R.id.button_profile);
+        profileButton.setOnClickListener(v -> {
+            if (currentUser != null && currentUser.isEntrant()) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new ViewEntrantProfileFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     /**

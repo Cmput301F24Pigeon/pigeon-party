@@ -32,6 +32,12 @@ public class EntrantListFragment extends Fragment {
     private Map<String, User> usersSentInvite;
     private Map<String, User> usersCancelled;
 
+    /**
+     * Creates an EntrantListFragment for testing
+     *
+     * @param eventId the id for the event that the entrants are associated with
+     * @return an EntrantListFragment
+     */
     public static EntrantListFragment newInstance(String eventId) {
         EntrantListFragment fragment = new EntrantListFragment();
         Bundle args = new Bundle();

@@ -103,4 +103,3 @@ public class ValidatorTest {
         assertNull(editText.getError());
     }
 }
-

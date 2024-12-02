@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Testing our create events fragment class
+ */
 @RunWith(AndroidJUnit4.class)
 public class CreateEventFragmentTest {
     private FirebaseFirestore db;
@@ -43,8 +45,8 @@ public class CreateEventFragmentTest {
     @Before
     public void setUp() {
         db = FirebaseFirestore.getInstance();
-        testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
+        testFacility = new Facility("test-user-id", "test-address", "test-name");
+        testUser = new User("test-user-name", "test@email.com", null, "test-user-id", true, true, testFacility, false, "#000000", new ArrayList<String>(), new ArrayList<String>(), false);
     }
 
     /**
@@ -60,9 +62,9 @@ public class CreateEventFragmentTest {
 
         scenario.onFragment(createdFragment -> {
             testEventId = "test-event-id";
-            testEventTitle= "test-event-title";
+            testEventTitle = "test-event-title";
             testEventDetails = "test-details";
-            Event testEvent = new Event(testEventId,testEventTitle, new Date(), 50, testEventDetails,testFacility,false,null, null, null, testUser);
+            Event testEvent = new Event(testEventId, testEventTitle, new Date(), 50, testEventDetails, testFacility, false, null, null, null, testUser);
             createdFragment.addEvent(db, testEvent);
 
             verifyEventInFirestore(testEventId);
@@ -73,7 +75,7 @@ public class CreateEventFragmentTest {
      * This method tests that an organizer can add an event with a poster
      */
     @Test
-    public void testUploadPoster(){
+    public void testUploadPoster() {
         FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
                 CreateEventFragment.class,
                 CreateEventFragment.newInstance(testUser).getArguments()
@@ -81,10 +83,10 @@ public class CreateEventFragmentTest {
 
         scenario.onFragment(createdFragment -> {
             testEventId = "test-event-id";
-            testEventTitle= "test-event-title";
+            testEventTitle = "test-event-title";
             testEventDetails = "test-details";
             String mockPosterUrl = "https://mockstorage.com/posters/sample_poster.jpg";
-            Event testEvent = new Event(testEventId,testEventTitle, new Date(), 50,mockPosterUrl, testEventDetails,testFacility,false,null, null, null,null, testUser);
+            Event testEvent = new Event(testEventId, testEventTitle, new Date(), 50, mockPosterUrl, testEventDetails, testFacility, false, null, null, null, null, testUser);
             createdFragment.addEvent(db, testEvent);
             assertNotNull("Image URL should not be null after poster upload", testEvent.getImageUrl());
             assertEquals("Image URL should match the mock URL", mockPosterUrl, testEvent.getImageUrl());
@@ -94,6 +96,7 @@ public class CreateEventFragmentTest {
 
     /**
      * Method to verify that the event was added to the firebase
+     *
      * @param eventId The unique id of an event
      */
     private void verifyEventInFirestore(String eventId) {

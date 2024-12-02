@@ -77,17 +77,19 @@ public class CreateEventFragment extends Fragment {
                 if (result != null) {
                     imageUri = result;
                     uploadedImageView.setImageURI(imageUri);
-                        Log.d("Image URI", "Selected image URI: " + imageUri.toString());
+                    Log.d("Image URI", "Selected image URI: " + imageUri.toString());
 
                 } else {
                     Log.e("PickMedia", "No image selected");
                 }
             });
 
-    public CreateEventFragment() {}
+    public CreateEventFragment() {
+    }
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return CreateEventFragment the mock fragment being used for testing
      */
     public static CreateEventFragment newInstance(User user) {
@@ -98,7 +100,6 @@ public class CreateEventFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,14 +108,11 @@ public class CreateEventFragment extends Fragment {
         }
     }
 
-    private DatePickerDialog datePickerDialog;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-         storage = FirebaseStorage.getInstance();
-         storageRef = storage.getReference();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         dateButton = view.findViewById(R.id.button_date_picker);
@@ -130,18 +128,16 @@ public class CreateEventFragment extends Fragment {
         Switch requiresLocation = view.findViewById(R.id.switch_require_location);
         uploadImage = view.findViewById(R.id.button_upload_poster);
         qrCode = view.findViewById(R.id.eventQrcode);
-        qrBackground= view.findViewById(R.id.background_view);
+        qrBackground = view.findViewById(R.id.background_view);
         eventCreatedMessage = view.findViewById(R.id.text_event_created);
 
-        uploadImage.setOnClickListener(v ->{
+        uploadImage.setOnClickListener(v -> {
             pickMediaLauncher.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
 
         });
         dateButton.setOnClickListener(v -> showDateTimePicker());
-
-
 
         createEventButton.setOnClickListener(v -> {
             boolean isValid = true;
@@ -151,28 +147,25 @@ public class CreateEventFragment extends Fragment {
             if (Validator.isEmpty(eventDetails, "Event details cannot be empty")) {
                 isValid = false;
             }
-            if (Validator.isEmpty(eventTitle, "Event title cannot be empty")){
+            if (Validator.isEmpty(eventTitle, "Event title cannot be empty")) {
                 isValid = false;
             }
             if (isValid) {
                 String eventId = UUID.randomUUID().toString();
 
-
                 if (waitlistCap.getText().toString().isEmpty()) {
                     waitlistCap.setText("-1");
                 }
+
                 Date eventDateTime = selectedDateTime.getTime();
                 if (imageUri != null) {
                     final ProgressDialog pd = new ProgressDialog(getContext());
                     pd.setTitle("Uploading event. . .");
                     pd.show();
 
-
                     StorageReference imageRef = storage.getReference().child("event_posters/" + eventId);
 
-
                     UploadTask uploadTask = imageRef.putFile(imageUri);
-
 
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
                         // Upload successful, now get the download URL
@@ -212,7 +205,6 @@ public class CreateEventFragment extends Fragment {
                         Toast.makeText(getContext(), "Failed to upload", Toast.LENGTH_SHORT).show();
                     });
 
-
                     uploadTask.addOnProgressListener(snapshot -> {
                         double progressPercent = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                         pd.setMessage("Progress: " + (int) progressPercent + "%");
@@ -240,32 +232,27 @@ public class CreateEventFragment extends Fragment {
                                 .replace(R.id.fragment_container, new OrganizerFragment())
                                 .addToBackStack(null)
                                 .commit();
-
                     });
 
                 }
             }
         });
 
-
         backButton.setOnClickListener(v -> {
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new OrganizerFragment())
-                .addToBackStack(null)
-                .commit();
-    });
-
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new OrganizerFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
-
     }
-// ...
 
     /**
      * This is a method to show the date and time to be chosen by the user
      */
-    private void showDateTimePicker(){
+    private void showDateTimePicker() {
         showDatePicker();
     }
 
@@ -281,7 +268,7 @@ public class CreateEventFragment extends Fragment {
     /**
      * This is a method to show the calendar to the user to select the date
      */
-    private void showDatePicker(){
+    private void showDatePicker() {
         int year = selectedDateTime.get(Calendar.YEAR);
         int month = selectedDateTime.get(Calendar.MONTH);
         int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
@@ -318,29 +305,35 @@ public class CreateEventFragment extends Fragment {
 
     /**
      * This generates a qr code based on a string
+     *
      * @param text The text which the qr code will represent (in this case event id)
      */
     //possibly add option to save qr code to phone (implement later)
-    private void generateQRCode(String text){
-    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+    private void generateQRCode(String text) {
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
-        Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 500, 500);
-        qrCode.setImageBitmap(bitmap);
-    } catch (WriterException e) {
-        e.printStackTrace();
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 500, 500);
+            qrCode.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     /**
      * This adds an event to the firebase
-     * @param db The firebase database
+     *
+     * @param db    The firebase database
      * @param event The event
      */
-    public void addEvent(@NonNull FirebaseFirestore db, Event event){
+    public void addEvent(@NonNull FirebaseFirestore db, Event event) {
         db.collection("events").document(event.getEventId())
                 .set(event)
-                .addOnSuccessListener(aVoid -> {Log.d("FireStore", "Event successfully added");})
-                .addOnFailureListener(e ->{Log.w("FireStore", "Error adding event", e);});
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FireStore", "Event successfully added");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("FireStore", "Error adding event", e);
+                });
 
         Map<String, Object> updates = new HashMap<>();
         current_user.addOrganizerEventList(event.getEventId());
@@ -350,8 +343,4 @@ public class CreateEventFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User's facility successfully updated"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's oranizer list", e));
     }
-
-
-
-
 }

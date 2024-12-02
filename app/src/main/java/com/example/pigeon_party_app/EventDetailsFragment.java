@@ -55,6 +55,7 @@ public class EventDetailsFragment extends Fragment {
     Event event = MainActivity.getCurrentEvent();
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
+    private Button qrcodeButton;
     private Button drawParticipantsButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -81,7 +82,9 @@ public class EventDetailsFragment extends Fragment {
         eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
+        eventCapacity.setVisibility(View.INVISIBLE);
         signUpButton = view.findViewById(R.id.signupButton);
+        qrcodeButton = view.findViewById(R.id.qrCodeButton);
         eventPoster = view.findViewById(R.id.eventPoster);
         drawParticipantsButton = view.findViewById(R.id.drawParticipantsButton);
         drawParticipantsButton.setEnabled(false);
@@ -91,7 +94,12 @@ public class EventDetailsFragment extends Fragment {
         eventDateTime.setText("Date/Time: " + formatter.format(event.getDateTime()));
         eventLocation.setText("Location: " + event.getFacility().getAddress());
         eventDetails.setText("Details:\n" + event.getDetails());
-        eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
+
+        if (!String.valueOf(event.getWaitlistCapacity()).equals("-1")) {
+            eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
+            eventCapacity.setVisibility(View.VISIBLE);
+        }
+
         String imageUrl = event.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
@@ -105,8 +113,6 @@ public class EventDetailsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-
-            // Optionally, finish the current activity if you want to remove this fragment from the activity stack
             getActivity().finish();
         });
 
@@ -125,6 +131,8 @@ public class EventDetailsFragment extends Fragment {
         if (current_user.getUniqueId().equals(event.getFacility().getOwnerId())) {
             signUpButton.setVisibility(View.INVISIBLE);
             signUpButton.setEnabled(false);
+            qrcodeButton.setVisibility(View.VISIBLE);
+            signUpButton.setEnabled(true);
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +143,19 @@ public class EventDetailsFragment extends Fragment {
                     requireActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, entrantListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+
+            qrcodeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    QrcodeFragment qrcodeFragment = QrcodeFragment.newInstance(event.getEventId());
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, qrcodeFragment)
                             .addToBackStack(null)
                             .commit();
                 }
@@ -184,13 +205,13 @@ public class EventDetailsFragment extends Fragment {
     private void getLocation() {
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
             addToWaitlist();
             return;
         }
+
         try {
             // Check if GPS is enabled
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -219,42 +240,13 @@ public class EventDetailsFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Unable to get last known location", Toast.LENGTH_SHORT).show();
             }
+
         } catch (SecurityException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "Location permission not granted", Toast.LENGTH_SHORT).show();
         }
 
     }
-/*
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(android.location.Location location) {
-            Double latitude = location.getLatitude();
-            Double longitude = location.getLongitude();
-            Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
-            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
-
-            // Update the Firestore database
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events").document(event.getEventId())
-                    .update("entrantsLocation." + current_user.getName(), geoPoint)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Location updated successfully");
-                    })
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Handle provider enabled
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Handle provider disabled
-        }
-    };
-*/
 
     /**
      * This method gets the users location upon accepting location verification
@@ -283,8 +275,8 @@ public class EventDetailsFragment extends Fragment {
     /**
      * Adds the user to the corresponding event's waitlist in firebase
      *
-     * @param updates
-     * @param list
+     * @param updates a hashmap of the information that has been updated
+     * @param list    a String object that contains a list of the events that have been updated
      */
     public void updateFirebase(Map<String, Object> updates, String list) {
         String msg = String.format("Event's %s successfully updated", list);
@@ -337,6 +329,4 @@ public class EventDetailsFragment extends Fragment {
             updateFirebase(updates, "cancelled list");
         }
     }
-
-
 }

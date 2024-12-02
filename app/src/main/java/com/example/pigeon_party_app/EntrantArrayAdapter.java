@@ -14,30 +14,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class adapts the array for the entrant list
+ */
 public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Map<String, User> waitlist = new HashMap<>();
     private Map<String, User> invited = new HashMap<>();
-    ;
     private Map<String, User> cancelled = new HashMap<>();
-    ;
     private Map<String, User> sentInvite = new HashMap<>();
-    ;
 
     private Context context;
 
     /**
      * Array adapter for entrants in the list
+     *
      * @param context
      * @param users
      * @param waitlist
      * @param sentInvite
      * @param cancelled
      */
-    public EntrantArrayAdapter(Context context, ArrayList<User> users,
-                               Map<String, User> waitlist,
-                               Map<String, User> sentInvite,
-                               Map<String, User> cancelled) {
+    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> waitlist, Map<String, User> sentInvite, Map<String, User> cancelled) {
         super(context, 0, users);
         this.users = users;
         this.context = context;
@@ -48,6 +46,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Array adapter for entrants who have joined an event
+     *
      * @param context
      * @param users
      * @param invited
@@ -61,6 +60,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Updates the 3 waitlist, sentInvite and cancelled maps
+     *
      * @param waitlist
      * @param sentInvite
      * @param cancelled
@@ -73,6 +73,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Updates the invited map
+     *
      * @param invited
      */
     public void updateUsersInvited(Map<String, User> invited) {
@@ -108,8 +109,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
             entrantStatus.setText("Invited");
         } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
-        }
-        if (invited.containsKey(user.getUniqueId())) {
+        } else if (invited.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Joined");
         }
 

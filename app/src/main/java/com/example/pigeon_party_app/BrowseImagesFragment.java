@@ -41,7 +41,6 @@ public class BrowseImagesFragment extends Fragment {
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,23 +78,23 @@ public class BrowseImagesFragment extends Fragment {
     }
 
     /**
-     *This fills the list view with images
+     * This fills the list view with images
      */
-    private void fill_images(){
+    private void fill_images() {
         StorageReference storageRef = storage.getReference();
 
-        StorageReference listRef = storageRef.child("event_posters" );
+        StorageReference listRef = storageRef.child("event_posters");
 
 
         listRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for(StorageReference file:listResult.getItems()){
+                for (StorageReference file : listResult.getItems()) {
                     file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             images.add(uri.toString());
-                            Log.e("Itemvalue",uri.toString());
+                            Log.e("Itemvalue", uri.toString());
                             imageArrayAdapter.notifyDataSetChanged();
 
                         }
@@ -110,12 +109,12 @@ public class BrowseImagesFragment extends Fragment {
             @Override
             public void onSuccess(ListResult listResult) {
 
-                for(StorageReference file:listResult.getItems()){
+                for (StorageReference file : listResult.getItems()) {
                     file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             images.add(uri.toString());
-                            Log.e("Itemvalue",uri.toString());
+                            Log.e("Itemvalue", uri.toString());
                             imageArrayAdapter.notifyDataSetChanged();
 
                         }
@@ -129,7 +128,7 @@ public class BrowseImagesFragment extends Fragment {
     /**
      * this removes the images from firebase
      */
-    private void removeImage(int i){
+    private void removeImage(int i) {
         String temp = images.get(i);
         StorageReference imageRef = storage.getReferenceFromUrl(temp);
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -148,8 +147,6 @@ public class BrowseImagesFragment extends Fragment {
         images.remove(i);
 
         imageArrayAdapter.notifyDataSetChanged();
-
-
 
 
     }

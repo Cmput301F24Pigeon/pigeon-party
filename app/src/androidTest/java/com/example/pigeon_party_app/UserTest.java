@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
+/**
+ * This tests to see if our user class works
+ */
 public class UserTest {
     private User user;
     private Facility facility;
@@ -60,6 +63,9 @@ public class UserTest {
         assertEquals(sampleBitmap, user.getProfileImagePath());
     }
 
+    /**
+     * This tests our add and remove functions
+     */
     @Test
     public void testAddAndRemoveEntrantEvent() {
         user.addEntrantEventList("Event 1");
@@ -73,6 +79,9 @@ public class UserTest {
         assertTrue(user.getEntrantEventList().contains("Event 2"));
     }
 
+    /**
+     * This tests our add and remove functiosn for organizer
+     */
     @Test
     public void testAddAndRemoveOrganizerEvent() {
         user.addOrganizerEventList("Event A");
@@ -86,6 +95,9 @@ public class UserTest {
         assertTrue(user.getOrganizerEventList().contains("Event B"));
     }
 
+    /**
+     * This tests our notification manager
+     */
     @Test
     public void testNotificationManagement() {
         user.addNotification("New notification 1");
@@ -98,6 +110,9 @@ public class UserTest {
         assertTrue(user.getNotifications().isEmpty());
     }
 
+    /**
+     * This tests to see if our to map function
+     */
     @Test
     public void testToMap() {
         user.addNotification("Test Notification");
@@ -120,6 +135,9 @@ public class UserTest {
         assertTrue(userMap.containsKey("organizerEventList"));
     }
 
+    /**
+     * This tests to see if we can add notifications
+     */
     @Test
     public void testAddNotification() {
         user.addNotification("New notification");

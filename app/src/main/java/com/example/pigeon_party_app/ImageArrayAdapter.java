@@ -25,9 +25,14 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
     private ArrayList<String> images;
     private Context context;
 
-
-    public ImageArrayAdapter(Context context, ArrayList<String> images){
-        super(context,0, images);
+    /**
+     * Constructor for ImageArrayAdapter, with needed parameters for ArrayAdapter constructor
+     *
+     * @param context context of app for parent constructor
+     * @param images  ArrayList containing strings representing paths to images to be displayed in arrayAdapter
+     */
+    public ImageArrayAdapter(Context context, ArrayList<String> images) {
+        super(context, 0, images);
         this.images = images;
         this.context = context;
     }
@@ -37,8 +42,8 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.admin_image_content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.admin_image_content, parent, false);
         }
 
         String imageUri = images.get(position);
@@ -48,10 +53,6 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
                 .load(imageUri)
                 .into(image);
 
-
-
         return view;
-
-
     }
 }

@@ -6,11 +6,6 @@
     android:padding="10dp">
 
 
-    <com.example.pigeon_party_app.AvatarView
-        android:id="@+id/entrant_profile_image"
-        android:layout_width="@dimen/admin_list_avatar_size"
-        android:layout_height="@dimen/admin_list_avatar_size" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,4 +45,5 @@
             android:text="@string/facility"
             android:textSize="16sp" />
     </LinearLayout>
+
 </LinearLayout>

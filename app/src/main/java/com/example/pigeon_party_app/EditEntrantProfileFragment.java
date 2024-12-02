@@ -46,7 +46,8 @@ public class EditEntrantProfileFragment extends Fragment {
 
     public static String TAG = "EditEntrantProfileFragment";
 
-    public EditEntrantProfileFragment() {}
+    public EditEntrantProfileFragment() {
+    }
 
     @SuppressLint("ValidFragment")
     public EditEntrantProfileFragment(User entrant) {
@@ -101,6 +102,7 @@ public class EditEntrantProfileFragment extends Fragment {
 
     /**
      * Function updates a user's name, email and phone in their profile in Firebase
+     *
      * @param entrant The User object that has been changed through the app's UI
      */
     public void updateUserProfile(User entrant) {
@@ -126,6 +128,7 @@ public class EditEntrantProfileFragment extends Fragment {
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return EditEntrantProfileFragment the mock fragment being used for testing
      */
     public static EditEntrantProfileFragment newInstance(User testUser) {
@@ -216,7 +219,7 @@ public class EditEntrantProfileFragment extends Fragment {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount() );
+                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                             pd.setMessage("Progress: " + (int) progressPercent + "%");
                             if (progressPercent == 100.0) {
                                 pd.dismiss();

@@ -68,6 +68,12 @@ public class EditEventFragment extends Fragment {
                 }
             });
 
+    /**
+     * This method creates an EditEventFragment for testing
+     *
+     * @param eventId a String representing the id of the event to be edited
+     * @return an EditEventFragment
+     */
     public static EditEventFragment newInstance(String eventId) {
         EditEventFragment fragment = new EditEventFragment();
         Bundle args = new Bundle();
@@ -84,10 +90,6 @@ public class EditEventFragment extends Fragment {
         }
     }
 
-
-    private DatePickerDialog datePickerDialog;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,7 +100,6 @@ public class EditEventFragment extends Fragment {
         dateButton = view.findViewById(R.id.button_date_picker);
         dateText = view.findViewById(R.id.text_event_date);
         updateImagePoster = view.findViewById(R.id.updatedImageView);
-
 
         Button confirmButton = view.findViewById(R.id.button_confirm_edit);
         ImageButton backButton = view.findViewById(R.id.button_back);
@@ -112,29 +113,29 @@ public class EditEventFragment extends Fragment {
                     .addOnSuccessListener(document -> {
                         if (document.exists()) {
                             Event event = document.toObject(Event.class);
+
                             if (event != null) {
                                 editEventTitle.setText(document.getString("title"));
                                 editEventDetails.setText(document.getString("details"));
                                 Long waitlistCapacity = document.getLong("waitlistCapacity");
+
                                 if (waitlistCapacity != null && waitlistCapacity != -1) {
                                     editWaitlistCap.setText(valueOf(document.getLong("waitlistCapacity")));
                                 }
-                                editRequiresLocation.setChecked(document.getBoolean("requiresLocation"));
 
+                                editRequiresLocation.setChecked(document.getBoolean("requiresLocation"));
 
                                 if (event.getDateTime() != null) {
                                     selectedDateTime.setTime(event.getDateTime());
                                     displaySelectedDateTime();
                                 }
 
-
                                 String imageUrl = document.getString("imageUrl");
+
                                 if (imageUrl != null && !imageUrl.isEmpty()) {
                                     Glide.with(this)
                                             .load(imageUrl)
                                             .into(updateImagePoster);
-
-
                                 }
                             }
                         }
@@ -147,8 +148,8 @@ public class EditEventFragment extends Fragment {
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
         });
-        dateButton.setOnClickListener(v -> showDateTimePicker());
 
+        dateButton.setOnClickListener(v -> showDateTimePicker());
 
         confirmButton.setOnClickListener(v -> {
             boolean isValid = true;
@@ -166,17 +167,17 @@ public class EditEventFragment extends Fragment {
                 Map<String, Object> updatedFields = new HashMap<>();
                 updatedFields.put("title", editEventTitle.getText().toString());
                 updatedFields.put("waitlistCapacity", -1);
+
                 if (!editWaitlistCap.getText().toString().isEmpty()) {
                     updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
                 }
-
 
                 updatedFields.put("details", editEventDetails.getText().toString());
                 updatedFields.put("requiresLocation", editRequiresLocation.isChecked());
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-                    editEventImage(updatedFields,db,eventId, imageUri);
+                    editEventImage(updatedFields, db, eventId, imageUri);
                 } else {
                     // If no new image is selected, update Firestore directly
                     db.collection("events").document(eventId)
@@ -192,8 +193,6 @@ public class EditEventFragment extends Fragment {
                             })
                             .addOnFailureListener(e -> Log.e("EditEventFragment", "Error updating Firestore", e));
                 }
-
-
             }
         });
 
@@ -205,13 +204,19 @@ public class EditEventFragment extends Fragment {
                     .commit();
         });
 
-
         return view;
     }
 
+    /**
+     * Updates the event image in Firebase
+     *
+     * @param updatedFields the event informationf ields that were changed
+     * @param db            the Firebase reference
+     * @param eventId       the id for the event that the image is associated with
+     * @param imageUri      the URI for the new image
+     */
     public void editEventImage(Map<String, Object> updatedFields, @NonNull FirebaseFirestore db, String eventId, Uri imageUri) {
         String storagePath = "event_posters/" + eventId;
-
         FirebaseStorage.getInstance().getReference(storagePath)
                 .putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> {
@@ -238,7 +243,6 @@ public class EditEventFragment extends Fragment {
                             .addOnFailureListener(e -> Log.e("EditEventFragment", "Error fetching download URL", e));
                 })
                 .addOnFailureListener(e -> Log.e("EditEventFragment", "Error uploading image", e));
-
     }
 
     /**
@@ -294,6 +298,4 @@ public class EditEventFragment extends Fragment {
         );
         timePickerDialog.show();
     }
-
-
 }

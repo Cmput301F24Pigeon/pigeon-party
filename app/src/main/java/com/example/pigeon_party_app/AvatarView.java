@@ -37,20 +37,13 @@ public class AvatarView extends AppCompatImageView {
     private float TEXT_SIZE = 50f;
     private int TEXT_COLOR = Color.WHITE;
 
-    private Path clipPath;
-    private Drawable background;
-    private static String initial;
-    private TextPaint initialColour;
-    private Paint backgroundColour;
-
-    private User user;
-
-    private RectF rectF;
-
-//    public AvatarView(@NonNull Context context) {
-//        super(context);
-//        init();
-//    }
+    Path clipPath;
+    Drawable background;
+    static String initial;
+    TextPaint initialColour;
+    Paint backgroundColour;
+    User user;
+    RectF rectF;
 
     /**
      * Constructor function for Avatar view class, calls constructor for ImageView class
@@ -61,11 +54,6 @@ public class AvatarView extends AppCompatImageView {
         super(context, attrs);
         init();
     }
-
-//    public AvatarView(Context context, AttributeSet attrs, int defStyleAttr) {
-//        super(context, attrs, defStyleAttr);
-//        init();
-//    }
 
     /**
      * Getter for the initial that is displayed in the avatar, mainly for testing
@@ -111,7 +99,7 @@ public class AvatarView extends AppCompatImageView {
     /**
      * Draws the background colour and text on a canvas and stores it in a drawable
      */
-    private void setDrawable() {
+    void setDrawable() {
         background = new Drawable() {
             @Override
             public void draw(@NonNull Canvas canvas) {
@@ -132,14 +120,10 @@ public class AvatarView extends AppCompatImageView {
 
             // Functions below are needed for setDrawable function
             @Override
-            public void setAlpha(int i) {
-
-            }
+            public void setAlpha(int i) {}
 
             @Override
-            public void setColorFilter(@Nullable ColorFilter colorFilter) {
-
-            }
+            public void setColorFilter(@Nullable ColorFilter colorFilter) {}
 
             @Override
             public int getOpacity() {
@@ -167,18 +151,7 @@ public class AvatarView extends AppCompatImageView {
         super.onDraw(canvas);
     }
 
-    private void getProfilePic(User user) {
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference storageRef = storage.getReference();
-//        StorageReference imageRef = storageRef.child("profile_images/" + user.getUniqueId());
-//
-//        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-//            downloadImage(uri.toString(), this);
-//        }).addOnFailureListener(exception -> {
-//            setDrawable();
-//            invalidate();  // Force a redraw with the default avatar
-//        });
-
+    void getProfilePic(User user) {
         if (user.getProfileImagePath() == null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
@@ -187,15 +160,15 @@ public class AvatarView extends AppCompatImageView {
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 downloadImage(uri.toString(), this);
             }).addOnFailureListener(exception -> {
-                setDrawable();  // If there's an error (e.g., image not found), use the default avatar
-                invalidate();    // Force a redraw with the default avatar
+                setDrawable();   // If there's an error (e.g., image not found), use the default avatar
+                invalidate();   // Force a redraw with the default avatar
             });
         } else {
             post(() -> this.setImageBitmap(user.getProfileImagePath()));
         }
     }
 
-    private void downloadImage(String imageUrl, final ImageView imageView) {
+    void downloadImage(String imageUrl, final ImageView imageView) {
         new Thread(() -> {
             try {
                 // Download image using URL

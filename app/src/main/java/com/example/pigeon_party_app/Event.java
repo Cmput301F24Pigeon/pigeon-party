@@ -58,10 +58,7 @@ public class Event implements Serializable {
      * @param usersCancelled
      * @param organizer
      */
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String
-            details, Facility facility, boolean requiresLocation, Map<
-            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, User
-                         organizer) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String details, Facility facility, boolean requiresLocation, Map<String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, User organizer) {
 
         this.eventId = eventId;
         this.title = title;
@@ -94,11 +91,7 @@ public class Event implements Serializable {
      * @param usersSentInvite
      * @param organizer
      */
-    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String imageUrl, String
-            details, Facility facility, boolean requiresLocation, Map<
-            String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, Map<
-            String, User> usersSentInvite, User
-                         organizer) {
+    public Event(String eventId, String title, Date dateTime, int waitlistCapacity, String imageUrl, String details, Facility facility, boolean requiresLocation, Map<String, User> usersWaitlist, Map<String, User> usersInvited, Map<String, User> usersCancelled, Map<String, User> usersSentInvite, User organizer) {
 
         this.eventId = eventId;
         this.title = title;
@@ -422,21 +415,6 @@ public class Event implements Serializable {
         return usersSentInvite != null ? usersSentInvite : new HashMap<>();
     }
 
-//    /**
-//     * Allows for a user name and status to be parsed into a hash map ready for firestore storage.
-//     *
-//     * @param user
-//     * @param status
-//     * @return
-//     */
-//    public Map<String, Object> createUserDetails(User user, String status) {
-//            Map<String, Object> userDetails = new HashMap<>();
-//            userDetails.put("name", user.getName());
-//            userDetails.put("status", status);
-//            // Add more user-specific fields as needed
-//            return userDetails;
-//        }
-
     /**
      * Creates the hash map needed to update the cancelled list in firebase
      *
@@ -454,11 +432,17 @@ public class Event implements Serializable {
         return updates;
     }
 
+    /**
+     * Creates the hash map needed to update the sent invite list in firebase
+     *
+     * @param event
+     * @return
+     */
     public Map<String, Object> updateFirebaseEventSentInvited(Event event) {
         Map<String, Object> updates = new HashMap<>();
         Map<String, Map<String, Object>> serializedUsersSentInvite = new HashMap<>();
 
-        for (Map.Entry<String, User> entry : event.getUsersCancelled().entrySet()) {
+        for (Map.Entry<String, User> entry : event.getUsersSentInvite().entrySet()) {
             serializedUsersSentInvite.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
         }
         updates.put("usersSentInvite", serializedUsersSentInvite);
@@ -526,7 +510,7 @@ public class Event implements Serializable {
 
             if (user != null) {
                 // Add the user to the invited list
-                usersInvited.put(userId, user);
+                usersSentInvite.put(userId, user);
 
                 // Remove the user from the waitlist
                 usersWaitlist.remove(userId);
@@ -540,12 +524,10 @@ public class Event implements Serializable {
 
         // Update Firestore with the modified event
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").document(eventId)
-                .set(this) // Update the Firestore document with the current event object
+        db.collection("events").document(eventId).set(this) // Update the Firestore document with the current event object
                 .addOnSuccessListener(aVoid -> {
                     Log.d("runLottery", "Event successfully updated in Firestore.");
-                })
-                .addOnFailureListener(e -> {
+                }).addOnFailureListener(e -> {
                     Log.e("runLottery", "Error updating event in Firestore.", e);
                 });
     }
@@ -575,9 +557,7 @@ public class Event implements Serializable {
 
         // Update Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").document(eventId).set(this)
-                .addOnSuccessListener(aVoid -> Log.d("redrawLottery", "Event updated after replacement"))
-                .addOnFailureListener(e -> Log.e("redrawLottery", "Failed to update event", e));
+        db.collection("events").document(eventId).set(this).addOnSuccessListener(aVoid -> Log.d("redrawLottery", "Event updated after replacement")).addOnFailureListener(e -> Log.e("redrawLottery", "Failed to update event", e));
     }
 
     /**
@@ -605,36 +585,33 @@ public class Event implements Serializable {
             default:
                 return;
         }
-        db.collection("events").document(eventId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, User> usersToNotify = null;
-                        if ("waitlisted".equals(status)) {
-                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersWaitlisted");
-                        } else if ("accepted".equals(status)) {
-                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersInvited");
-                        } else if ("cancelled".equals(status)) {
-                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersCancelled");
-                        } else if ("invited".equals(status)) {
-                            usersToNotify = (Map<String, User>) documentSnapshot.get("usersSentInvite");
-                        }
+        db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Map<String, User> usersToNotify = null;
+                if ("waitlisted".equals(status)) {
+                    usersToNotify = (Map<String, User>) documentSnapshot.get("usersWaitlisted");
+                } else if ("accepted".equals(status)) {
+                    usersToNotify = (Map<String, User>) documentSnapshot.get("usersInvited");
+                } else if ("cancelled".equals(status)) {
+                    usersToNotify = (Map<String, User>) documentSnapshot.get("usersCancelled");
+                } else if ("invited".equals(status)) {
+                    usersToNotify = (Map<String, User>) documentSnapshot.get("usersSentInvite");
+                }
 
-                        if (usersToNotify != null) {
-                            for (Map.Entry<String, User> entry : usersToNotify.entrySet()) {
-                                String userId = entry.getKey();
-                                if (userId != null) {
+                if (usersToNotify != null) {
+                    for (Map.Entry<String, User> entry : usersToNotify.entrySet()) {
+                        String userId = entry.getKey();
+                        if (userId != null) {
 
-                                    addNotificationToUser(db, userId, message); // Add notification to user
-                                }
-                            }
+                            addNotificationToUser(db, userId, message); // Add notification to user
                         }
                     }
+                }
+            }
 
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firebase", "Error getting event data", e);
-                });
+        }).addOnFailureListener(e -> {
+            Log.w("Firebase", "Error getting event data", e);
+        });
     }
 
     /**
@@ -651,13 +628,11 @@ public class Event implements Serializable {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    userRef.update("notifications", FieldValue.arrayUnion(message))
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firebase", "Notification added to user: " + userId);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.w("Firebase", "Error adding notification to user: " + userId, e);
-                            });
+                    userRef.update("notifications", FieldValue.arrayUnion(message)).addOnSuccessListener(aVoid -> {
+                        Log.d("Firebase", "Notification added to user: " + userId);
+                    }).addOnFailureListener(e -> {
+                        Log.w("Firebase", "Error adding notification to user: " + userId, e);
+                    });
                 } else {
                     Log.w("Firebase", "User document does not exist: " + userId);
                 }
@@ -704,8 +679,3 @@ public class Event implements Serializable {
 
 
 }
-
-
-
-
-

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class holds the logic and functionality for the entrant list
+ */
 public class EntrantListFragment extends Fragment {
     private static final String ARG_EVENT_ID = "eventId";
     private String eventId;
@@ -32,6 +35,12 @@ public class EntrantListFragment extends Fragment {
     private Map<String, User> usersSentInvite;
     private Map<String, User> usersCancelled;
 
+    /**
+     * Creates an EntrantListFragment for testing
+     *
+     * @param eventId the id for the event that the entrants are associated with
+     * @return an EntrantListFragment
+     */
     public static EntrantListFragment newInstance(String eventId) {
         EntrantListFragment fragment = new EntrantListFragment();
         Bundle args = new Bundle();

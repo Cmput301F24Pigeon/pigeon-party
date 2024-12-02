@@ -32,6 +32,7 @@ public class EditFacilityFragment extends Fragment {
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return EditFacilityFragment the mock fragment being used for testing
      */
     public static EditFacilityFragment newInstance(User user) {
@@ -91,7 +92,7 @@ public class EditFacilityFragment extends Fragment {
                 if (isValid) {
                     String facilityAddress = editFacilityAddress.getText().toString();
                     String facilityName = editFacilityName.getText().toString();
-                    editFacility(db, currentFacility,facilityName,facilityAddress);
+                    editFacility(db, currentFacility, facilityName, facilityAddress);
                     // Change the button text back to "Edit Facility" after a successful update
                     updateProfileButton.setText("Edit Facility");
 
@@ -119,12 +120,13 @@ public class EditFacilityFragment extends Fragment {
 
     /**
      * The method is used to edit a users facility in firebase
-     * @param db The firebase database to store the user
-     * @param facility The facility object which is being updated
-     * @param facilityName The new facility name
+     *
+     * @param db              The firebase database to store the user
+     * @param facility        The facility object which is being updated
+     * @param facilityName    The new facility name
      * @param facilityAddress The new facility address
      */
-    public void editFacility(FirebaseFirestore db,  Facility facility, String facilityName, String facilityAddress) {
+    public void editFacility(FirebaseFirestore db, Facility facility, String facilityName, String facilityAddress) {
         facility.setAddress(facilityAddress);
         facility.setName(facilityName);
         Map<String, Object> facilityUpdates = new HashMap<>();
@@ -138,5 +140,5 @@ public class EditFacilityFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating user's facility", e));
 
-                }
+    }
 }

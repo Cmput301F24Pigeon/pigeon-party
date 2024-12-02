@@ -25,8 +25,8 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
     private Context context;
 
 
-    public AdminEventArrayAdapter(Context context, ArrayList<Event> events){
-        super(context,0, events);
+    public AdminEventArrayAdapter(Context context, ArrayList<Event> events) {
+        super(context, 0, events);
         this.events = events;
         this.context = context;
     }
@@ -36,8 +36,8 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.admin_event_content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.admin_event_content, parent, false);
         }
 
         Event event = events.get(position);

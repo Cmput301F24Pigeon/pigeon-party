@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,6 +21,11 @@ public class NotificationHelper {
     private static final String CHANNEL_ID = "event_channel";
     private Context context;
 
+    /**
+     * Constructor for NotificationHelper class
+     *
+     * @param context the current app context
+     */
     public NotificationHelper(Context context) {
         this.context = context;
         createNotificationChannel();
@@ -40,8 +46,13 @@ public class NotificationHelper {
         }
     }
 
-
-    // Added condition to check if user has notifications turned on
+    /**
+     * Checks if user is invited and has notifications turned on
+     * Sends a notification that they have been selected for the event
+     *
+     * @param user  The user receiving the notification
+     * @param event The event that the user is receiving the notification for
+     */
     public void notifyUserIfChosen(User user, Event event) {
         if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -54,10 +65,11 @@ public class NotificationHelper {
             notificationManager.notify(1, builder.build());
         }
     }
+
     /**
      * This method allows notification to be sent to entrants
      *
-     * @param user The user to send the notification to
+     * @param user    The user to send the notification to
      * @param message The message to be put in the notification
      */
     public void notifyUser(User user, String message) {

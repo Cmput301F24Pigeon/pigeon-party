@@ -21,9 +21,14 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
-
-    public EventsArrayAdapter(Context context, ArrayList<Event> events){
-        super(context,0, events);
+    /**
+     * Constructor for the EventsArrayAdapter class with arguments needed for arrayAdapter constructor
+     *
+     * @param context context of app
+     * @param events  arrayList of events to be used in the arrayAdapter
+     */
+    public EventsArrayAdapter(Context context, ArrayList<Event> events) {
+        super(context, 0, events);
         this.events = events;
         this.context = context;
     }
@@ -31,11 +36,10 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        return super.getView(position, convertView, parent);
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.content, parent, false);
         }
 
         Event event = events.get(position);
@@ -43,42 +47,35 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         TextView date = view.findViewById(R.id.date);
         TextView eventName = view.findViewById(R.id.eventName);
         TextView status = view.findViewById(R.id.status);
-        //address.setText(event.getFacility.getAddress);
-        if(event.getDateTime() != null){
+        TextView address = view.findViewById(R.id.address);
+        address.setText(event.getFacility().getAddress());
+
+        if (event.getDateTime() != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy 'at' HH:mm", Locale.getDefault());
             String formattedDate = formatter.format(event.getDateTime());
             date.setText(formattedDate);
-        }
-        else{
+        } else {
             date.setText(" ");
         }
 
-        if(event.getTitle() != null){
+        if (event.getTitle() != null) {
             eventName.setText(event.getTitle());
-        }
-        else{
+        } else {
             eventName.setText("");
         }
-        if(event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()) != null){
+        if (event.getUsersWaitlisted().get(MainActivity.currentUser.getUniqueId()) != null) {
             status.setText("Status: Waitlist");
-        }
-        else if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null){
+        } else if (event.getUsersCancelled().get(MainActivity.currentUser.getUniqueId()) != null) {
             status.setText("Status: Cancelled");
-        }
-        else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: Confirmed");
-        }
-        else if (event.getUsersSentInvite().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: Invited (Click to accept");
-        }
-        else{
+        } else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null) {
+            status.setText("Status: Joined");
+        } else if (event.getUsersSentInvite().get(MainActivity.currentUser.getUniqueId()) != null) {
+            status.setText("Status: Invited (Click to Accept)");
+        } else {
             status.setText("");
         }
 
         return view;
 
     }
-
-
-
 }

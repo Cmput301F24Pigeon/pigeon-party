@@ -39,6 +39,9 @@ import java.util.HashMap;
 
 // Run all these tests, one of them fails
 
+/**
+ * Testing the create entrant profile test class
+ */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class CreateEntrantProfileTest {

@@ -37,7 +37,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-
+/**
+ * This tests our mainactivity tests like our ui
+ */
 public class MainActivityTest {
     private FirebaseFirestore db;
     private String testUserName;

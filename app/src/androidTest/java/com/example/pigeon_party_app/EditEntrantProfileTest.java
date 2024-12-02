@@ -116,7 +116,7 @@ public class EditEntrantProfileTest {
      * This method tests that the initial on the user's avatar is updated if they change their name in their profile
      */
     @Test
-    public void testAvatarUpdate() {
+    public void testAvatarInitialUpdate() {
         onView(withId(R.id.editText_edit_user_name)).perform(clearText());
         onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
         onView(withId(R.id.update_user_profile_button)).perform(click());

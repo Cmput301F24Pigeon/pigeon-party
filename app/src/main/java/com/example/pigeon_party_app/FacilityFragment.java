@@ -26,10 +26,12 @@ import java.util.Map;
 public class FacilityFragment extends Fragment {
     private User current_user = MainActivity.getCurrentUser();
 
-    public FacilityFragment() {}
+    public FacilityFragment() {
+    }
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return FacilityFragment the mock fragment being used for testing
      */
     public static FacilityFragment newInstance(User user) {
@@ -48,15 +50,6 @@ public class FacilityFragment extends Fragment {
             current_user = (User) getArguments().getSerializable("current_user");
         }
     }
-
-   /* public static FacilityFragment newInstance(String param1, String param2) {
-        FacilityFragment fragment = new FacilityFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("user",current_user);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,7 +74,7 @@ public class FacilityFragment extends Fragment {
             }
             if (isValid) {
                 Facility facility = new Facility(uniqueId, facilityAddress.getText().toString(), facilityName.getText().toString());
-                createFacility(db,facility);
+                createFacility(db, facility);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, new OrganizerFragment())
@@ -98,16 +91,16 @@ public class FacilityFragment extends Fragment {
         });
 
 
-
         return view;
     }
 
     /**
      * Function which adds a facility to the current users document on firebase
-     * @param db FireBase database
+     *
+     * @param db       FireBase database
      * @param facility New facility created by user
      */
-    public void createFacility(FirebaseFirestore db,  Facility facility) {
+    public void createFacility(FirebaseFirestore db, Facility facility) {
         current_user.setFacility(facility);
         ArrayList<String> organizerList = new ArrayList<>();
         current_user.setOrganizerEventList(organizerList);

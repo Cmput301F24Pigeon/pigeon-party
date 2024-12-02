@@ -51,15 +51,6 @@ public class FacilityFragment extends Fragment {
         }
     }
 
-   /* public static FacilityFragment newInstance(String param1, String param2) {
-        FacilityFragment fragment = new FacilityFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("user",current_user);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

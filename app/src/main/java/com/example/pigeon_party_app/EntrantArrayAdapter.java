@@ -18,11 +18,8 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Map<String, User> waitlist = new HashMap<>();
     private Map<String, User> invited = new HashMap<>();
-    ;
     private Map<String, User> cancelled = new HashMap<>();
-    ;
     private Map<String, User> sentInvite = new HashMap<>();
-    ;
 
     private Context context;
 

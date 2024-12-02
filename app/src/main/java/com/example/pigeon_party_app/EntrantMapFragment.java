@@ -32,6 +32,11 @@ public class EntrantMapFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * newInstance method creates a mock fragment for testing
+     *
+     * @return EntrantMapFragment the mock fragment being used for testing
+     */
     public static EntrantMapFragment newInstance(String eventId) {
         EntrantMapFragment fragment = new EntrantMapFragment();
         Bundle args = new Bundle();
@@ -48,8 +53,6 @@ public class EntrantMapFragment extends Fragment {
         }
 
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,8 +107,9 @@ public class EntrantMapFragment extends Fragment {
 
     /**
      * This method puts markers on the map image to show users locations
-     * @param latitude The users latitude
-     * @param longitude The users longitude
+     *
+     * @param latitude        The users latitude
+     * @param longitude       The users longitude
      * @param participantName The name of the user
      */
     public void addMarker(double latitude, double longitude, String participantName) {

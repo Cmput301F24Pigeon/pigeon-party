@@ -15,6 +15,9 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+/**
+ * This shows us the qr code as an organizer
+ */
 public class QrcodeFragment extends Fragment {
     private ImageView qrCode;
     private String eventId;

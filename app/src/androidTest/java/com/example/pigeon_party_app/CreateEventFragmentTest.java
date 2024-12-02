@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Testing our create events fragment class
+ */
 @RunWith(AndroidJUnit4.class)
 public class CreateEventFragmentTest {
     private FirebaseFirestore db;

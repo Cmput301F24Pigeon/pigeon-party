@@ -23,9 +23,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * To test our admin fragment so we can see if we are allowed to browse everyone
+ */
 public class AdminFragmentTest {
     private FragmentScenario<AdminFragment> scenario;
-
 
 
     @Before
@@ -33,6 +35,9 @@ public class AdminFragmentTest {
         scenario = FragmentScenario.launchInContainer(AdminFragment.class);
     }
 
+    /**
+     * Tests to see if the listview shows up so we can see users
+     */
     @Test
     public void testBrowseProfilesNavigation() {
         onView(withId(R.id.browse_profiles)).perform(click());
@@ -40,6 +45,9 @@ public class AdminFragmentTest {
         onView(withId(R.id.user_list)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Tests to see if the listview shows up so we can see events
+     */
     @Test
     public void testBrowseEventsNavigation() {
         onView(withId(R.id.browse_events)).perform(click());
@@ -47,11 +55,13 @@ public class AdminFragmentTest {
         onView(withId(R.id.event_list)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Tests to see if the listview shows up so we can see images
+     */
     @Test
     public void testBrowseImagesNavigation() {
         onView(withId(R.id.browse_images)).perform(click());
         onView(withId(R.id.image_list)).check(matches(isDisplayed()));
-
     }
 }
 

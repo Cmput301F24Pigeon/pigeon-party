@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Tests class EventDetailsFragment
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventDetailsFragmentTest {
     private FirebaseFirestore db;

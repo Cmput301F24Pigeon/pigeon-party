@@ -55,7 +55,7 @@ public class EventDetailsFragment extends Fragment {
     Event event = MainActivity.getCurrentEvent();
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
-    private Button drawParticipantsButton;
+    Button drawParticipantsButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private LocationManager locationManager;

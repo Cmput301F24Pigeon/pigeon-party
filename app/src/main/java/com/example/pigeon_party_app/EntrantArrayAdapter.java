@@ -109,8 +109,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
             entrantStatus.setText("Invited");
         } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
-        }
-        if (invited.containsKey(user.getUniqueId())) {
+        } else if (invited.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Joined");
         }
 

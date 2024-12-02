@@ -135,6 +135,9 @@ public class EditEntrantProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Calls Validator to check input and updates the user profile if all the input is valid
+     */
     private void validateAndSetInput() {
         boolean isValid = true;
         if (!Validator.isName(editEntrantName, "Your profile must include a name.")) {
@@ -155,8 +158,6 @@ public class EditEntrantProfileFragment extends Fragment {
             entrant.setEmail(entrantEmail);
             entrant.setPhoneNumber(entrantPhoneNumber);
             updateUserProfile(entrant);
-
-//            uploadPicture();
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -185,6 +186,9 @@ public class EditEntrantProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Uploads selected picture to Firebase storage
+     */
     private void uploadPicture() {
         if (imageUri != null) {
             final ProgressDialog pd = new ProgressDialog(getContext());
@@ -222,6 +226,9 @@ public class EditEntrantProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Deletes user's profile picture from Firebase storage
+     */
     private void deletePicture() {
         StorageReference imageRef = storageRef.child("profile_images/" + entrant.getUniqueId());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {

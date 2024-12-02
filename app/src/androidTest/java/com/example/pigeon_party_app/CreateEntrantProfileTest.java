@@ -128,7 +128,7 @@ public class CreateEntrantProfileTest {
             testUserColour = "#000000";
             testUserIsAdmin = false;
 
-            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, new ArrayList<String>(),new ArrayList<String>(), testUserIsAdmin);
+            testUser = new User(testUserName, testUserEmail, testUserPhone, testUserId, testUserIsOrganizer, testUserIsEntrant, testUserFacility, testUserHasNotifications, testUserColour, new ArrayList<String>(), new ArrayList<String>(), testUserIsAdmin);
             createdFragment.addUser(testUser);
         });
     }
@@ -188,8 +188,9 @@ public class CreateEntrantProfileTest {
     /**
      * Helper method to fill user input fields with given parameters and click the "Create" button
      * Used as a form of data provider to test for focus set on fields with invalid inputs
-     * @param name String entered into the name editText field
-     * @param email String entered into the email editText field
+     *
+     * @param name        String entered into the name editText field
+     * @param email       String entered into the email editText field
      * @param phoneNumber String entered into the phoneNumber editText field
      */
     private void testInput(String name, String email, String phoneNumber) {

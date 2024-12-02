@@ -23,11 +23,8 @@ public class ViewEntrantProfileFragment extends Fragment {
 
     public static User entrant;
 
-    public ViewEntrantProfileFragment() {}
-
-//    public ViewEntrantProfileFragment(User entrant) {
-//        this.entrant = entrant;
-//    }
+    public ViewEntrantProfileFragment() {
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         entrant = MainActivity.getCurrentUser();
@@ -68,6 +65,7 @@ public class ViewEntrantProfileFragment extends Fragment {
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return ViewEntrantProfileFragment the mock fragment being used for testing
      */
     public static ViewEntrantProfileFragment newInstance() {

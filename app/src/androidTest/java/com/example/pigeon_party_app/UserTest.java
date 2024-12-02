@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class UserTest {
 
     @Before
     public void setUp() {
-        facility = new Facility("test-user-id",  "123 Facility St.", "Test Facility");
+        facility = new Facility("test-user-id", "123 Facility St.", "Test Facility");
         user = new User("Test User", "test@user.com", "1234567890", "test-user-id", false, true, facility, true, "#000000", new ArrayList<>(), new ArrayList<>(), false);
         sampleBitmap = createSampleBitmap();
     }
@@ -138,4 +139,3 @@ public class UserTest {
         return bitmap;
     }
 }
-

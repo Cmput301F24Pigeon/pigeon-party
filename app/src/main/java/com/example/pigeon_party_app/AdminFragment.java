@@ -42,6 +42,14 @@ public class AdminFragment extends Fragment {
                     .commit();
         });
 
+        browseImages.setOnClickListener( v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new BrowseImagesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

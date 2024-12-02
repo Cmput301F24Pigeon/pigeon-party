@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
 
                         builder.setNegativeButton("Decline", (dialog, which) -> {
                             currentEvent.addUserToCancelled(currentUser);
-                            currentEvent.removeUserFromWaitlist(currentUser);
+                            currentEvent.removeUserFromSentInvite(currentUser);
                             currentUser.removeEntrantEventList(position);
                             updateEntrantEventList(currentUser);
                             if (eventArrayList != null) {

@@ -81,6 +81,7 @@ public class EventDetailsFragment extends Fragment {
         eventLocation = view.findViewById(R.id.eventLocation);
         eventDetails = view.findViewById(R.id.eventDetails);
         eventCapacity = view.findViewById(R.id.eventCapacity);
+        eventCapacity.setVisibility(View.INVISIBLE);
         signUpButton = view.findViewById(R.id.signupButton);
         eventPoster = view.findViewById(R.id.eventPoster);
         drawParticipantsButton = view.findViewById(R.id.drawParticipantsButton);
@@ -91,7 +92,10 @@ public class EventDetailsFragment extends Fragment {
         eventDateTime.setText("Date/Time: " + formatter.format(event.getDateTime()));
         eventLocation.setText("Location: " + event.getFacility().getAddress());
         eventDetails.setText("Details:\n" + event.getDetails());
-        eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
+        if (!String.valueOf(event.getWaitlistCapacity()).equals("-1")) {
+            eventCapacity.setText("Waitlist Capacity: " + String.valueOf(event.getWaitlistCapacity()));
+            eventCapacity.setVisibility(View.VISIBLE);
+        }
         String imageUrl = event.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
@@ -225,36 +229,6 @@ public class EventDetailsFragment extends Fragment {
         }
 
     }
-/*
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(android.location.Location location) {
-            Double latitude = location.getLatitude();
-            Double longitude = location.getLongitude();
-            Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
-            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
-
-            // Update the Firestore database
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events").document(event.getEventId())
-                    .update("entrantsLocation." + current_user.getName(), geoPoint)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Location updated successfully");
-                    })
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Handle provider enabled
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Handle provider disabled
-        }
-    };
-*/
 
     /**
      * This method gets the users location upon accepting location verification

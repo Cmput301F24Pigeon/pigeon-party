@@ -458,7 +458,7 @@ public class Event implements Serializable {
         Map<String, Object> updates = new HashMap<>();
         Map<String, Map<String, Object>> serializedUsersSentInvite = new HashMap<>();
 
-        for (Map.Entry<String, User> entry : event.getUsersCancelled().entrySet()) {
+        for (Map.Entry<String, User> entry : event.getUsersSentInvite().entrySet()) {
             serializedUsersSentInvite.put(entry.getKey(), entry.getValue().toMap()); // Convert User to map
         }
         updates.put("usersSentInvite", serializedUsersSentInvite);
@@ -639,7 +639,6 @@ public class Event implements Serializable {
 
     /**
      * This is a method that adds a notification to the user document in firebase
-     *
      * @param db
      * @param userId
      * @param message

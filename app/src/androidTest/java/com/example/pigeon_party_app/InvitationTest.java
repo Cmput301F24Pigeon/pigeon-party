@@ -42,6 +42,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This tests our invitations to see if they get sent
+ */
 @RunWith(AndroidJUnit4.class)
 public class InvitationTest {
     private ArrayList<Event> eventList;

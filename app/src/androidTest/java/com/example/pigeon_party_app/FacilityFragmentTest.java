@@ -29,7 +29,9 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-
+/**
+ * This tests our facility fragment when we make a facility
+ */
 @RunWith(AndroidJUnit4.class)
 public class FacilityFragmentTest {
     private FirebaseFirestore db;

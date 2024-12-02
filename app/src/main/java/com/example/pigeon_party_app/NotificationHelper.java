@@ -21,6 +21,11 @@ public class NotificationHelper {
     private static final String CHANNEL_ID = "event_channel";
     private Context context;
 
+    /**
+     * Constructor for NotificationHelper class
+     *
+     * @param context the current app context
+     */
     public NotificationHelper(Context context) {
         this.context = context;
         createNotificationChannel();
@@ -41,8 +46,13 @@ public class NotificationHelper {
         }
     }
 
-
-    // Added condition to check if user has notifications turned on
+    /**
+     * Checks if user is invited and has notifications turned on
+     * Sends a notification that they have been selected for the event
+     *
+     * @param user  The user receiving the notification
+     * @param event The event that the user is receiving the notification for
+     */
     public void notifyUserIfChosen(User user, Event event) {
         if (event.getUsersInvited().containsKey(user.getUniqueId()) && user.hasNotificationsOn()) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

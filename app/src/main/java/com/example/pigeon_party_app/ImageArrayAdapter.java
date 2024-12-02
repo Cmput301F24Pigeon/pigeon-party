@@ -19,12 +19,12 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 
-public class ImageArrayAdapter extends ArrayAdapter<StorageReference> {
-    private ArrayList<StorageReference> images;
+public class ImageArrayAdapter extends ArrayAdapter<String> {
+    private ArrayList<String> images;
     private Context context;
 
 
-    public ImageArrayAdapter(Context context, ArrayList<StorageReference> images){
+    public ImageArrayAdapter(Context context, ArrayList<String> images){
         super(context,0, images);
         this.images = images;
         this.context = context;
@@ -39,11 +39,11 @@ public class ImageArrayAdapter extends ArrayAdapter<StorageReference> {
             view = LayoutInflater.from(context).inflate(R.layout.admin_image_content, parent,false);
         }
 
-        StorageReference currentImage = images.get(position);
+        String imageUri = images.get(position);
 
         ImageView image = view.findViewById(R.id.image);
         Glide.with(context)
-                .load(currentImage.getDownloadUrl())
+                .load(imageUri)
                 .into(image);
 
 

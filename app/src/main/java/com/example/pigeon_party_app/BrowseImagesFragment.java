@@ -1,12 +1,16 @@
 package com.example.pigeon_party_app;
 
+import android.app.AlertDialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class BrowseImagesFragment extends Fragment {
-    private ArrayList<StorageReference> images;
+    private ArrayList<String> images;
     private ImageArrayAdapter imageArrayAdapter;
     private ListView imageListView;
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -50,38 +54,98 @@ public class BrowseImagesFragment extends Fragment {
         });
         images = new ArrayList<>();
         imageListView = view.findViewById(R.id.image_list);
-        fill_images();
         imageArrayAdapter = new ImageArrayAdapter(getActivity(), images);
         imageListView.setAdapter(imageArrayAdapter);
+        fill_images();
 
+        imageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String current = imageArrayAdapter.getItem(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Do you want to remove this image");
+                builder.setCancelable(true);
+                builder.setPositiveButton("Remove image", (dialog, which) -> {
+                    removeImage(position);
+                });
+                builder.show();
+
+
+            }
+        });
         return view;
     }
+
+    /**
+     *
+     */
     private void fill_images(){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        StorageReference listRef = storageRef.child("event_posters/" );
 
-        //for events
-        listRef.listAll()
-                .addOnSuccessListener(listResult -> {
-                    images.addAll(listResult.getItems());
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("firebase", "error loading images");
-                });
+        StorageReference listRef = storageRef.child("event_posters" );
 
+
+        listRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for(StorageReference file:listResult.getItems()){
+                    file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            images.add(uri.toString());
+                            Log.e("Itemvalue",uri.toString());
+                            imageArrayAdapter.notifyDataSetChanged();
+
+                        }
+                    });
+                }
+            }
+        });
         //for profile images
-        listRef = storageRef.child("profile_images/" );
+        listRef = storageRef.child("profile_images");
 
-        listRef.listAll()
-                .addOnSuccessListener(listResult -> {
-                    images.addAll(listResult.getItems());
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("firebase", "error loading images");
-                });
+        listRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+
+                for(StorageReference file:listResult.getItems()){
+                    file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            images.add(uri.toString());
+                            Log.e("Itemvalue",uri.toString());
+                            imageArrayAdapter.notifyDataSetChanged();
+
+                        }
+                    });
+                }
+            }
+        });
+
     }
+    private void removeImage(int i){
+        String temp = images.get(i);
+        StorageReference imageRef = storage.getReferenceFromUrl(temp);
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_LONG).show();
+                Log.d("Firebase Storage", "Image delete successful");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(getContext(), "Could not delete image", Toast.LENGTH_LONG).show();
+                Log.d("Firebase Storage", "Image delete successful");
+            }
+        });
+        images.remove(i);
 
+        imageArrayAdapter.notifyDataSetChanged();
+
+
+
+    }
 
 }
 

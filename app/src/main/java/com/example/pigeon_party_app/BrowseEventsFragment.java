@@ -25,14 +25,21 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+import kotlin.reflect.KType;
+
 /**
  * This fragment handles our browsing events for our admin class and removing events
  */
 public class BrowseEventsFragment extends Fragment {
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ArrayList<Event> events;
-    private AdminEventArrayAdapter eventArrayAdapter;
-    private ListView eventsListView;
+    public ArrayList<Event> events;
+    public AdminEventArrayAdapter eventArrayAdapter;
+    public ListView eventsListView;
+
+    public BrowseEventsFragment(){
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

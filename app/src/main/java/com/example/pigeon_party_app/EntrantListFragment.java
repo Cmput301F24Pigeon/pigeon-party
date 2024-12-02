@@ -156,7 +156,7 @@ public class EntrantListFragment extends Fragment {
                     if (event != null) {
                         // Get the maps of users for waitlisted, invited, and cancelled
                         usersWaitlist = event.getUsersWaitlisted();
-                        usersSentInvite = event.getUsersInvited();
+                        usersSentInvite = event.getUsersSentInvite();
                         usersCancelled = event.getUsersCancelled();
 
                         // Create a combined list of users to show in the list

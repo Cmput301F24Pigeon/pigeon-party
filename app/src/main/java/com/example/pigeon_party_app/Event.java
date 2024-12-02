@@ -360,7 +360,7 @@ public class Event implements Serializable {
 
                 if (user != null) {
                     // Add the user to the invited list
-                    usersSentInvite.put(userId, user);
+                    usersInvited.put(userId, user);
 
                     // Remove the user from the waitlist
                     usersWaitlist.remove(userId);
@@ -401,7 +401,7 @@ public class Event implements Serializable {
             User user = nextUser.getValue();
 
             usersWaitlist.remove(userId);
-            usersInvited.put(userId, user);
+            usersSentInvite.put(userId, user);
 
             // Notifies the user
             if (user.hasNotificationsOn()) {

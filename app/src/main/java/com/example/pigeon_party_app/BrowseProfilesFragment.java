@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +26,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -45,7 +49,7 @@ public class BrowseProfilesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_profile_fragment, container, false);
 
         ImageButton backButton = view.findViewById(R.id.button_back);
@@ -68,7 +72,7 @@ public class BrowseProfilesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User current = userArrayAdapter.getItem(position);
-                if (current.isOrganizer()){
+                if (current.isOrganizer()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Do you want to remove user or remove it's facility");
                     builder.setCancelable(true);
@@ -80,8 +84,7 @@ public class BrowseProfilesFragment extends Fragment {
                         deleteFacility(position);
                     });
                     builder.show();
-                }
-                else {
+                } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Do you want to remove user");
                     builder.setCancelable(true);
@@ -90,16 +93,15 @@ public class BrowseProfilesFragment extends Fragment {
                     });
                     builder.show();
                 }
-
             }
         });
         return view;
     }
 
     /**
-     *this method fills our list of users in the firebase and that have used our app
+     * this method fills our list of users in the firebase and that have used our app
      */
-    private void fill_list(){
+    private void fill_list() {
 
         CollectionReference usersRef = db.collection("user");
         usersRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -111,7 +113,7 @@ public class BrowseProfilesFragment extends Fragment {
                 }
                 if (querySnapshots != null) {
                     users.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                    for (QueryDocumentSnapshot doc : querySnapshots) {
                         users.add(doc.toObject(User.class));
                     }
                     userArrayAdapter.notifyDataSetChanged();
@@ -122,9 +124,10 @@ public class BrowseProfilesFragment extends Fragment {
 
     /**
      * This deletes the user from firebase
+     *
      * @param i which is the position in our listview
      */
-    private void deleteUser(int i){
+    private void deleteUser(int i) {
         // Add the city to the local list
         User temp = users.get(i);
         users.remove(i);
@@ -147,16 +150,17 @@ public class BrowseProfilesFragment extends Fragment {
 
     /**
      * This deletes the facility and updates our firebase user
+     *
      * @param i this is the position of the user in our list
      */
-    private void deleteFacility(int i){
+    private void deleteFacility(int i) {
         // Add the city to the local list
         User temp = users.get(i);
         temp.setFacility(null);
         ArrayList<String> emptyList = new ArrayList<String>();
         temp.setOrganizer(false);
         //remove the events the facility hosts
-        for (String event :temp.getOrganizerEventList()){
+        for (String event : temp.getOrganizerEventList()) {
             removeEvent(event);
         }
         temp.setOrganizerEventList(emptyList);
@@ -183,10 +187,42 @@ public class BrowseProfilesFragment extends Fragment {
     }
 
     /**
-     * Removes events that are associated to the facility since the facility doesn't exist anymore we delete that event
+     * Removes events that are associated to the facility since the facility doesn't exist anymore we delete that event and the images assocaited to it
+     *
      * @param event the event we want to delete
      */
-    private void removeEvent(String event){
+    private void removeEvent(String event) {
+
+
+        DocumentReference docRef = db.collection("events").document(event);
+
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Event temp = documentSnapshot.toObject(Event.class);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+
+                    if (temp.getImageUrl() != null) {
+                        StorageReference imageRef = storage.getReferenceFromUrl(temp.getImageUrl());
+                        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_LONG).show();
+                                Log.d("Firebase Storage", "Image delete successful");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(getContext(), "Could not delete image", Toast.LENGTH_LONG).show();
+                                Log.d("Firebase Storage", "Image delete successful");
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
         db.collection("events").document(event)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -198,7 +234,7 @@ public class BrowseProfilesFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("firebase", "Error deleting document", e);
+                        Log.w("firebase", "Document does not exist", e);
                     }
                 });
     }

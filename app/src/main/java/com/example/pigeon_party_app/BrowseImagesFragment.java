@@ -31,6 +31,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment allows the admin to browse events and remove them
+ */
 public class BrowseImagesFragment extends Fragment {
     private ArrayList<String> images;
     private ImageArrayAdapter imageArrayAdapter;
@@ -61,7 +64,6 @@ public class BrowseImagesFragment extends Fragment {
         imageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String current = imageArrayAdapter.getItem(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Do you want to remove this image");
                 builder.setCancelable(true);
@@ -77,7 +79,7 @@ public class BrowseImagesFragment extends Fragment {
     }
 
     /**
-     *
+     *This fills the list view with images
      */
     private void fill_images(){
         StorageReference storageRef = storage.getReference();
@@ -123,6 +125,10 @@ public class BrowseImagesFragment extends Fragment {
         });
 
     }
+
+    /**
+     * this removes the images from firebase
+     */
     private void removeImage(int i){
         String temp = images.get(i);
         StorageReference imageRef = storage.getReferenceFromUrl(temp);
@@ -142,6 +148,7 @@ public class BrowseImagesFragment extends Fragment {
         images.remove(i);
 
         imageArrayAdapter.notifyDataSetChanged();
+
 
 
 

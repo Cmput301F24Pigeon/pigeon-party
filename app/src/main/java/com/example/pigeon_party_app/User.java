@@ -26,10 +26,8 @@ public class User implements Serializable {
     private ArrayList<String> entrantEventList;
     private ArrayList<String> organizerEventList;
 
-
     private boolean admin;
     private Bitmap profileImagePath;
-
 
     public User() {
         notifications = new ArrayList<>();
@@ -40,18 +38,19 @@ public class User implements Serializable {
 
     /**
      * Contructor method for the User class, creates a User object
-     * @param name the user's name
-     * @param email the user's email
-     * @param phoneNumber the user's phone number
-     * @param uniqueId the user's id, used to identify them in Firebase
-     * @param isOrganizer a boolean representing if the user is an organizer
-     * @param isEntrant a boolean representing if the user is an entrant
-     * @param facility a facility object associated with the user
+     *
+     * @param name               the user's name
+     * @param email              the user's email
+     * @param phoneNumber        the user's phone number
+     * @param uniqueId           the user's id, used to identify them in Firebase
+     * @param isOrganizer        a boolean representing if the user is an organizer
+     * @param isEntrant          a boolean representing if the user is an entrant
+     * @param facility           a facility object associated with the user
      * @param notificationStatus a boolean representing if the user has notifications turned on
-     * @param colour a string representing the background colour for a user's avatar
-     * @param entrantEventList a list of events that our user has joined
+     * @param colour             a string representing the background colour for a user's avatar
+     * @param entrantEventList   a list of events that our user has joined
      * @param organizerEventList a list of events the user has made
-     * @param isAdmin a boolean representing if the user is an admin
+     * @param isAdmin            a boolean representing if the user is an admin
      */
     public User(String name, String email, String phoneNumber, String uniqueId, boolean isOrganizer, boolean isEntrant, Facility facility, boolean notificationStatus, String colour, ArrayList<String> entrantEventList, ArrayList<String> organizerEventList, boolean isAdmin) {
 
@@ -75,6 +74,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's name
+     *
      * @return name, the user's name as a String
      */
     public String getName() {
@@ -83,6 +83,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's name
+     *
      * @param name the String representing the user's name
      */
     public void setName(String name) {
@@ -91,6 +92,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's email
+     *
      * @return email, the user's email as a String
      */
     public String getEmail() {
@@ -99,6 +101,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's email
+     *
      * @param email the String representing the user's email
      */
     public void setEmail(String email) {
@@ -107,6 +110,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's phone number
+     *
      * @return phoneNumber, the user's phone number as a String if provided, or an empty string
      */
     public String getPhoneNumber() {
@@ -115,6 +119,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's phoneNumber
+     *
      * @param phoneNumber the String representing the user's phone number
      */
     public void setPhoneNumber(String phoneNumber) {
@@ -123,6 +128,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's Id
+     *
      * @return uniqueId, the user's Id as a String
      */
     public String getUniqueId() {
@@ -131,6 +137,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's Id
+     *
      * @param uniqueId the String representing the user's uniqueId
      */
     public void setUniqueId(String uniqueId) {
@@ -139,6 +146,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's entrant status
+     *
      * @return entrant, a boolean representing whether or not the user is an entrant
      */
     public boolean isEntrant() {
@@ -147,6 +155,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's entrant status
+     *
      * @param entrant a boolean representing if the user in an entrant
      */
     public void setEntrant(boolean entrant) {
@@ -155,6 +164,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's organizer status
+     *
      * @return organizer, a boolean representing whether or not the user is an organizer
      */
     public boolean isOrganizer() {
@@ -163,6 +173,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's organizer status
+     *
      * @param Organizer a boolean representing if the user in an organizer
      */
     public void setOrganizer(boolean Organizer) {
@@ -171,6 +182,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's facility
+     *
      * @return facility, the facility associated with the user if they are an organizer or null if they are an entrant
      */
     public Facility getFacility() {
@@ -179,6 +191,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's facility
+     *
      * @param facility a Facility object to be associated with the user
      */
     public void setFacility(Facility facility) {
@@ -187,6 +200,7 @@ public class User implements Serializable {
 
     /**
      * Getter for getting the user's notification setting
+     *
      * @return notificationStatus, a boolean representing whether or not the user has notifications turned on
      */
     public boolean hasNotificationsOn() {
@@ -195,6 +209,7 @@ public class User implements Serializable {
 
     /**
      * Setter for setting the user's notification settings
+     *
      * @param notificationStatus a boolean representing if the user has notifications turned on
      */
     public void setNotificationsOn(boolean notificationStatus) {
@@ -203,16 +218,21 @@ public class User implements Serializable {
 
     /**
      * Getter for user's avatar background colour
+     *
      * @return colour a String representing the colour for the user's default avatar background
      */
     public String getColour() {
         return colour;
     }
 
+    /**
+     * Setter for the user's avatar background colour
+     *
+     * @param colour a String representing the colour for the user's default avatar background
+     */
     public void setColour(String colour) {
         this.colour = colour;
     }
-
 
     public List<String> getNotifications() {
         return notifications;
@@ -220,6 +240,7 @@ public class User implements Serializable {
 
     /**
      * adding notifications to the list of notifications
+     *
      * @param notification a string representing the notification
      */
     public void addNotification(String notification) {
@@ -250,48 +271,63 @@ public class User implements Serializable {
         this.entrantEventList = entrantEventList;
     }
 
-    public Bitmap getProfileImagePath(){
+    /**
+     * Getter for the path to the user's profile image
+     *
+     * @return a bitmap object for the path
+     */
+    public Bitmap getProfileImagePath() {
         return profileImagePath;
     }
 
-    public void setProfileImagePath (Bitmap profileImagePath){
+    /**
+     * Setter for the path to the user's profile image
+     *
+     * @param profileImagePath a bitmap object for the path
+     */
+    public void setProfileImagePath(Bitmap profileImagePath) {
         this.profileImagePath = profileImagePath;
     }
 
     /**
      * adding the event to our entrant event list
+     *
      * @param event an event we are adding to our `list
      */
-    public void addEntrantEventList (String event){
-            this.entrantEventList.add(event);
-        }
+    public void addEntrantEventList(String event) {
+        this.entrantEventList.add(event);
+    }
 
     /**
      * remove the event to our entrant event list
+     *
      * @param pos an event we are adding to our `list
      */
-    public void removeEntrantEventList(int pos){
+    public void removeEntrantEventList(int pos) {
         this.entrantEventList.remove(pos);
     }
 
     /**
      * adding the event to our organizer event list
+     *
      * @param event an event we are adding to our `list
      */
-    public void addOrganizerEventList(String event){
+    public void addOrganizerEventList(String event) {
         this.organizerEventList.add(event);
     }
 
     /**
      * remove the event to our organizer event list
+     *
      * @param pos the int value of an event we are adding to our `list
      */
-    public void removeOrganizerEventList(int pos){
+    public void removeOrganizerEventList(int pos) {
         this.organizerEventList.remove(pos);
     }
 
     /**
      * Getter for user's admin status either true or false
+     *
      * @return admin status as a boolean of true or false
      */
     public boolean isAdmin() {
@@ -314,10 +350,7 @@ public class User implements Serializable {
         userMap.put("notificationStatus", this.notificationStatus);
         userMap.put("notifications", this.notifications);
         userMap.put("colour", this.colour);
-
-
         userMap.put("entrantEventList", this.entrantEventList);
-
         userMap.put("organizerEventList", this.organizerEventList);
 
         // Handle facility serialization if needed
@@ -328,17 +361,16 @@ public class User implements Serializable {
         return userMap;
     }
 
-
-
     /**
      * Helper method to convert a list of events to a Map (to store in Firestore).
      */
     private List<Map<String, Object>> convertEventListToMap(List<Event> eventList) {
         List<Map<String, Object>> eventMapList = new ArrayList<>();
+
         for (Event event : eventList) {
             eventMapList.add(event.toMap());
         }
+
         return eventMapList;
     }
-
 }

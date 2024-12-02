@@ -77,16 +77,6 @@ public class EditEntrantProfileTest {
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
         testUserPhone = "1234567890";
-        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
-                CreateEntrantProfileFragment.class,
-                CreateEntrantProfileFragment.newInstance().getArguments()
-        );
-
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
-        onView(withId(R.id.create_user_profile_button)).perform(click());
-
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
         if (permissionDialog.waitForExists(2000)) {
             try {
@@ -95,6 +85,16 @@ public class EditEntrantProfileTest {
                 throw new RuntimeException(e);
             }
         }
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
+        onView(withId(R.id.create_user_profile_button)).perform(click());
+
+
         onView(withId(R.id.button_profile)).perform(click());
         onView(withId(R.id.edit_entrant_profile_button)).perform(click());
     }
@@ -115,7 +115,8 @@ public class EditEntrantProfileTest {
      * US 01.03.03
      * This method tests that the initial on the user's avatar is updated if they change their name in their profile
      */
-    @Test public void testAvatarUpdate() {
+    @Test
+    public void testAvatarUpdate() {
         onView(withId(R.id.editText_edit_user_name)).perform(clearText());
         onView(withId(R.id.editText_edit_user_name)).perform(ViewActions.typeText(newUserName), closeSoftKeyboard());
         onView(withId(R.id.update_user_profile_button)).perform(click());
@@ -162,8 +163,9 @@ public class EditEntrantProfileTest {
     /**
      * Helper method to fill user input fields with given parameters and click the "Create" button
      * Used as a form of data provider to test for focus set on fields with invalid inputs
-     * @param name String entered into the name editText field
-     * @param email String entered into the email editText field
+     *
+     * @param name        String entered into the name editText field
+     * @param email       String entered into the email editText field
      * @param phoneNumber String entered into the phoneNumber editText field
      */
     private void testInput(String name, String email, String phoneNumber) {

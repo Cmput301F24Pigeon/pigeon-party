@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * This class creates a default avatar with the user's first initial
+ * This class creates a default avatar with the user's first initial or sets the avatar to their profile picture if they have uploaded one
  * Based on AvatarView - Custom Implementation of ImageView, Muthu Raj:
  * https://medium.com/android-news/avatarview-custom-implementation-of-imageview-4bcf0714d09d
  */
@@ -47,8 +47,9 @@ public class AvatarView extends AppCompatImageView {
 
     /**
      * Constructor function for Avatar view class, calls constructor for ImageView class
-     * @param context
-     * @param attrs
+     *
+     * @param context app context, required for ImageView constructor
+     * @param attrs,  attribute set required for ImageView constructor
      */
     public AvatarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,6 +58,7 @@ public class AvatarView extends AppCompatImageView {
 
     /**
      * Getter for the initial that is displayed in the avatar, mainly for testing
+     *
      * @return The initial as a 1 character String
      */
     public static String getInitial() {
@@ -77,6 +79,7 @@ public class AvatarView extends AppCompatImageView {
 
     /**
      * Sets the user that the avatar is for
+     *
      * @param user the User object to create the avatar from
      */
     public void setUser(User user) {
@@ -120,10 +123,12 @@ public class AvatarView extends AppCompatImageView {
 
             // Functions below are needed for setDrawable function
             @Override
-            public void setAlpha(int i) {}
+            public void setAlpha(int i) {
+            }
 
             @Override
-            public void setColorFilter(@Nullable ColorFilter colorFilter) {}
+            public void setColorFilter(@Nullable ColorFilter colorFilter) {
+            }
 
             @Override
             public int getOpacity() {
@@ -151,6 +156,11 @@ public class AvatarView extends AppCompatImageView {
         super.onDraw(canvas);
     }
 
+    /**
+     * Finds the user's profile picture in Firebase Storage
+     *
+     * @param user the User object tha the profile picture is associated with
+     */
     void getProfilePic(User user) {
         if (user.getProfileImagePath() == null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -168,6 +178,12 @@ public class AvatarView extends AppCompatImageView {
         }
     }
 
+    /**
+     * Downloads the user's profile picture from Firebase
+     *
+     * @param imageUrl  the url for the profile picture
+     * @param imageView the ImageView that the image bitmap will be associated with
+     */
     void downloadImage(String imageUrl, final ImageView imageView) {
         new Thread(() -> {
             try {

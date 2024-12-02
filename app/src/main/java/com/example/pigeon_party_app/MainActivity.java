@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        eventArrayList = new ArrayList<>();
+        eventListView = findViewById(R.id.event_list);
+        eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+        eventListView.setAdapter(eventsArrayAdapter);
+        receiveCurrentUser(uniqueId);
+
         qrScannerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), result.getData());
@@ -97,21 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        currentUser = receiveCurrentUser(uniqueId);
-
-        if (currentUser != null) {
-            checkUserNotifications(currentUser);
 
 
-            eventArrayList = new ArrayList<>();
-            loadEvents(currentUser.getEntrantEventList());
-            eventListView = findViewById(R.id.event_list);
-            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
-            eventListView.setAdapter(eventsArrayAdapter);
 
-            //receiveEvents();
-
-        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -123,11 +118,7 @@ public class MainActivity extends AppCompatActivity {
         setUpAdminButton();
         setUpFacilityButton();
         setUpAddEventButton();
-        if (MainActivity.currentUser != null) {
-            if (MainActivity.currentUser.isAdmin()) {
-                adminButton.setVisibility(View.VISIBLE);
-            }
-        }
+
     }
 
     /**
@@ -136,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
      * @param uniqueId a string that is our id of our device
      * @return currentuser the currentuser data from firebase
      */
-    public User receiveCurrentUser(String uniqueId) {
+    public void receiveCurrentUser(String uniqueId) {
 
         DocumentReference docRef = db.collection("user").document(uniqueId);
 
@@ -144,17 +135,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    MainActivity.currentUser = documentSnapshot.toObject(User.class);
+                    User current = documentSnapshot.toObject(User.class);
+                    MainActivity.currentUser = current;
                     askNotificationPermission();
-                    if (currentUser.getNotifications() == null) {
-                        currentUser.setNotifications(new ArrayList<>());
+                    loadEvents(current.getEntrantEventList());
+
+                    if (current.getNotifications() == null) {
+                        current.setNotifications(new ArrayList<>());
                     }
+                    checkUserNotifications(current);
+                    if (current.isAdmin()){
+                        adminButton.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CreateEntrantProfileFragment()).addToBackStack(null).commitAllowingStateLoss();
                 }
             }
         });
-        return currentUser;
     }
 
     /**
@@ -313,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                     Event currentEvent = eventsArrayAdapter.getItem(position);
                     String userId = currentUser.getUniqueId();
 
-                    if (currentEvent.getUsersCancelled().get(userId) != null) {
+                    if (currentEvent.getUsersSentInvite().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Congratulations! You have been invited to" + currentEvent.getTitle());
                         builder.setCancelable(true);
@@ -383,22 +381,23 @@ public class MainActivity extends AppCompatActivity {
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-                    } else if (currentEvent.getUsersSentInvite().get(userId) != null) {
+                    } else if (currentEvent.getUsersCancelled().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from " + currentEvent.getTitle());
+                        builder.setTitle("Sorry, you were not chosen for" + currentEvent.getTitle()+". Would you like to remain on the waitlist?");
                         builder.setCancelable(true);
 
-                        builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
-
-                        builder.setPositiveButton("OK", (dialog, which) -> {
-                            currentEvent.removeUserFromInvited(currentUser);
-                            currentEvent.addUserToCancelled(currentUser);
-                            currentUser.removeEntrantEventList(position);
+                        builder.setNegativeButton("No", (dialog, which) -> {
                             updateEntrantEventList(currentUser);
                             if (eventArrayList != null) {
                                 eventArrayList.remove(position);
                                 eventsArrayAdapter.notifyDataSetChanged();
                             }
+                        });
+
+                        builder.setPositiveButton("Yes", (dialog, which) -> {
+                            currentEvent.removeUserFromCancelledList(currentUser);
+                            currentEvent.addUserToWaitlist(currentUser);
+
 
 
                             Map<String, Object> sentInvitedUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
@@ -413,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
                     } else if (currentEvent.getUsersInvited().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from" + currentEvent.getEventId());
+                        builder.setTitle("Remove yourself from" + currentEvent.getTitle() + "?");
                         builder.setCancelable(true);
 
                         builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
@@ -485,10 +484,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param eventIds is a list of eventIds for our so it takes the strings from the list
      */
-    private void loadEvents(ArrayList<String> eventIds) {
+    public static void loadEvents(ArrayList<String> eventIds) {
 
         for (String i : eventIds) {
-            Log.d("blehh", i);
             DocumentReference docRef = db.collection("events").document(i);
 
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

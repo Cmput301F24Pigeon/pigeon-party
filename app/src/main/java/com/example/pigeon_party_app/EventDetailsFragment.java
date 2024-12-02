@@ -178,7 +178,9 @@ public class EventDetailsFragment extends Fragment {
         });
     }
 
-
+    /**
+     * This method gets the location of the user, upon successful locating, it adds them to the event
+     */
     private void getLocation() {
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -254,6 +256,15 @@ public class EventDetailsFragment extends Fragment {
     };
 */
 
+    /**
+     * This method gets the users location upon accepting location verification
+     *
+     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *                     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *                     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

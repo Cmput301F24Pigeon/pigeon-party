@@ -54,6 +54,9 @@ public class CreateEntrantProfileFragment extends Fragment {
 
     private ShapeableImageView profilePic;
     private Uri imageUri;
+    private EditText createEntrantName;
+    private EditText createEntrantEmail;
+    private EditText createEntrantPhone;
     private String uniqueId;
     private FirebaseStorage storage;
     private StorageReference storageRef;
@@ -66,7 +69,8 @@ public class CreateEntrantProfileFragment extends Fragment {
                 }
             });
 
-    public CreateEntrantProfileFragment() {}
+    public CreateEntrantProfileFragment() {
+    }
 
     @Nullable
     @Override
@@ -76,9 +80,9 @@ public class CreateEntrantProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_create_entrant_profile, container, false);
         profilePic = view.findViewById(R.id.entrant_profile_image);
-        EditText createEntrantName = view.findViewById(R.id.editText_create_user_name);
-        EditText createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
-        EditText createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);
+        createEntrantName = view.findViewById(R.id.editText_create_user_name);
+        createEntrantEmail = view.findViewById(R.id.editText_create_user_email);
+        createEntrantPhone = view.findViewById(R.id.editText_create_user_phone);
         Button createProfileButton = view.findViewById(R.id.create_user_profile_button);
 
         storage = FirebaseStorage.getInstance();
@@ -98,29 +102,7 @@ public class CreateEntrantProfileFragment extends Fragment {
             createEntrantEmail.setFocusable(true);
             createEntrantPhone.setFocusableInTouchMode(true);
             createEntrantPhone.setFocusable(true);
-
-            boolean isValid = true;
-            if (!Validator.isName(createEntrantName, "Your profile must include a name.")) {
-                isValid = false;
-            }
-            if (!Validator.isEmail(createEntrantEmail, "Your profile must have a valid email.")) {
-                isValid = false;
-            }
-            if (!Validator.isPhoneNumber(createEntrantPhone, "Your phone number must be 10 digits or empty.")) {
-                isValid = false;
-            }
-            if (isValid) {
-                ArrayList<String> emptyList = new ArrayList<>();
-                String colour = pickColour();
-
-                User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList, false);
-
-                addUser(user);
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-                getActivity().finish();
-            }
+            validateAndSetInput();
         });
 
         return view;
@@ -128,6 +110,7 @@ public class CreateEntrantProfileFragment extends Fragment {
 
     /**
      * Method adds a user object to firebase
+     *
      * @param user the user being added
      */
     public void addUser(User user) {
@@ -154,7 +137,7 @@ public class CreateEntrantProfileFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "User successfully added");
                 })
-                .addOnFailureListener(e ->{
+                .addOnFailureListener(e -> {
                     Log.w("FireStore", "Error adding user", e);
                 });
 
@@ -162,6 +145,7 @@ public class CreateEntrantProfileFragment extends Fragment {
 
     /**
      * newInstance method creates a mock fragment for testing
+     *
      * @return CreateEntrantProfileFragment the mock fragment being used for testing
      */
     public static CreateEntrantProfileFragment newInstance() {
@@ -173,17 +157,18 @@ public class CreateEntrantProfileFragment extends Fragment {
 
     /**
      * Method randomly selects a colour to use in user's default profile avatar
+     *
      * @return String instance of hexadecimal colour
      */
     public String pickColour() {
-        String[] colours = {"#30BFA0", "#BF3064", "#8928A1",  "#5228A1", "#4B2DB5", "#2D7CB5", "#2DB55D"};
+        String[] colours = {"#30BFA0", "#BF3064", "#8928A1", "#5228A1", "#4B2DB5", "#2D7CB5", "#2DB55D"};
         Random rand = new Random();
         int i = rand.nextInt(colours.length);
         return colours[i];
     }
 
     /**
-     * Function runs an activity to upload an image from user's phone
+     * Function runs an activity to select an image from user's phone to use as profile picture
      */
     private void choosePicture() {
         Intent i = new Intent();
@@ -202,6 +187,37 @@ public class CreateEntrantProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Calls Validator to check input and updates the user profile if all the input is valid
+     */
+    private void validateAndSetInput() {
+        boolean isValid = true;
+        if (!Validator.isName(createEntrantName, "Your profile must include a name.")) {
+            isValid = false;
+        }
+        if (!Validator.isEmail(createEntrantEmail, "Your profile must have a valid email.")) {
+            isValid = false;
+        }
+        if (!Validator.isPhoneNumber(createEntrantPhone, "Your phone number must be 10 digits or empty.")) {
+            isValid = false;
+        }
+        if (isValid) {
+            ArrayList<String> emptyList = new ArrayList<>();
+            String colour = pickColour();
+
+            User user = new User(createEntrantName.getText().toString(), createEntrantEmail.getText().toString(), createEntrantPhone.getText().toString(), null, false, true, null, true, colour, emptyList, emptyList, false);
+
+            addUser(user);
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+
+    /**
+     * Uploads selected picture to Firebase storage
+     */
     private void uploadPicture() {
         if (imageUri != null) {
             final ProgressDialog pd = new ProgressDialog(getContext());
@@ -228,7 +244,7 @@ public class CreateEntrantProfileFragment extends Fragment {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount() );
+                            double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                             pd.setMessage("Progress: " + (int) progressPercent + "%");
                             if (progressPercent == 100.0) {
                                 pd.dismiss();

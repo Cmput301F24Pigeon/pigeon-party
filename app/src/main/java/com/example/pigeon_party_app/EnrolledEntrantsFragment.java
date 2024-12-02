@@ -25,7 +25,12 @@ public class EnrolledEntrantsFragment extends Fragment {
     private ArrayList<User> entrantList = new ArrayList<>();
     private Map<String, User> usersJoined;
 
-    public static EnrolledEntrantsFragment newInstance(String eventId) {
+    /**
+     * Factory method to create a new instance of the EnrolledEntrantsFragment
+     * @param usersInvited The map of users invited and accepted to an event
+     * @return instance of an EnrolledEntrantsFragment
+     */
+    public static EnrolledEntrantsFragment newInstance(Map<String, User> usersInvited) {
         EnrolledEntrantsFragment fragment = new EnrolledEntrantsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_ID, eventId);

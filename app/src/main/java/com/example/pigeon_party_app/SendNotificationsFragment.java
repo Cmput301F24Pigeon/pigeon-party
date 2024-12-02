@@ -26,7 +26,11 @@ public class SendNotificationsFragment extends DialogFragment {
     public SendNotificationsFragment() {
     }
 
-
+    /**
+     * Creates a SendNotificationsFragment for testing
+     *
+     * @param event the Event object that the notifications are for
+     */
     public static SendNotificationsFragment newInstance(Event event) {
         SendNotificationsFragment fragment = new SendNotificationsFragment();
         Bundle args = new Bundle();

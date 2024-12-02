@@ -380,9 +380,19 @@ public class MainActivity extends AppCompatActivity {
 
                             db.collection("events").document(currentEvent.getEventId())
                                     .update(waitlistUpdates)
-                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's waitlist successfully updated"))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Event's waitlist successfully updated");
+
+                                        // After successful updates, redraw the lottery
+                                        if (currentEvent.getUsersWaitlisted() != null && !currentEvent.getUsersWaitlisted().isEmpty())
+                                        {
+                                            currentEvent.redrawLottery();
+                                        }
+                                        else {Log.d("Lottery", "No users in the waitlist for lottery redraw");}
+                                    })
                                     .addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
                         });
+
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();

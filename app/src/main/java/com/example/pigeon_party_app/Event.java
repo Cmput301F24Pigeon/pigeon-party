@@ -385,6 +385,37 @@ public class Event implements Serializable {
         }
 
     /**
+     * Similar to the drawLottery function, only this time the first Entrant
+     * within usersWaitlist is chosen when another Entrant declines their invite
+     */
+    public void redrawLottery()
+        {
+            if (usersWaitlist == null || usersWaitlist.isEmpty()) {
+                Log.d("replaceFromWaitlist", "No users in the waitlist to replace");
+                return;
+            }
+
+            // Gets the key, value pair for the first User in the waitlist
+            Map.Entry<String, User> nextUser = usersWaitlist.entrySet().iterator().next();
+            String userId = nextUser.getKey();
+            User user = nextUser.getValue();
+
+            usersWaitlist.remove(userId);
+            usersInvited.put(userId, user);
+
+            // Notifies the user
+            if (user.hasNotificationsOn()) {
+                notificationHelper.notifyUserIfChosen(user, this);
+            }
+
+            // Update Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(eventId).set(this)
+                    .addOnSuccessListener(aVoid -> Log.d("redrawLottery", "Event updated after replacement"))
+                    .addOnFailureListener(e -> Log.e("redrawLottery", "Failed to update event", e));
+        }
+
+    /**
      * This method uses the addNotificationToUser method to add a notification message to the users notification list
      * @param status The status of the user in the event list
      * @param db The firestore database

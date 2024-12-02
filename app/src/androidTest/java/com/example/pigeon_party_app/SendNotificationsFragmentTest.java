@@ -35,6 +35,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This tests our send notificationfragment class
+ */
 @RunWith(AndroidJUnit4.class)
 public class SendNotificationsFragmentTest {
     private FirebaseFirestore db;

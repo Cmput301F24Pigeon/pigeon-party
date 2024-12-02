@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * This tests our event details fragment to see if it works
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventDetailsFragmentTest {
     private FirebaseFirestore db;

@@ -7,6 +7,9 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+/**
+ * This tests our facility class
+ */
 public class FacilityTest {
 
     private Facility facility;

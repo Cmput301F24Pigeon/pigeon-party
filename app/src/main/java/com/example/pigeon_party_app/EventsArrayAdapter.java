@@ -43,7 +43,9 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
         TextView date = view.findViewById(R.id.date);
         TextView eventName = view.findViewById(R.id.eventName);
         TextView status = view.findViewById(R.id.status);
-        //address.setText(event.getFacility.getAddress);
+        TextView address = view.findViewById(R.id.address);
+        address.setText(event.getFacility().getAddress());
+
         if(event.getDateTime() != null){
             SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy 'at' HH:mm", Locale.getDefault());
             String formattedDate = formatter.format(event.getDateTime());

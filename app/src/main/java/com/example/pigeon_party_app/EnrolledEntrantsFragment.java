@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -20,10 +18,12 @@ import java.util.Map;
  * This fragment shows the final list of participants selected for an event
  */
 public class EnrolledEntrantsFragment extends Fragment {
+    private static final String ARG_EVENT_ID = "eventId";
+    private String eventId;
     private ListView entrantListView;
-    private ArrayAdapter<User> entrantArrayAdapter;
+    private EntrantArrayAdapter entrantArrayAdapter;
     private ArrayList<User> entrantList = new ArrayList<>();
-    private Map<String, User> usersInvited;
+    private Map<String, User> usersJoined;
 
     /**
      * Factory method to create a new instance of the EnrolledEntrantsFragment
@@ -33,7 +33,7 @@ public class EnrolledEntrantsFragment extends Fragment {
     public static EnrolledEntrantsFragment newInstance(Map<String, User> usersInvited) {
         EnrolledEntrantsFragment fragment = new EnrolledEntrantsFragment();
         Bundle args = new Bundle();
-        args.putSerializable("usersInvited", (Serializable) usersInvited);
+        args.putString(ARG_EVENT_ID, eventId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,18 +42,18 @@ public class EnrolledEntrantsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            usersInvited = (Map<String, User>) getArguments().getSerializable("usersInvited");
+            eventId = getArguments().getString(ARG_EVENT_ID);
         }
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enrolled_entrants, container, false);
         entrantListView = view.findViewById(R.id.entrant_list_view);
         // Set up adapter
-        entrantArrayAdapter = new EntrantArrayAdapter(getContext(), entrantList, usersInvited);
+        entrantArrayAdapter = new EntrantArrayAdapter(requireContext(), entrantList, usersJoined);
         entrantListView.setAdapter(entrantArrayAdapter);
-
+        // Loads entrants who have officially joined an event
+        loadJoinedEntrants();
 
         ImageButton backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
@@ -69,4 +69,27 @@ public class EnrolledEntrantsFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * loads entrants who have joined an event from firebase
+     */
+    private void loadJoinedEntrants() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+            Event event = documentSnapshot.toObject(Event.class);
+            if (event != null) {
+                // Get the maps of users for waitlisted, invited, and cancelled
+                usersJoined = event.getUsersInvited();
+
+                // Create a combined list of users to show in the list
+                entrantList.clear();
+                entrantList.addAll(usersJoined.values());
+
+                // Update the adapter's maps and refresh
+                entrantArrayAdapter.updateUsersInvited(usersJoined);
+                entrantArrayAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
 }

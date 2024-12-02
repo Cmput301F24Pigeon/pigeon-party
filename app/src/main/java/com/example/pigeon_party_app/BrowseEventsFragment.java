@@ -40,7 +40,7 @@ public class BrowseEventsFragment extends Fragment {
     public AdminEventArrayAdapter eventArrayAdapter;
     public ListView eventsListView;
 
-    public BrowseEventsFragment(){
+    public BrowseEventsFragment() {
 
     }
 
@@ -82,13 +82,14 @@ public class BrowseEventsFragment extends Fragment {
 
     /**
      * This will remove the event from firebase and our listview
+     *
      * @param i is the position of the event in our listview
      */
-    private void removeEvent(int i){
+    private void removeEvent(int i) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Event temp = events.get(i);
         events.remove(i);
-        if (temp.getImageUrl() != null){
+        if (temp.getImageUrl() != null) {
             StorageReference imageRef = storage.getReferenceFromUrl(temp.getImageUrl());
             imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -124,7 +125,7 @@ public class BrowseEventsFragment extends Fragment {
     /**
      * this method fills our list of events from the firebase into our app
      */
-    private void fill_list(){
+    private void fill_list() {
 
         CollectionReference usersRef = db.collection("events");
         usersRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -136,7 +137,7 @@ public class BrowseEventsFragment extends Fragment {
                 }
                 if (querySnapshots != null) {
                     events.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                    for (QueryDocumentSnapshot doc : querySnapshots) {
                         events.add(doc.toObject(Event.class));
                     }
                     eventArrayAdapter.notifyDataSetChanged();

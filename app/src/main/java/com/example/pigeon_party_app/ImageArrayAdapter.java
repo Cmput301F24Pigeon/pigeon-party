@@ -18,7 +18,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class is used to put images in the listview for admins
+ */
 public class ImageArrayAdapter extends ArrayAdapter<String> {
     private ArrayList<String> images;
     private Context context;

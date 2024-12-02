@@ -17,12 +17,23 @@ import java.util.Map;
 public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Map<String, User> waitlist = new HashMap<>();
-    private Map<String, User> invited = new HashMap<>();;
-    private Map<String, User> cancelled = new HashMap<>();;
-    private Map<String, User> sentInvite = new HashMap<>();;
+    private Map<String, User> invited = new HashMap<>();
+    ;
+    private Map<String, User> cancelled = new HashMap<>();
+    ;
+    private Map<String, User> sentInvite = new HashMap<>();
+    ;
 
     private Context context;
 
+    /**
+     * Array adapter for entrants in the list
+     * @param context
+     * @param users
+     * @param waitlist
+     * @param sentInvite
+     * @param cancelled
+     */
     public EntrantArrayAdapter(Context context, ArrayList<User> users,
                                Map<String, User> waitlist,
                                Map<String, User> sentInvite,
@@ -35,6 +46,12 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         this.cancelled = cancelled;
     }
 
+    /**
+     * Array adapter for entrants who have joined an event
+     * @param context
+     * @param users
+     * @param invited
+     */
     public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> invited) {
         super(context, 0, users);
         this.context = context;
@@ -42,14 +59,23 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         this.invited = invited;
     }
 
-    // Method to update maps
+    /**
+     * Updates the 3 waitlist, sentInvite and cancelled maps
+     * @param waitlist
+     * @param sentInvite
+     * @param cancelled
+     */
     public void updateMaps(Map<String, User> waitlist, Map<String, User> sentInvite, Map<String, User> cancelled) {
         this.waitlist = waitlist;
         this.sentInvite = sentInvite;
         this.cancelled = cancelled;
     }
 
-    public void updateUsersInvited(Map<String, User> invited){
+    /**
+     * Updates the invited map
+     * @param invited
+     */
+    public void updateUsersInvited(Map<String, User> invited) {
         this.invited = invited;
     }
 
@@ -83,8 +109,8 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
         }
-         if (invited.containsKey(user.getUniqueId())) {
-             entrantStatus.setText("Joined");
+        if (invited.containsKey(user.getUniqueId())) {
+            entrantStatus.setText("Joined");
         }
 
         return view;

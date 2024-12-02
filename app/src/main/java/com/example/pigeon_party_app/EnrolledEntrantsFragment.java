@@ -41,8 +41,7 @@ public class EnrolledEntrantsFragment extends Fragment {
         }
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enrolled_entrants, container, false);
         entrantListView = view.findViewById(R.id.entrant_list_view);
         // Set up adapter
@@ -71,22 +70,21 @@ public class EnrolledEntrantsFragment extends Fragment {
      */
     private void loadJoinedEntrants() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Event event = documentSnapshot.toObject(Event.class);
-                    if (event != null) {
-                        // Get the maps of users for waitlisted, invited, and cancelled
-                        usersJoined = event.getUsersInvited();
+        db.collection("events").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+            Event event = documentSnapshot.toObject(Event.class);
+            if (event != null) {
+                // Get the maps of users for waitlisted, invited, and cancelled
+                usersJoined = event.getUsersInvited();
 
-                        // Create a combined list of users to show in the list
-                        entrantList.clear();
-                        entrantList.addAll(usersJoined.values());
+                // Create a combined list of users to show in the list
+                entrantList.clear();
+                entrantList.addAll(usersJoined.values());
 
-                        // Update the adapter's maps and refresh
-                        entrantArrayAdapter.updateUsersInvited(usersJoined);
-                        entrantArrayAdapter.notifyDataSetChanged();
-                    }
-                });
+                // Update the adapter's maps and refresh
+                entrantArrayAdapter.updateUsersInvited(usersJoined);
+                entrantArrayAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 }

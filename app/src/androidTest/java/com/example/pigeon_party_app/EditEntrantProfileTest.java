@@ -77,16 +77,6 @@ public class EditEntrantProfileTest {
         testUserName = "test-user-name";
         testUserEmail = "test@email.com";
         testUserPhone = "1234567890";
-        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
-                CreateEntrantProfileFragment.class,
-                CreateEntrantProfileFragment.newInstance().getArguments()
-        );
-
-        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
-        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
-        onView(withId(R.id.create_user_profile_button)).perform(click());
-
         UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
         if (permissionDialog.waitForExists(2000)) {
             try {
@@ -95,6 +85,16 @@ public class EditEntrantProfileTest {
                 throw new RuntimeException(e);
             }
         }
+        FragmentScenario<CreateEntrantProfileFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEntrantProfileFragment.class,
+                CreateEntrantProfileFragment.newInstance().getArguments()
+        );
+        onView(withId(R.id.editText_create_user_name)).perform(ViewActions.typeText(testUserName), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_email)).perform(ViewActions.typeText(testUserEmail), closeSoftKeyboard());
+        onView(withId(R.id.editText_create_user_phone)).perform(ViewActions.typeText(testUserPhone), closeSoftKeyboard());
+        onView(withId(R.id.create_user_profile_button)).perform(click());
+
+
         onView(withId(R.id.button_profile)).perform(click());
         onView(withId(R.id.edit_entrant_profile_button)).perform(click());
     }

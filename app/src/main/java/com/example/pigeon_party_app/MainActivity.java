@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                     Event currentEvent = eventsArrayAdapter.getItem(position);
                     String userId = currentUser.getUniqueId();
 
-                    if (currentEvent.getUsersCancelled().get(userId) != null) {
+                    if (currentEvent.getUsersSentInvite().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Congratulations! You have been invited to" + currentEvent.getTitle());
                         builder.setCancelable(true);
@@ -419,22 +419,23 @@ public class MainActivity extends AppCompatActivity {
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-                    } else if (currentEvent.getUsersSentInvite().get(userId) != null) {
+                    } else if (currentEvent.getUsersCancelled().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from " + currentEvent.getTitle());
+                        builder.setTitle("Sorry, you were not chosen for" + currentEvent.getTitle()+". Would you like to remain on the waitlist?");
                         builder.setCancelable(true);
 
-                        builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
-
-                        builder.setPositiveButton("OK", (dialog, which) -> {
-                            currentEvent.removeUserFromInvited(currentUser);
-                            currentEvent.addUserToCancelled(currentUser);
-                            currentUser.removeEntrantEventList(position);
+                        builder.setNegativeButton("No", (dialog, which) -> {
                             updateEntrantEventList(currentUser);
                             if (eventArrayList != null) {
                                 eventArrayList.remove(position);
                                 eventsArrayAdapter.notifyDataSetChanged();
                             }
+                        });
+
+                        builder.setPositiveButton("Yes", (dialog, which) -> {
+                            currentEvent.removeUserFromCancelledList(currentUser);
+                            currentEvent.addUserToWaitlist(currentUser);
+
 
 
                             Map<String, Object> sentInvitedUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
@@ -455,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
                     } else if (currentEvent.getUsersInvited().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from" + currentEvent.getEventId());
+                        builder.setTitle("Remove yourself from" + currentEvent.getTitle() + "?");
                         builder.setCancelable(true);
 
                         builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());
@@ -535,7 +536,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param eventIds is a list of eventIds for our so it takes the strings from the list
      */
-    private void loadEvents(ArrayList<String> eventIds) {
+    public static void loadEvents(ArrayList<String> eventIds) {
 
         for (String i : eventIds) {
             DocumentReference docRef = db.collection("events").document(i);

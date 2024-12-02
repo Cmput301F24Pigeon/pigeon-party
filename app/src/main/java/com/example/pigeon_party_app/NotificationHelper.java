@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,10 +55,11 @@ public class NotificationHelper {
             notificationManager.notify(1, builder.build());
         }
     }
+
     /**
      * This method allows notification to be sent to entrants
      *
-     * @param user The user to send the notification to
+     * @param user    The user to send the notification to
      * @param message The message to be put in the notification
      */
     public void notifyUser(User user, String message) {

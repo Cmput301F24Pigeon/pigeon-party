@@ -106,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                         current.setNotifications(new ArrayList<>());
                     }
                     checkUserNotifications(current);
-                    if (current.isAdmin()){
+                    if (current.isAdmin()) {
                         adminButton.setVisibility(View.VISIBLE);
                     }
 
@@ -313,30 +311,38 @@ public class MainActivity extends AppCompatActivity {
 
                     if (currentEvent.getUsersSentInvite().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Congratulations! You have been invited to" + currentEvent.getTitle());
+                        builder.setTitle("Congratulations! You have been invited to " + currentEvent.getTitle());
                         builder.setCancelable(true);
 
                         builder.setPositiveButton("Accept", (dialog, which) -> {
                             currentEvent.addUserToInvited(currentUser);
                             currentEvent.removeUserFromWaitlist(currentUser);
-
+                            currentEvent.removeUserFromSentInvite(currentUser);
                             Map<String, Object> invitedListUpdates = currentEvent.updateFirebaseEventInvitedList(currentEvent);
                             Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
+                            Map<String, Object> sentInviteUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
+
 
                             db.collection("events").document(currentEvent.getEventId()).update(invitedListUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's invited list successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's invited list", e));
-
+                            db.collection("events").document(currentEvent.getEventId()).update(sentInviteUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's invited list successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's invited list", e));
                             db.collection("events").document(currentEvent.getEventId()).update(waitlistUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's waitlist successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
                         });
 
                         builder.setNegativeButton("Decline", (dialog, which) -> {
                             currentEvent.addUserToCancelled(currentUser);
                             currentEvent.removeUserFromWaitlist(currentUser);
-
+                            currentUser.removeEntrantEventList(position);
+                            updateEntrantEventList(currentUser);
+                            if (eventArrayList != null) {
+                                eventArrayList.remove(position);
+                                eventsArrayAdapter.notifyDataSetChanged();
+                            }
+                            Map<String, Object> sentInviteUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
                             Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
                             Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
 
                             db.collection("events").document(currentEvent.getEventId()).update(cancelledListUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's cancelled list successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's cancelled list", e));
-
+                            db.collection("events").document(currentEvent.getEventId()).update(sentInviteUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's invited list successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's invited list", e));
                             db.collection("events").document(currentEvent.getEventId()).update(waitlistUpdates).addOnSuccessListener(aVoid -> {
                                 Log.d("Firestore", "Event's waitlist successfully updated");
 
@@ -383,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
                     } else if (currentEvent.getUsersCancelled().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Sorry, you were not chosen for" + currentEvent.getTitle()+". Would you like to remain on the waitlist?");
+                        builder.setTitle("Sorry, you were not chosen for " + currentEvent.getTitle() + ". Would you like to remain on the waitlist?");
                         builder.setCancelable(true);
 
                         builder.setNegativeButton("No", (dialog, which) -> {
@@ -399,12 +405,10 @@ public class MainActivity extends AppCompatActivity {
                             currentEvent.addUserToWaitlist(currentUser);
 
 
-
-                            Map<String, Object> sentInvitedUpdates = currentEvent.updateFirebaseEventSentInvited(currentEvent);
+                            Map<String, Object> waitlistUpdates = currentEvent.updateFirebaseEventWaitlist(currentEvent);
                             Map<String, Object> cancelledListUpdates = currentEvent.updateFirebaseEventCancelledList(currentEvent);
 
-                            db.collection("events").document(currentEvent.getEventId()).update(sentInvitedUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's sentInviteList successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
-
+                            db.collection("events").document(currentEvent.getEventId()).update(waitlistUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's sentInviteList successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's waitlist", e));
                             db.collection("events").document(currentEvent.getEventId()).update(cancelledListUpdates).addOnSuccessListener(aVoid -> Log.d("Firestore", "Event's cancelled list successfully updated")).addOnFailureListener(e -> Log.w("Firestore", "Error updating event's cancelled list", e));
                         });
 
@@ -412,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
                         alertDialog.show();
                     } else if (currentEvent.getUsersInvited().get(userId) != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Remove yourself from" + currentEvent.getTitle() + "?");
+                        builder.setTitle("Remove yourself from " + currentEvent.getTitle() + "?");
                         builder.setCancelable(true);
 
                         builder.setNegativeButton("Back", (dialog, which) -> dialog.cancel());

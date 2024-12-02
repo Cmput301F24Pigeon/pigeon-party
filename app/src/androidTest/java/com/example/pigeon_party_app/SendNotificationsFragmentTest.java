@@ -6,10 +6,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;;
@@ -42,7 +44,7 @@ public class SendNotificationsFragmentTest {
     private Event testEvent;
     private UiDevice device;
     Context context;
-    private Map<String,User> testUserMap;
+    private Map<String, User> testUserMap;
 
     /**
      * Method which creates the necessary variables to carry out the test
@@ -55,16 +57,16 @@ public class SendNotificationsFragmentTest {
         context = ApplicationProvider.getApplicationContext();
         db = FirebaseFirestore.getInstance();
         testUserMap = new HashMap<>();
-        testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,testUserID,true,true,testFacility,false, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
-        testEvent = new Event("testEventId","testEventTitle", new Date(), 50, null,"testEventDetails",testFacility,false,testUserMap, testUserMap, testUserMap, testUserMap,testUser);
+        testFacility = new Facility("test-user-id", "test-address", "test-name");
+        testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<String>(), new ArrayList<String>(), false);
+        testEvent = new Event("testEventId", "testEventTitle", new Date(), 50, null, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUserMap, testUser);
         testEvent.addUserToInvited(testUser);
         db.collection("events").document(testEvent.getEventId())
                 .set(testEvent)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "Event successfully added");
                 })
-                .addOnFailureListener(e ->{
+                .addOnFailureListener(e -> {
                     Log.w("FireStore", "Error adding event", e);
                 });
 
@@ -72,6 +74,7 @@ public class SendNotificationsFragmentTest {
 
     /**
      * Method to test that SendNotificationFragment works properly by sending notification to a test user
+     *
      * @throws UiObjectNotFoundException
      */
     @Test
@@ -79,7 +82,7 @@ public class SendNotificationsFragmentTest {
         device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-        scenario.onActivity(activity  -> {
+        scenario.onActivity(activity -> {
 
             SendNotificationsFragment dialogFragment = SendNotificationsFragment.newInstance(testEvent);
             dialogFragment.show(activity.getSupportFragmentManager(), "sendNotificationsDialog");
@@ -97,16 +100,16 @@ public class SendNotificationsFragmentTest {
 
         device.openNotification();
         UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have joined the event: testEventTitle"));
-        if (notificationText.waitForExists(4000)){
+        if (notificationText.waitForExists(4000)) {
             assertTrue("Notification was received", notificationText.exists());
-        }
-        else{
+        } else {
             fail("Notification was not received");
         }
     }
 
     /**
      * This method tests that organizers can send a notification to users who are on the waitlist.
+     *
      * @throws UiObjectNotFoundException
      */
     @Test
@@ -114,7 +117,7 @@ public class SendNotificationsFragmentTest {
         device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-        scenario.onActivity(activity  -> {
+        scenario.onActivity(activity -> {
 
             SendNotificationsFragment dialogFragment = SendNotificationsFragment.newInstance(testEvent);
             dialogFragment.show(activity.getSupportFragmentManager(), "sendNotificationsDialog");
@@ -132,19 +135,19 @@ public class SendNotificationsFragmentTest {
 
         device.openNotification();
         UiObject notificationText = device.findObject(new UiSelector().text("You are currently on the waitlist for the event: testEventTitle"));
-        if (notificationText.waitForExists(4000)){
+        if (notificationText.waitForExists(4000)) {
             assertTrue("Notification was received", notificationText.exists());
-        }
-        else{
+        } else {
             fail("Notification was not received");
         }
     }
+
     @Test
     public void testInvitedNotifications() throws UiObjectNotFoundException {
         device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-        scenario.onActivity(activity  -> {
+        scenario.onActivity(activity -> {
 
             SendNotificationsFragment dialogFragment = SendNotificationsFragment.newInstance(testEvent);
             dialogFragment.show(activity.getSupportFragmentManager(), "sendNotificationsDialog");
@@ -162,16 +165,16 @@ public class SendNotificationsFragmentTest {
 
         device.openNotification();
         UiObject notificationText = device.findObject(new UiSelector().text("Congratulations! You have been invited to the event: testEventTitle"));
-        if (notificationText.waitForExists(4000)){
+        if (notificationText.waitForExists(4000)) {
             assertTrue("Notification was received", notificationText.exists());
-        }
-        else{
+        } else {
             fail("Notification was not received");
         }
     }
 
     /**
      * This method tests that the organizer can send notifications to users who "lost" the lottery.
+     *
      * @throws UiObjectNotFoundException
      */
     @Test
@@ -179,7 +182,7 @@ public class SendNotificationsFragmentTest {
         device.pressHome();
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-        scenario.onActivity(activity  -> {
+        scenario.onActivity(activity -> {
 
             SendNotificationsFragment dialogFragment = SendNotificationsFragment.newInstance(testEvent);
             dialogFragment.show(activity.getSupportFragmentManager(), "sendNotificationsDialog");
@@ -197,13 +200,13 @@ public class SendNotificationsFragmentTest {
 
         device.openNotification();
         UiObject notificationText = device.findObject(new UiSelector().text("Sorry, you have not been selected for the event: testEventTitle"));
-        if (notificationText.waitForExists(4000)){
+        if (notificationText.waitForExists(4000)) {
             assertTrue("Notification was received", notificationText.exists());
-        }
-        else{
+        } else {
             fail("Notification was not received");
         }
     }
+
     /**
      * Method to remove the event data that was added to the firebase for the test
      */

@@ -28,6 +28,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Array adapter for entrants in the list
+     *
      * @param context
      * @param users
      * @param waitlist
@@ -48,6 +49,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Array adapter for entrants who have joined an event
+     *
      * @param context
      * @param users
      * @param invited
@@ -61,6 +63,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Updates the 3 waitlist, sentInvite and cancelled maps
+     *
      * @param waitlist
      * @param sentInvite
      * @param cancelled
@@ -73,6 +76,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     /**
      * Updates the invited map
+     *
      * @param invited
      */
     public void updateUsersInvited(Map<String, User> invited) {

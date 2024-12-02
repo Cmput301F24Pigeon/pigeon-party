@@ -26,8 +26,8 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
     private Context context;
 
 
-    public ImageArrayAdapter(Context context, ArrayList<String> images){
-        super(context,0, images);
+    public ImageArrayAdapter(Context context, ArrayList<String> images) {
+        super(context, 0, images);
         this.images = images;
         this.context = context;
     }
@@ -37,8 +37,8 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.admin_image_content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.admin_image_content, parent, false);
         }
 
         String imageUri = images.get(position);
@@ -47,7 +47,6 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
         Glide.with(context)
                 .load(imageUri)
                 .into(image);
-
 
 
         return view;

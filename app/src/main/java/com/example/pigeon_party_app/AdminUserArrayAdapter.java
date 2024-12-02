@@ -26,8 +26,8 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
     private Context context;
 
 
-    public AdminUserArrayAdapter(Context context, ArrayList<User> users){
-        super(context,0, users);
+    public AdminUserArrayAdapter(Context context, ArrayList<User> users) {
+        super(context, 0, users);
         this.users = users;
         this.context = context;
     }
@@ -37,8 +37,8 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.profile_content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.profile_content, parent, false);
         }
 
         User user = users.get(position);
@@ -62,7 +62,7 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
         phoneNumber.setText(user.getPhoneNumber());
         if (user.isOrganizer()) {
             facility.setText("Facility: " + user.getFacility().getName());
-        }else {
+        } else {
             facility.setText("No facilities");
         }
 
@@ -70,7 +70,6 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
 
 
     }
-
 
 
 }

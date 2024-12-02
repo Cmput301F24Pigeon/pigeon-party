@@ -66,10 +66,10 @@ public class EventsArrayAdapter extends ArrayAdapter<Event> {
             status.setText("Status: Cancelled");
         }
         else if (event.getUsersInvited().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: Confirmed");
+            status.setText("Status: Joined");
         }
         else if (event.getUsersSentInvite().get(MainActivity.currentUser.getUniqueId()) != null){
-            status.setText("Status: Invited (Click to accept");
+            status.setText("Status: Invited (Click to Accept)");
         }
         else{
             status.setText("");

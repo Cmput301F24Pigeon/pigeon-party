@@ -1,4 +1,5 @@
 package com.example.pigeon_party_app;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -26,6 +27,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 //https://stackoverflow.com/questions/33495294/testing-notifications-in-android
+
 /**
  * This class that the notifications are properly sent by the app and received by the user
  */
@@ -44,11 +46,12 @@ public class NotificationTest {
     public void setUp() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         context = ApplicationProvider.getApplicationContext();
-        testFacility = new Facility("owner-id","address","name");
+        testFacility = new Facility("owner-id", "address", "name");
     }
 
     /**
      * This method tests the notifyUser method by opening the app, allowing notifications, sending a notification, and then checking that it  is received.
+     *
      * @throws UiObjectNotFoundException
      */
     @Test
@@ -65,28 +68,28 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
-        Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
+        User testUser = new User("test-name", "test-email", null, testUserId, true, true, testFacility, true, "#000000", new ArrayList<String>(), new ArrayList<String>(), false);
+        Event testEvent = new Event("test-id", "title", new Date(), 50, "details", testFacility, false, null, null, null, testUser);
 
         device.openNotification();
 
-        notificationHelper.notifyUser(testUser,"This is a test notification");
+        notificationHelper.notifyUser(testUser, "This is a test notification");
 
         UiObject notificationText = device.findObject(new UiSelector().text("This is a test notification"));
-        if (notificationText.waitForExists(4000)){
+        if (notificationText.waitForExists(4000)) {
             assertTrue("Notification was received", notificationText.exists());
-        }
-        else{
+        } else {
             fail("Notification was not received");
         }
     }
 
     /**
      * This method tests that a user can disable their notification in app.
+     *
      * @throws UiObjectNotFoundException
      */
     @Test
-    public void testNotificationIsNotReceived() throws UiObjectNotFoundException{
+    public void testNotificationIsNotReceived() throws UiObjectNotFoundException {
         device.pressHome();
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.example.pigeon_party_app");
@@ -99,16 +102,16 @@ public class NotificationTest {
         }
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        User testUser = new User("test-name","test-email",null,testUserId,true,true,testFacility,true, "#000000", new ArrayList<String>(), new ArrayList<String>(),false);
-        Event testEvent = new Event("test-id","title",new Date(),50,"details",testFacility,false,null,null,null,testUser);
+        User testUser = new User("test-name", "test-email", null, testUserId, true, true, testFacility, true, "#000000", new ArrayList<String>(), new ArrayList<String>(), false);
+        Event testEvent = new Event("test-id", "title", new Date(), 50, "details", testFacility, false, null, null, null, testUser);
         testUser.setNotificationsOn(false);
         device.openNotification();
 
 
-        notificationHelper.notifyUser(testUser,"This is a test notification");
+        notificationHelper.notifyUser(testUser, "This is a test notification");
 
         UiObject notificationText = device.findObject(new UiSelector().text("This is a test notification"));
-        if (notificationText.waitForExists(2000)){
+        if (notificationText.waitForExists(2000)) {
             fail("Notification was received");
         }
 

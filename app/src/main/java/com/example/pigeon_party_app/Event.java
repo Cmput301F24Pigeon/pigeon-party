@@ -526,7 +526,7 @@ public class Event implements Serializable {
 
             if (user != null) {
                 // Add the user to the invited list
-                usersInvited.put(userId, user);
+                usersSentInvite.put(userId, user);
 
                 // Remove the user from the waitlist
                 usersWaitlist.remove(userId);

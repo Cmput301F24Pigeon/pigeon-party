@@ -25,6 +25,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment handles our browsing events for our admin class and removing events
+ */
 public class BrowseEventsFragment extends Fragment {
     public FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<Event> events;
@@ -69,12 +72,10 @@ public class BrowseEventsFragment extends Fragment {
         return view;
     }
 
-
-
-
-
-
-
+    /**
+     * This will remove the event from firebase and our listview
+     * @param i is the position of the event in our listview
+     */
     private void removeEvent(int i){
         Event temp = events.get(i);
         events.remove(i);

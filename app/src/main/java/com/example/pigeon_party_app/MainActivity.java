@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param eventIds is a list of eventIds for our so it takes the strings from the list
      */
-    private void loadEvents(ArrayList<String> eventIds) {
+    public static void loadEvents(ArrayList<String> eventIds) {
 
         for (String i : eventIds) {
             DocumentReference docRef = db.collection("events").document(i);

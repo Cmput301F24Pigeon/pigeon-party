@@ -22,7 +22,12 @@ public class QrcodeFragment extends Fragment {
     private ImageView qrCode;
     private String eventId;
 
-    public static QrcodeFragment newInstance(String eventId){
+    /**
+     * Creates a QrcodeFragment for testing
+     *
+     * @param eventId the id for the event that the QR code is for
+     */
+    public static QrcodeFragment newInstance(String eventId) {
         QrcodeFragment fragment = new QrcodeFragment();
         Bundle args = new Bundle();
         args.putString("eventId", eventId);
@@ -59,6 +64,7 @@ public class QrcodeFragment extends Fragment {
 
     /**
      * This generates a qr code based on a string
+     *
      * @param text The text which the qr code will represent (in this case event id)
      */
     private void generateQRCode(String text) {

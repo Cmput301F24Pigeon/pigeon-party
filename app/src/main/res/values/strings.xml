@@ -18,4 +18,5 @@
     <string name="facility">Facility:</string>
     <string name="eventid">eventId</string>
     <string name="address">address</string>
+    <string name="qrcode">qrCode</string>
 </resources>

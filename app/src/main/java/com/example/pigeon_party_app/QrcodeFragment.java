@@ -2,6 +2,7 @@ package com.example.pigeon_party_app;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,21 +28,29 @@ public class QrcodeFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            eventId = getArguments().getString("eventId");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.qrcode_fragment, container, false);
 
         ImageButton backButton = view.findViewById(R.id.button_back);
-        qrCode = view.findViewById(R.id.eventQrcode);
         backButton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, new EditEventFragment())
+                    .replace(R.id.fragment_container, new OrganizerFragment())
                     .addToBackStack(null)
                     .commit();
         });
-
+        qrCode = view.findViewById(R.id.eventQrcode);
         generateQRCode(eventId);
+
         return view;
     }
 
@@ -49,7 +58,6 @@ public class QrcodeFragment extends Fragment {
      * This generates a qr code based on a string
      * @param text The text which the qr code will represent (in this case event id)
      */
-    //possibly add option to save qr code to phone (implement later)
     private void generateQRCode(String text) {
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {

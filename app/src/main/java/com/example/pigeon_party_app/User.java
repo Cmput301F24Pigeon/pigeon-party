@@ -29,6 +29,9 @@ public class User implements Serializable {
     private boolean admin;
     private Bitmap profileImagePath;
 
+    /**
+     * Constructor for Arraylists
+     */
     public User() {
         notifications = new ArrayList<>();
         organizerEventList = new ArrayList<>();
@@ -234,6 +237,10 @@ public class User implements Serializable {
         this.colour = colour;
     }
 
+    /**
+     * Getter for the user's notifications list
+     * @return a list object containing their notifications
+     */
     public List<String> getNotifications() {
         return notifications;
     }
@@ -247,26 +254,49 @@ public class User implements Serializable {
         this.notifications.add(notification);
     }
 
+    /**
+     * Method to clear the user's notifications
+     */
     public void clearNotifications() {
         this.notifications.clear(); // Clear notifications if needed
     }
 
+    /**
+     * Setter for the user's notifications
+     * @param notifications the list of notifications
+     */
     public void setNotifications(List<String> notifications) {
         this.notifications = notifications;
     }
 
+    /**
+     * Getter for the EntrantEventList
+     * @return entrantEventList the ArrayList object
+     */
     public ArrayList<String> getEntrantEventList() {
         return entrantEventList;
     }
 
+    /**
+     * Getter for the OrganizerEventList
+     * @return organizerEventList the ArrayList object
+     */
     public ArrayList<String> getOrganizerEventList() {
         return organizerEventList;
     }
 
+    /**
+     * Setter for the organizerEventList
+     * @param organizerEventList the Arraylist object being set
+     */
     public void setOrganizerEventList(ArrayList<String> organizerEventList) {
         this.organizerEventList = organizerEventList;
     }
 
+    /**
+     * Setter for the entrant event list
+     * @param entrantEventList the ArrayList object being set
+     */
     public void setEntrantEventList(ArrayList<String> entrantEventList) {
         this.entrantEventList = entrantEventList;
     }

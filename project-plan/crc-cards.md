@@ -4,7 +4,7 @@
 | **User**              |                   | 
 |-----------------------|-------------------|
 | **Responsibilities**  | **Collaborators** |
-| - Has a profile<br><br>**Role as Entrant:** <br> - Sign up for events <br> - View event details <br> - Confirm participation <br> <br> **Role as Organizer:** <br> - Create and publish events <br> - Upload event images <br> - Initiate lottery <br>   |
+| - Has a profile<br><br>**Role as Entrant:** <br> - Sign up for events <br> - View event details <br> - Confirm participation <br> <br> **Role as Organizer:** <br> - Create and publish events <br> - Upload event images <br> - Initiate lottery <br> <br>**Role as Admin:** <br> - Browse events, profile and images <br> - Remove images, profiles and events <br> |
 
 
 | **Event**             |                   | 
@@ -39,33 +39,22 @@
 | **Responsibilities**  | **Collaborators** |
 | - Allows us to view all the images on our app  |  |
 
-| **HashDataArrayAdapter**|                   | 
-|-----------------------|-------------------|
-| **Responsibilities**  | **Collaborators** |
-| - Allows us to view the lists of our hashdate taken from our qr codes  | - Collaborates with Events <br>  |
-
-| **RemoveEventFragment**|                   | 
+| **AdminEventFragment**|                   | 
 |------------------------|-------------------|
 | **Responsibilities**   | **Collaborators** |
 | - Allows us to remove events as an admin  | -Collaborates with Events<br>  |
 
-| **RemoveImagesFragment**|                   | 
+| **AdminImagesFragment**|                   | 
 |------------------------|-------------------|
 | **Responsibilities**   | **Collaborators** |
 | - Allows us to remove images as an admin  | -Collaborates with Events<br>  |
 
-| **RemoveProfileFragment**|                   | 
+| **AdminProfileFragment**|                   | 
 |------------------------|-------------------|
 | **Responsibilities**   | **Collaborators** |
 | - Allows us to remove profiles as an admin  | -Collaborates with Events<br>  |
 
-| **RemoveHashDataFragment**|                   | 
+| **Validator**|                   | 
 |---------------------------|-------------------|
 | **Responsibilities**      | **Collaborators** |
-| - Allows us to remove hashdata from the qr code as an admin  | -Collaborates with Events<br>  |
-
-| **Admin**|                   | 
-|---------------------------|-------------------|
-| **Responsibilities**      | **Collaborators** |
-| - Manages app data (users, events, facilities, images)  | -Collaborates with Events<br> -Collaborates with Facility<br> -Collaborates with User<br> |
-
+| - Validates input from user | -Collaborates with User and Event<br>  |

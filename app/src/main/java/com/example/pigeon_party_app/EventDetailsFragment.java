@@ -55,6 +55,7 @@ public class EventDetailsFragment extends Fragment {
     Event event = MainActivity.getCurrentEvent();
     User current_user = MainActivity.getCurrentUser();
     private Button signUpButton;
+    private Button qrcodeButton;
     private Button drawParticipantsButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -83,6 +84,7 @@ public class EventDetailsFragment extends Fragment {
         eventCapacity = view.findViewById(R.id.eventCapacity);
         eventCapacity.setVisibility(View.INVISIBLE);
         signUpButton = view.findViewById(R.id.signupButton);
+        qrcodeButton = view.findViewById(R.id.qrCodeButton);
         eventPoster = view.findViewById(R.id.eventPoster);
         drawParticipantsButton = view.findViewById(R.id.drawParticipantsButton);
         drawParticipantsButton.setEnabled(false);
@@ -129,6 +131,8 @@ public class EventDetailsFragment extends Fragment {
         if (current_user.getUniqueId().equals(event.getFacility().getOwnerId())) {
             signUpButton.setVisibility(View.INVISIBLE);
             signUpButton.setEnabled(false);
+            qrcodeButton.setVisibility(View.VISIBLE);
+            signUpButton.setEnabled(true);
             drawParticipantsButton.setVisibility(View.VISIBLE);
             drawParticipantsButton.setEnabled(true);
             drawParticipantsButton.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +143,19 @@ public class EventDetailsFragment extends Fragment {
                     requireActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.fragment_container, entrantListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+
+            qrcodeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    QrcodeFragment qrcodeFragment = QrcodeFragment.newInstance(event.getEventId());
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, qrcodeFragment)
                             .addToBackStack(null)
                             .commit();
                 }

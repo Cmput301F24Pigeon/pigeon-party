@@ -25,7 +25,12 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
     private ArrayList<String> images;
     private Context context;
 
-
+    /**
+     * Constructor for ImageArrayAdapter, with needed parameters for ArrayAdapter constructor
+     *
+     * @param context context of app for parent constructor
+     * @param images  ArrayList containing strings representing paths to images to be displayed in arrayAdapter
+     */
     public ImageArrayAdapter(Context context, ArrayList<String> images) {
         super(context, 0, images);
         this.images = images;
@@ -48,9 +53,6 @@ public class ImageArrayAdapter extends ArrayAdapter<String> {
                 .load(imageUri)
                 .into(image);
 
-
         return view;
-
-
     }
 }

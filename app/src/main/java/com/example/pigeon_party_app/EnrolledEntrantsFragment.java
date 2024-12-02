@@ -27,10 +27,10 @@ public class EnrolledEntrantsFragment extends Fragment {
 
     /**
      * Factory method to create a new instance of the EnrolledEntrantsFragment
-     * @param usersInvited The map of users invited and accepted to an event
+     * @param eventId The events unique id
      * @return instance of an EnrolledEntrantsFragment
      */
-    public static EnrolledEntrantsFragment newInstance(Map<String, User> usersInvited) {
+    public static EnrolledEntrantsFragment newInstance(String eventId) {
         EnrolledEntrantsFragment fragment = new EnrolledEntrantsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_ID, eventId);

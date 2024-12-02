@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class holds the logic and functionality for the entrant list
+ */
 public class EntrantListFragment extends Fragment {
     private static final String ARG_EVENT_ID = "eventId";
     private String eventId;

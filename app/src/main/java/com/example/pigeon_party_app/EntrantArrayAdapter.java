@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class adapts the array for the entrant list
+ */
 public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Map<String, User> waitlist = new HashMap<>();
@@ -32,10 +35,7 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
      * @param sentInvite
      * @param cancelled
      */
-    public EntrantArrayAdapter(Context context, ArrayList<User> users,
-                               Map<String, User> waitlist,
-                               Map<String, User> sentInvite,
-                               Map<String, User> cancelled) {
+    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> waitlist, Map<String, User> sentInvite, Map<String, User> cancelled) {
         super(context, 0, users);
         this.users = users;
         this.context = context;

@@ -25,32 +25,32 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
 
     public EntrantArrayAdapter(Context context, ArrayList<User> users,
                                Map<String, User> waitlist,
-                               Map<String, User> invited,
+                               Map<String, User> sentInvite,
                                Map<String, User> cancelled) {
         super(context, 0, users);
         this.users = users;
         this.context = context;
         this.waitlist = waitlist;
-        this.invited = invited;
+        this.sentInvite = sentInvite;
         this.cancelled = cancelled;
     }
 
-    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> sentInvite) {
+    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> invited) {
         super(context, 0, users);
         this.context = context;
         this.users = users;
-        this.sentInvite = sentInvite;
+        this.invited = invited;
     }
 
     // Method to update maps
-    public void updateMaps(Map<String, User> waitlist, Map<String, User> invited, Map<String, User> cancelled) {
+    public void updateMaps(Map<String, User> waitlist, Map<String, User> sentInvite, Map<String, User> cancelled) {
         this.waitlist = waitlist;
-        this.invited = invited;
+        this.sentInvite = sentInvite;
         this.cancelled = cancelled;
     }
 
-    public void updateUsersSentInvite(Map<String, User> sentInvite){
-        this.sentInvite = sentInvite;
+    public void updateUsersInvited(Map<String, User> invited){
+        this.invited = invited;
     }
 
     @NonNull
@@ -78,12 +78,12 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         // Determine the user's status based on the map they belong to
         if (waitlist.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Waitlisted");
-        } else if (invited.containsKey(user.getUniqueId())) {
+        } else if (sentInvite.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Invited");
         } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
         }
-         if (sentInvite.containsKey(user.getUniqueId())) {
+         if (invited.containsKey(user.getUniqueId())) {
              entrantStatus.setText("Joined");
         }
 

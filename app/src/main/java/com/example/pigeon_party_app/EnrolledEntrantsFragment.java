@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ public class EnrolledEntrantsFragment extends Fragment {
     private ListView entrantListView;
     private EntrantArrayAdapter entrantArrayAdapter;
     private ArrayList<User> entrantList = new ArrayList<>();
-    private Map<String, User> usersSentInvite;
+    private Map<String, User> usersJoined;
 
     public static EnrolledEntrantsFragment newInstance(String eventId) {
         EnrolledEntrantsFragment fragment = new EnrolledEntrantsFragment();
@@ -48,7 +46,7 @@ public class EnrolledEntrantsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_enrolled_entrants, container, false);
         entrantListView = view.findViewById(R.id.entrant_list_view);
         // Set up adapter
-        entrantArrayAdapter = new EntrantArrayAdapter(requireContext(), entrantList, usersSentInvite);
+        entrantArrayAdapter = new EntrantArrayAdapter(requireContext(), entrantList, usersJoined);
         entrantListView.setAdapter(entrantArrayAdapter);
         // Loads entrants who have officially joined an event
         loadJoinedEntrants();
@@ -78,14 +76,14 @@ public class EnrolledEntrantsFragment extends Fragment {
                     Event event = documentSnapshot.toObject(Event.class);
                     if (event != null) {
                         // Get the maps of users for waitlisted, invited, and cancelled
-                        usersSentInvite = event.getUsersSentInvite();
+                        usersJoined = event.getUsersInvited();
 
                         // Create a combined list of users to show in the list
                         entrantList.clear();
-                        entrantList.addAll(usersSentInvite.values());
+                        entrantList.addAll(usersJoined.values());
 
                         // Update the adapter's maps and refresh
-                        entrantArrayAdapter.updateUsersSentInvite(usersSentInvite);
+                        entrantArrayAdapter.updateUsersInvited(usersJoined);
                         entrantArrayAdapter.notifyDataSetChanged();
                     }
                 });

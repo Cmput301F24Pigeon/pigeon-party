@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,8 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class EntrantListFragment extends Fragment {
     private EntrantArrayAdapter entrantArrayAdapter;
     private ArrayList<User> entrantList = new ArrayList<>();
     private Map<String, User> usersWaitlist;
-    private Map<String, User> usersInvited;
+    private Map<String, User> usersSentInvite;
     private Map<String, User> usersCancelled;
 
     public static EntrantListFragment newInstance(String eventId) {
@@ -159,17 +156,17 @@ public class EntrantListFragment extends Fragment {
                     if (event != null) {
                         // Get the maps of users for waitlisted, invited, and cancelled
                         usersWaitlist = event.getUsersWaitlisted();
-                        usersInvited = event.getUsersInvited();
+                        usersSentInvite = event.getUsersInvited();
                         usersCancelled = event.getUsersCancelled();
 
                         // Create a combined list of users to show in the list
                         entrantList.clear();
                         entrantList.addAll(usersWaitlist.values());
-                        entrantList.addAll(usersInvited.values());
+                        entrantList.addAll(usersSentInvite.values());
                         entrantList.addAll(usersCancelled.values());
 
                         // Update the adapter's maps and refresh
-                        entrantArrayAdapter.updateMaps(usersWaitlist, usersInvited, usersCancelled);
+                        entrantArrayAdapter.updateMaps(usersWaitlist, usersSentInvite, usersCancelled);
                         entrantArrayAdapter.notifyDataSetChanged();
                     }
                 });

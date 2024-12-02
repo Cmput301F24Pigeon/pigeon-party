@@ -34,8 +34,8 @@ import java.net.URL;
  */
 public class AvatarView extends AppCompatImageView {
 
-    private float TEXT_SIZE = 50f;
-    private int TEXT_COLOR = Color.WHITE;
+    private final float TEXT_SIZE = 50f;
+    private final int TEXT_COLOR = Color.WHITE;
 
     Path clipPath;
     Drawable background;

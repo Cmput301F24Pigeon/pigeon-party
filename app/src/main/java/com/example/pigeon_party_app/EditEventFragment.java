@@ -142,13 +142,12 @@ public class EditEventFragment extends Fragment {
                     .addOnFailureListener(e -> Log.e("EditEventFragment", "Error fetching event details", e));
         }
 
-        uploadImage.setOnClickListener(v ->{
+        uploadImage.setOnClickListener(v -> {
             pickMediaLauncher.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
         });
         dateButton.setOnClickListener(v -> showDateTimePicker());
-
 
 
         confirmButton.setOnClickListener(v -> {
@@ -159,15 +158,15 @@ public class EditEventFragment extends Fragment {
             if (Validator.isEmpty(editEventDetails, "Event details cannot be empty")) {
                 isValid = false;
             }
-            if (Validator.isEmpty(editEventTitle, "Event title cannot be empty")){
+            if (Validator.isEmpty(editEventTitle, "Event title cannot be empty")) {
                 isValid = false;
             }
             if (isValid) {
 
                 Map<String, Object> updatedFields = new HashMap<>();
                 updatedFields.put("title", editEventTitle.getText().toString());
-                updatedFields.put("waitlistCapacity",-1);
-                if ( !editWaitlistCap.getText().toString().isEmpty()) {
+                updatedFields.put("waitlistCapacity", -1);
+                if (!editWaitlistCap.getText().toString().isEmpty()) {
                     updatedFields.put("waitlistCapacity", Integer.parseInt(editWaitlistCap.getText().toString()));
                 }
 
@@ -177,37 +176,8 @@ public class EditEventFragment extends Fragment {
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-
-                    String storagePath = "event_posters/" + eventId;
-
-                    FirebaseStorage.getInstance().getReference(storagePath)
-                            .putFile(imageUri)
-                            .addOnSuccessListener(taskSnapshot -> {
-
-                                taskSnapshot.getStorage().getDownloadUrl()
-                                        .addOnSuccessListener(downloadUri -> {
-
-                                            updatedFields.put("imageUrl", downloadUri.toString());
-
-                                            db.collection("events").document(eventId)
-                                                    .update(updatedFields)
-                                                    .addOnSuccessListener(aVoid -> {
-                                                        Log.d("EditEventFragment", "Event updated successfully!");
-
-                                                        // Navigate to OrganizerFragment
-                                                        getActivity().getSupportFragmentManager()
-                                                                .beginTransaction()
-                                                                .replace(R.id.fragment_container, new OrganizerFragment())
-                                                                .addToBackStack(null)
-                                                                .commit();
-                                                    })
-                                                    .addOnFailureListener(e -> Log.e("EditEventFragment", "Error updating Firestore", e));
-                                        })
-                                        .addOnFailureListener(e -> Log.e("EditEventFragment", "Error fetching download URL", e));
-                            })
-                            .addOnFailureListener(e -> Log.e("EditEventFragment", "Error uploading image", e));
-                }
-                else{
+                    editEventImage(updatedFields,db,eventId, imageUri);
+                } else {
                     // If no new image is selected, update Firestore directly
                     db.collection("events").document(eventId)
                             .update(updatedFields)
@@ -239,10 +209,42 @@ public class EditEventFragment extends Fragment {
         return view;
     }
 
+    public void editEventImage(Map<String, Object> updatedFields, @NonNull FirebaseFirestore db, String eventId, Uri imageUri) {
+        String storagePath = "event_posters/" + eventId;
+
+        FirebaseStorage.getInstance().getReference(storagePath)
+                .putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+
+                    taskSnapshot.getStorage().getDownloadUrl()
+                            .addOnSuccessListener(downloadUri -> {
+
+                                updatedFields.put("imageUrl", downloadUri.toString());
+
+                                db.collection("events").document(eventId)
+                                        .update(updatedFields)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("EditEventFragment", "Event updated successfully!");
+
+                                            // Navigate to OrganizerFragment
+                                            getActivity().getSupportFragmentManager()
+                                                    .beginTransaction()
+                                                    .replace(R.id.fragment_container, new OrganizerFragment())
+                                                    .addToBackStack(null)
+                                                    .commit();
+                                        })
+                                        .addOnFailureListener(e -> Log.e("EditEventFragment", "Error updating Firestore", e));
+                            })
+                            .addOnFailureListener(e -> Log.e("EditEventFragment", "Error fetching download URL", e));
+                })
+                .addOnFailureListener(e -> Log.e("EditEventFragment", "Error uploading image", e));
+
+    }
+
     /**
      * This is a method to show the date and time to be chosen by the user
      */
-    private void showDateTimePicker(){
+    private void showDateTimePicker() {
         showDatePicker();
     }
 
@@ -258,7 +260,7 @@ public class EditEventFragment extends Fragment {
     /**
      * This is a method to show the calendar to the user to select the date
      */
-    private void showDatePicker(){
+    private void showDatePicker() {
         int year = selectedDateTime.get(Calendar.YEAR);
         int month = selectedDateTime.get(Calendar.MONTH);
         int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
@@ -292,7 +294,6 @@ public class EditEventFragment extends Fragment {
         );
         timePickerDialog.show();
     }
-
 
 
 }

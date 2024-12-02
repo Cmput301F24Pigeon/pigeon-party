@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * This is a class that allows the event organizer to view a list of their events
+ */
 public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
 
-    public OrganizerArrayAdapter(Context context, ArrayList<Event> events){
-        super(context,0, events);
+    public OrganizerArrayAdapter(Context context, ArrayList<Event> events) {
+        super(context, 0, events);
         this.events = events;
         this.context = context;
     }
@@ -33,14 +36,14 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.organizer_content, parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.organizer_content, parent, false);
         }
 
         Event event = events.get(position);
         ImageButton editButton = view.findViewById(R.id.button_edit);
         ImageButton mapButton = view.findViewById(R.id.button_map);
-        if (event.isRequiresLocation()){
+        if (event.isRequiresLocation()) {
             mapButton.setVisibility(View.VISIBLE);
         } else {
             mapButton.setVisibility(View.GONE);
@@ -84,7 +87,6 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
 
 
     }
-
 
 
 }

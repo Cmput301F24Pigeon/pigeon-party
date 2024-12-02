@@ -21,9 +21,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EntrantMapFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment is used to show a map of entrants sign up location
  */
 public class EntrantMapFragment extends Fragment {
     private ImageView worldMap;
@@ -103,6 +101,13 @@ public class EntrantMapFragment extends Fragment {
         return view;
 
     }
+
+    /**
+     * This method puts markers on the map image to show users locations
+     * @param latitude The users latitude
+     * @param longitude The users longitude
+     * @param participantName The name of the user
+     */
     private void addMarker(double latitude, double longitude, String participantName) {
 
         int x = (int) ((longitude + 180) / 360 * worldMap.getWidth());

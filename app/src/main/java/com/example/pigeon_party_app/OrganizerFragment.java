@@ -30,9 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment is the main page for all organizer functions (creating events, viewing/editing events)
  */
 public class OrganizerFragment extends Fragment {
     private ListView organizerListView;

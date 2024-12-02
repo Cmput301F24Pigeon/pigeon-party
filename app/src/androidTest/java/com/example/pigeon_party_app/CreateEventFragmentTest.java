@@ -1,9 +1,11 @@
 package com.example.pigeon_party_app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.fragment.app.testing.FragmentScenario;
@@ -22,6 +24,8 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -61,6 +65,29 @@ public class CreateEventFragmentTest {
             Event testEvent = new Event(testEventId,testEventTitle, new Date(), 50, testEventDetails,testFacility,false,null, null, null, testUser);
             createdFragment.addEvent(db, testEvent);
 
+            verifyEventInFirestore(testEventId);
+        });
+    }
+
+    /**
+     * This method tests that an organizer can add an event with a poster
+     */
+    @Test
+    public void testUploadPoster(){
+        FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEventFragment.class,
+                CreateEventFragment.newInstance(testUser).getArguments()
+        );
+
+        scenario.onFragment(createdFragment -> {
+            testEventId = "test-event-id";
+            testEventTitle= "test-event-title";
+            testEventDetails = "test-details";
+            String mockPosterUrl = "https://mockstorage.com/posters/sample_poster.jpg";
+            Event testEvent = new Event(testEventId,testEventTitle, new Date(), 50,mockPosterUrl, testEventDetails,testFacility,false,null, null, null,null, testUser);
+            createdFragment.addEvent(db, testEvent);
+            assertNotNull("Image URL should not be null after poster upload", testEvent.getImageUrl());
+            assertEquals("Image URL should match the mock URL", mockPosterUrl, testEvent.getImageUrl());
             verifyEventInFirestore(testEventId);
         });
     }

@@ -137,7 +137,7 @@ public class EditEntrantProfileTest {
      */
     @Test
     public void testEmptyEmail() {
-        testInput(newUserName, "", newUserEmail);
+        testInput(newUserName, "", newUserPhone);
         onView(withId(R.id.editText_edit_user_email)).check(matches(hasFocus()));
     }
 

@@ -24,7 +24,12 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
-
+    /**
+     * Constructor for OrganizerArrayAdapter with parameters for ArrayAdapter constructor
+     *
+     * @param context current context of the app
+     * @param events  ArrayList of events to be displayed
+     */
     public OrganizerArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
         this.events = events;
@@ -82,11 +87,6 @@ public class OrganizerArrayAdapter extends ArrayAdapter<Event> {
                     .commit();
         });
 
-
         return view;
-
-
     }
-
-
 }

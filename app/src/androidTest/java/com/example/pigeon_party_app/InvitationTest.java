@@ -41,88 +41,91 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 @RunWith(AndroidJUnit4.class)
 public class InvitationTest {
-        private ArrayList<Event> eventList;
-        private EventsArrayAdapter testAdapter;
-        private FirebaseFirestore db;
-        private Facility testFacility;
-        private User testUser;
-        private String testUserID;
-        private Event testAcceptEvent;
-        private Event testDeclineEvent;
-        private UiDevice device;
-        Context context;
-        private Map<String, Map<String, Object>> testUserMap;
-        private ListView eventListView;
-        @Rule
-        public ActivityScenarioRule<MainActivity> scenario = new
+    private ArrayList<Event> eventList;
+    private EventsArrayAdapter testAdapter;
+    private FirebaseFirestore db;
+    private Facility testFacility;
+    private User testUser;
+    private String testUserID;
+    private Event testAcceptEvent;
+    private Event testDeclineEvent;
+    private UiDevice device;
+    Context context;
+    private Map<String, Map<String, Object>> testUserMap;
+    private ListView eventListView;
+    @Rule
+    public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
-        /**
-         * Method which creates the necessary variables to carry out the test
-         */
-        @Before
-        public void setUp() {
-            HashMap<String, User> testUserMap = new HashMap<>();
-            // Initialize the list and adapter
-            eventList = new ArrayList<>();
 
-            // Launch the Activity and get the context after it's created
-            ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-            scenario.onActivity(activity -> {
-                // Get the context from the MainActivity
-                context = activity.getApplicationContext();
+    /**
+     * Method which creates the necessary variables to carry out the test
+     */
+    @Before
+    public void setUp() {
+        HashMap<String, User> testUserMap = new HashMap<>();
+        // Initialize the list and adapter
+        eventList = new ArrayList<>();
 
-                // Now that the context is properly initialized, create the adapter
-                testAdapter = new EventsArrayAdapter(context, eventList);
+        // Launch the Activity and get the context after it's created
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.onActivity(activity -> {
+            // Get the context from the MainActivity
+            context = activity.getApplicationContext();
 
-                // Create a new Event for testing
-                testAcceptEvent = new Event("testEventId", "testEventTitle", new Date(), 50, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUser);
+            // Now that the context is properly initialized, create the adapter
+            testAdapter = new EventsArrayAdapter(context, eventList);
 
-                // Set up user and facility objects
-                testFacility = new Facility("test-user-id", "test-address", "test-name");
-                testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<>(), new ArrayList<>(), false);
+            // Create a new Event for testing
+            testAcceptEvent = new Event("testEventId", "testEventTitle", new Date(), 50, "testEventDetails", testFacility, false, testUserMap, testUserMap, testUserMap, testUser);
 
-                // Add the test user to an event
-                testUser.addEntrantEventList("testEventId");
+            // Set up user and facility objects
+            testFacility = new Facility("test-user-id", "test-address", "test-name");
+            testUser = new User("test-user-name", "test@email.com", null, testUserID, true, true, testFacility, false, "#000000", new ArrayList<>(), new ArrayList<>(), false);
 
-                // Add event to eventList for testing
-                eventList.add(testAcceptEvent);  // Manually inserting the test event
+            // Add the test user to an event
+            testUser.addEntrantEventList("testEventId");
 
-                // Notify the adapter that the data has changed
-                testAdapter.notifyDataSetChanged();
+            // Add event to eventList for testing
+            eventList.add(testAcceptEvent);  // Manually inserting the test event
 
-                // Initialize the ListView and set the adapter
-                eventListView = new ListView(context);
-                eventListView.setAdapter(testAdapter);
-            });
-        }
-        @Test
-        public void acceptInviteTest() throws UiObjectNotFoundException{
-            device.pressHome();
-            Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.example.pigeon_party_app");
-            context.startActivity(launchIntent);
-            UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
-            if (permissionDialog.waitForExists(6000)) {
-                permissionDialog.click();
-            }
-            UiObject2 eventList = device.wait(Until.findObject(By.res("com.pigeon_party_app:id/event_list")), 10000);
+            // Notify the adapter that the data has changed
+            testAdapter.notifyDataSetChanged();
 
-
-            UiObject2 eventItem = eventList.findObject(By.text("testEventTitle"));
-            eventItem.click();
-
-            UiObject2 acceptButton = device.wait(Until.findObject(By.desc("acceptButton")), 5000); // Replace with the actual description, text, or ID
-            acceptButton.click();
-
-            // Verify if the user was added (this might depend on your app's state, i.e., checking if the button becomes disabled or if the status updates)
-            // Example: Verify the event's status or that the "Accept" button changes
-            UiObject2 acceptedStatus = device.wait(Until.findObject(By.text("Accepted")), 5000); // Change text to match your app's "accepted" state
-            assertNotNull("Event acceptance failed", acceptedStatus);
-        }
-
-
+            // Initialize the ListView and set the adapter
+            eventListView = new ListView(context);
+            eventListView.setAdapter(testAdapter);
+        });
     }
+
+    @Test
+    public void acceptInviteTest() throws UiObjectNotFoundException {
+        device.pressHome();
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.example.pigeon_party_app");
+        context.startActivity(launchIntent);
+        UiObject permissionDialog = device.findObject(new UiSelector().text("Allow"));
+        if (permissionDialog.waitForExists(6000)) {
+            permissionDialog.click();
+        }
+        UiObject2 eventList = device.wait(Until.findObject(By.res("com.pigeon_party_app:id/event_list")), 10000);
+
+
+        UiObject2 eventItem = eventList.findObject(By.text("testEventTitle"));
+        eventItem.click();
+
+        UiObject2 acceptButton = device.wait(Until.findObject(By.desc("acceptButton")), 5000); // Replace with the actual description, text, or ID
+        acceptButton.click();
+
+        // Verify if the user was added (this might depend on your app's state, i.e., checking if the button becomes disabled or if the status updates)
+        // Example: Verify the event's status or that the "Accept" button changes
+        UiObject2 acceptedStatus = device.wait(Until.findObject(By.text("Accepted")), 5000); // Change text to match your app's "accepted" state
+        assertNotNull("Event acceptance failed", acceptedStatus);
+    }
+
+
+}
 
 

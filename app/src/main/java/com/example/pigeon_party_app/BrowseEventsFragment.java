@@ -122,7 +122,7 @@ public class BrowseEventsFragment extends Fragment {
     }
 
     /**
-     *this method fills our list of events from the firebase into our app
+     * this method fills our list of events from the firebase into our app
      */
     private void fill_list(){
 

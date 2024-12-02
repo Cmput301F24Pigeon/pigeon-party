@@ -24,9 +24,9 @@ import java.util.Map;
  * This fragment is used to show a map of entrants sign up location
  */
 public class EntrantMapFragment extends Fragment {
-    private ImageView worldMap;
-    private FrameLayout markerContainer;
-    private String eventId;
+    public ImageView worldMap;
+    public FrameLayout markerContainer;
+    public String eventId;
 
     public EntrantMapFragment() {
         // Required empty public constructor
@@ -108,7 +108,7 @@ public class EntrantMapFragment extends Fragment {
      * @param longitude The users longitude
      * @param participantName The name of the user
      */
-    private void addMarker(double latitude, double longitude, String participantName) {
+    public void addMarker(double latitude, double longitude, String participantName) {
 
         int x = (int) ((longitude + 180) / 360 * worldMap.getWidth());
         int y = (int) ((90 - latitude) / 180 * worldMap.getHeight());

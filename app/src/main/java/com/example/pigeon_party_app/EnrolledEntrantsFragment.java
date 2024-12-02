@@ -27,6 +27,7 @@ public class EnrolledEntrantsFragment extends Fragment {
 
     /**
      * Factory method to create a new instance of the EnrolledEntrantsFragment
+     *
      * @param eventId The events unique id
      * @return instance of an EnrolledEntrantsFragment
      */

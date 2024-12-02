@@ -25,7 +25,7 @@ public class AdminFragment extends Fragment {
         Button browseImages = view.findViewById(R.id.browse_images);
         ImageButton backButton = view.findViewById(R.id.button_back);
 
-        browseProfiles.setOnClickListener( v -> {
+        browseProfiles.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new BrowseProfilesFragment())
@@ -33,7 +33,7 @@ public class AdminFragment extends Fragment {
                     .commit();
         });
 
-        browseEvents.setOnClickListener( v -> {
+        browseEvents.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new BrowseEventsFragment())
@@ -41,7 +41,7 @@ public class AdminFragment extends Fragment {
                     .commit();
         });
 
-        browseImages.setOnClickListener( v -> {
+        browseImages.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new BrowseImagesFragment())

@@ -14,17 +14,18 @@ public class Facility {
     private String ownerId;
     //private ImageView facilityPoster;
 
-    public Facility(){
+    public Facility() {
 
     }
 
     /**
      * Constructor method for creating new facilities
+     *
      * @param ownerId
      * @param address
      * @param name
      */
-    public Facility( String ownerId, String address, String name) {
+    public Facility(String ownerId, String address, String name) {
         this.address = address;
         this.name = name;
         //this.facilityPoster = facilityPoster;
@@ -33,6 +34,7 @@ public class Facility {
 
     /**
      * setter to set the name of the facility
+     *
      * @param name
      */
     public void setName(String name) {
@@ -41,6 +43,7 @@ public class Facility {
 
     /**
      * setter to set the address of the facility
+     *
      * @param address
      */
     public void setAddress(String address) {
@@ -49,6 +52,7 @@ public class Facility {
 
     /**
      * getter to get the address of the facility
+     *
      * @return address The address of the facility
      */
     public String getAddress() {
@@ -57,6 +61,7 @@ public class Facility {
 
     /**
      * getter for getting the name of the facility
+     *
      * @return name The name of the facility
      */
     public String getName() {
@@ -65,6 +70,7 @@ public class Facility {
 
     /**
      * getter for getting the user who owns the facility
+     *
      * @return ownerId The uniqueId of the user which created the facility
      */
     public String getOwnerId() {

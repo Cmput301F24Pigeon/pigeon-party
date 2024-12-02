@@ -49,8 +49,8 @@ public class EventDetailsFragmentTest {
     @Before
     public void setUp() {
         db = FirebaseFirestore.getInstance();
-        testFacility =  new Facility("test-user-id", "test-address","test-name");
-        testUser = new User("test-user-name","test@email.com",null,"test-user-id",true,true,testFacility,false,"#000000", new ArrayList<String>(), new ArrayList<String>(),false);
+        testFacility = new Facility("test-user-id", "test-address", "test-name");
+        testUser = new User("test-user-name", "test@email.com", null, "test-user-id", true, true, testFacility, false, "#000000", new ArrayList<String>(), new ArrayList<String>(), false);
         Date testDate = new Date();
         Map<String, User> testUsersWaitlist = new HashMap<>();
         Map<String, User> testUsersInvited = new HashMap<>();
@@ -62,7 +62,7 @@ public class EventDetailsFragmentTest {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FireStore", "Event successfully added");
                 })
-                .addOnFailureListener(e ->{
+                .addOnFailureListener(e -> {
                     Log.w("FireStore", "Error adding event", e);
                 });
         Map<String, Object> updates = new HashMap<>();
@@ -79,10 +79,9 @@ public class EventDetailsFragmentTest {
 
     /**
      * Test to check if user can sign up to the event's waitlist
-     *
      */
     @Test
-    public void TestSignUp(){
+    public void TestSignUp() {
         FragmentScenario<EventDetailsFragment> scenario = FragmentScenario.launchInContainer(
                 EventDetailsFragment.class
         );
@@ -96,6 +95,7 @@ public class EventDetailsFragmentTest {
 
     /**
      * Method to verify user is in the event's waitlist in firebase
+     *
      * @param eventId
      */
     private void verifyUserInEventInFirestore(String eventId) {
@@ -103,8 +103,8 @@ public class EventDetailsFragmentTest {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()){
-                    assertEquals("User ID should appear as a map key in usersWaitlisted", testUser.getUniqueId(), documentSnapshot.getString("usersWaitlisted."+testUser.getUniqueId()));
+                if (documentSnapshot.exists()) {
+                    assertEquals("User ID should appear as a map key in usersWaitlisted", testUser.getUniqueId(), documentSnapshot.getString("usersWaitlisted." + testUser.getUniqueId()));
                 }
             }
         });

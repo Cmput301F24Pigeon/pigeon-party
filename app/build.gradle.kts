@@ -55,7 +55,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("org.checkerframework:checker-qual:3.37.0")
-
+    implementation("org.mockito:mockito-core:5.0.0") // Latest version of Mockito
+    implementation("org.mockito:mockito-inline:5.0.0")
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.appcompat:appcompat:1.6.1")

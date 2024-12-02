@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class SendNotificationsFragment extends DialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Event event;
+
     public SendNotificationsFragment() {
     }
 
@@ -57,16 +58,16 @@ public class SendNotificationsFragment extends DialogFragment {
                     CheckBox accepted = view.findViewById(R.id.check_accepted);
                     CheckBox cancelled = view.findViewById(R.id.check_cancelled);
                     if (waitlisted.isChecked()) {
-                        event.notifyUserByStatus(db,"waitlisted");
+                        event.notifyUserByStatus(db, "waitlisted");
                     }
-                    if (invited.isChecked()){
-                        event.notifyUserByStatus(db,"invited");
+                    if (invited.isChecked()) {
+                        event.notifyUserByStatus(db, "invited");
                     }
                     if (accepted.isChecked()) {
-                        event.notifyUserByStatus(db,"accepted");
+                        event.notifyUserByStatus(db, "accepted");
                     }
                     if (cancelled.isChecked()) {
-                        event.notifyUserByStatus(db,"cancelled");
+                        event.notifyUserByStatus(db, "cancelled");
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {

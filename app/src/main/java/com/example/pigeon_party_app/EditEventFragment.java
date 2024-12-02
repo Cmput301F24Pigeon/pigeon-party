@@ -176,7 +176,7 @@ public class EditEventFragment extends Fragment {
                 updatedFields.put("dateTime", selectedDateTime.getTime());
 
                 if (imageUri != null) {
-                    editEventImage(updatedFields,db,eventId, imageUri);
+                    editEventImage(updatedFields, db, eventId, imageUri);
                 } else {
                     // If no new image is selected, update Firestore directly
                     db.collection("events").document(eventId)

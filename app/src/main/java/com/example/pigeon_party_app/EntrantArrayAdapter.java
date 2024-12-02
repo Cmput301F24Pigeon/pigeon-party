@@ -11,13 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EntrantArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
-    private Map<String, User> waitlist;
-    private Map<String, User> invited;
-    private Map<String, User> cancelled;
+    private Map<String, User> waitlist = new HashMap<>();
+    private Map<String, User> invited = new HashMap<>();;
+    private Map<String, User> cancelled = new HashMap<>();;
+    private Map<String, User> sentInvite = new HashMap<>();;
+
     private Context context;
 
     public EntrantArrayAdapter(Context context, ArrayList<User> users,
@@ -32,8 +35,11 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         this.cancelled = cancelled;
     }
 
-    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> usersInvited) {
+    public EntrantArrayAdapter(Context context, ArrayList<User> users, Map<String, User> sentInvite) {
         super(context, 0, users);
+        this.context = context;
+        this.users = users;
+        this.sentInvite = sentInvite;
     }
 
     // Method to update maps
@@ -41,6 +47,10 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
         this.waitlist = waitlist;
         this.invited = invited;
         this.cancelled = cancelled;
+    }
+
+    public void updateUsersSentInvite(Map<String, User> sentInvite){
+        this.sentInvite = sentInvite;
     }
 
     @NonNull
@@ -72,6 +82,9 @@ public class EntrantArrayAdapter extends ArrayAdapter<User> {
             entrantStatus.setText("Invited");
         } else if (cancelled.containsKey(user.getUniqueId())) {
             entrantStatus.setText("Cancelled");
+        }
+         if (sentInvite.containsKey(user.getUniqueId())) {
+             entrantStatus.setText("Joined");
         }
 
         return view;

@@ -27,6 +27,7 @@ import java.util.Map;
 public class EntrantListFragment extends Fragment {
     private static final String ARG_EVENT_ID = "eventId";
     private String eventId;
+    Event event = MainActivity.getCurrentEvent();
     private ListView entrantListView;
     //private ArrayAdapter<User> entrantArrayAdapter;
     private EntrantArrayAdapter entrantArrayAdapter;
@@ -136,7 +137,7 @@ public class EntrantListFragment extends Fragment {
 
         Button viewAcceptedParticipantsButton = view.findViewById(R.id.view_participants_button);
         viewAcceptedParticipantsButton.setOnClickListener(v -> {
-            EnrolledEntrantsFragment enrolledEntrantsFragment = EnrolledEntrantsFragment.newInstance(usersInvited);
+            EnrolledEntrantsFragment enrolledEntrantsFragment = EnrolledEntrantsFragment.newInstance(event.getEventId());
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, enrolledEntrantsFragment)

@@ -82,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
         String uniqueId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        eventArrayList = new ArrayList<>();
+        eventListView = findViewById(R.id.event_list);
+        eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
+        eventListView.setAdapter(eventsArrayAdapter);
+        receiveCurrentUser(uniqueId);
+
         qrScannerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), result.getData());
@@ -97,21 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        currentUser = receiveCurrentUser(uniqueId);
-
-        if (currentUser != null) {
-            checkUserNotifications(currentUser);
 
 
-            eventArrayList = new ArrayList<>();
-            loadEvents(currentUser.getEntrantEventList());
-            eventListView = findViewById(R.id.event_list);
-            eventsArrayAdapter = new EventsArrayAdapter(MainActivity.this, eventArrayList);
-            eventListView.setAdapter(eventsArrayAdapter);
 
-            //receiveEvents();
-
-        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -123,11 +118,7 @@ public class MainActivity extends AppCompatActivity {
         setUpAdminButton();
         setUpFacilityButton();
         setUpAddEventButton();
-        if (MainActivity.currentUser != null) {
-            if (MainActivity.currentUser.isAdmin()) {
-                adminButton.setVisibility(View.VISIBLE);
-            }
-        }
+
     }
 
     /**
@@ -136,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
      * @param uniqueId a string that is our id of our device
      * @return currentuser the currentuser data from firebase
      */
-    public User receiveCurrentUser(String uniqueId) {
+    public void receiveCurrentUser(String uniqueId) {
 
         DocumentReference docRef = db.collection("user").document(uniqueId);
 
@@ -144,11 +135,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    MainActivity.currentUser = documentSnapshot.toObject(User.class);
+                    User current = documentSnapshot.toObject(User.class);
+                    MainActivity.currentUser = current;
                     askNotificationPermission();
-                    if (currentUser.getNotifications() == null) {
-                        currentUser.setNotifications(new ArrayList<>());
+                    loadEvents(current.getEntrantEventList());
+
+                    if (current.getNotifications() == null) {
+                        current.setNotifications(new ArrayList<>());
                     }
+                    checkUserNotifications(current);
+                    if (current.isAdmin()){
+                        adminButton.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     getSupportFragmentManager()
                             .beginTransaction()
@@ -158,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        return currentUser;
     }
 
     /**
@@ -540,7 +538,6 @@ public class MainActivity extends AppCompatActivity {
     private void loadEvents(ArrayList<String> eventIds) {
 
         for (String i : eventIds) {
-            Log.d("blehh", i);
             DocumentReference docRef = db.collection("events").document(i);
 
             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

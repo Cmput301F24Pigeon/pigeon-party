@@ -193,7 +193,6 @@ public class BrowseProfilesFragment extends Fragment {
      */
     private void removeEvent(String event) {
 
-
         DocumentReference docRef = db.collection("events").document(event);
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

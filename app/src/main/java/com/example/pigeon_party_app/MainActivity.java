@@ -53,7 +53,6 @@ import java.util.UUID;
  */
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> qrScannerLauncher;
-    //    private ActivityResultLauncher<String> requestPermissionsLauncher;
     private ImageView facilityButton;
     private ImageView profileButton;
     private ImageView adminButton;
@@ -188,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This method links the qr code scanned to an event in Firebase
+     *
      * @param qrContent the string which a qr code returns
      */
     private void handleQrCode(String qrContent) {
@@ -443,11 +444,7 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
                     }
-
-
-                    //receiveEvents();
                 }
-
             });
         }
     }
@@ -476,6 +473,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Adds event to an existing Arraylist of Event objects
+     *
+     * @param event the Event object being added to the list
+     */
     public static void addEventToList(Event event) {
         if (eventArrayList != null) {
             eventArrayList.add(event);
@@ -503,12 +505,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         eventIds.remove(i);
                     }
-
-
                 }
-
             });
-
         }
 
         DocumentReference userRef = db.collection("user").document(MainActivity.currentUser.getUniqueId());
@@ -524,6 +522,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }
